@@ -1,0 +1,96 @@
+﻿<div class="form-page">
+  <ng-container *ngIf="!notFound; else missing">
+    <header class="form-header animate-fade-in">
+      <p class="eyebrow">{{ contextLabel }}</p>
+      <h1>{{ pageTitle }}</h1>
+      <p>{{ pageSubtitle }}</p>
+    </header>
+
+    <section class="missing-state glass animate-fade-in" *ngIf="isLoading">
+      <h2>Loading letter</h2>
+      <p>Preparing this letter for editing...</p>
+    </section>
+
+    <form
+      class="editor-form glass animate-fade-in"
+      style="animation-delay: 0.1s;"
+      [formGroup]="form"
+      (ngSubmit)="save()"
+      *ngIf="!isLoading"
+    >
+      <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+      <div class="field">
+        <label for="title">Title</label>
+        <input id="title" type="text" formControlName="title" />
+        <p class="error" *ngIf="hasError('title')">Title is required.</p>
+      </div>
+
+      <div class="field">
+        <label for="body">Body</label>
+        <textarea id="body" rows="9" formControlName="body"></textarea>
+        <p class="error" *ngIf="hasError('body')">Body is required.</p>
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label for="category">Category</label>
+          <select id="category" formControlName="category">
+            <option *ngFor="let category of categories" [value]="category.value">{{ category.label }}</option>
+          </select>
+          <p class="error" *ngIf="hasError('category')">Category is required.</p>
+        </div>
+
+        <div class="field">
+          <label for="unlockDate">Unlock date</label>
+          <input id="unlockDate" type="date" formControlName="unlockDate" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="passcode">Passcode</label>
+        <input id="passcode" type="text" formControlName="passcode" />
+        <small>Optional local hint only. This app does not encrypt letter content.</small>
+      </div>
+
+      <div class="toggle-row toggle-row--three">
+        <label>
+          <input type="checkbox" formControlName="isLocked" />
+          <span class="toggle-copy">
+            <span>Locked</span>
+            <small>Partner B can see the letter exists, but not the body.</small>
+          </span>
+        </label>
+        <label>
+          <input type="checkbox" formControlName="isFavorite" />
+          <span class="toggle-copy">
+            <span>Favorite</span>
+            <small>Mark this as a letter to return to.</small>
+          </span>
+        </label>
+        <label>
+          <input type="checkbox" formControlName="visibleToPartner" />
+          <span class="toggle-copy">
+            <span>{{ isAdminRoute ? 'Visible to partner' : 'Share with your partner' }}</span>
+            <small>Turn off to keep this letter private.</small>
+          </span>
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="secondary-action" (click)="cancel()" [disabled]="isSaving">Cancel</button>
+        <button type="submit" class="primary-action" [disabled]="form.invalid || isSaving">
+          {{ isSaving ? 'Saving...' : saveLabel }}
+        </button>
+      </div>
+    </form>
+  </ng-container>
+
+  <ng-template #missing>
+    <section class="missing-state glass">
+      <h1>Letter not found</h1>
+      <p>{{ errorMessage || 'This letter may have already been deleted.' }}</p>
+      <a [routerLink]="isAdminRoute ? '/admin/letters' : '/letters'" class="primary-action">Back to letters</a>
+    </section>
+  </ng-template>
+</div>

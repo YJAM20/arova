@@ -1,0 +1,90 @@
+﻿<div class="form-page">
+  <ng-container *ngIf="!notFound; else missing">
+    <header class="form-header animate-fade-in">
+      <p class="eyebrow">{{ contextLabel }}</p>
+      <h1>{{ pageTitle }}</h1>
+      <p>{{ pageSubtitle }}</p>
+    </header>
+
+    <section class="missing-state glass animate-fade-in" *ngIf="isLoading">
+      <h2>Loading reason</h2>
+      <p>Preparing this reason for editing...</p>
+    </section>
+
+    <form
+      class="editor-form glass animate-fade-in"
+      style="animation-delay: 0.1s;"
+      [formGroup]="form"
+      (ngSubmit)="save()"
+      *ngIf="!isLoading"
+    >
+      <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+      <div class="field">
+        <label for="title">Title</label>
+        <input id="title" type="text" formControlName="title" />
+        <p class="error" *ngIf="hasError('title')">Title is required.</p>
+      </div>
+
+      <div class="field">
+        <label for="body">Body</label>
+        <textarea id="body" rows="7" formControlName="body"></textarea>
+        <p class="error" *ngIf="hasError('body')">Body is required.</p>
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label for="category">Category</label>
+          <select id="category" formControlName="category">
+            <option *ngFor="let category of categories" [value]="category.value">{{ category.label }}</option>
+          </select>
+          <p class="error" *ngIf="hasError('category')">Category is required.</p>
+        </div>
+
+        <div class="field">
+          <label for="order">Order</label>
+          <input id="order" type="number" min="1" formControlName="order" />
+          <p class="error" *ngIf="hasError('order')">Order is required and must be at least 1.</p>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="unlockDate">Unlock date</label>
+        <input id="unlockDate" type="date" formControlName="unlockDate" />
+        <small>Optional. Leave blank if this reason should be available now.</small>
+      </div>
+
+      <div class="toggle-row">
+        <label>
+          <input type="checkbox" formControlName="isSecret" />
+          <span class="toggle-copy">
+            <span>{{ isAdminRoute ? 'Secret from partner' : 'Keep this reason private' }}</span>
+            <small>Secret reasons are hidden from Partner B unless they created them.</small>
+          </span>
+        </label>
+        <label>
+          <input type="checkbox" formControlName="isFavorite" />
+          <span class="toggle-copy">
+            <span>Favorite</span>
+            <small>Save it near the top of your emotional bookmarks.</small>
+          </span>
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="secondary-action" (click)="cancel()" [disabled]="isSaving">Cancel</button>
+        <button type="submit" class="primary-action" [disabled]="form.invalid || isSaving">
+          {{ isSaving ? 'Saving...' : saveLabel }}
+        </button>
+      </div>
+    </form>
+  </ng-container>
+
+  <ng-template #missing>
+    <section class="missing-state glass">
+      <h1>Reason not found</h1>
+      <p>{{ errorMessage || 'This reason may have already been deleted.' }}</p>
+      <a [routerLink]="isAdminRoute ? '/admin/reasons' : '/reasons'" class="primary-action">Back to reasons</a>
+    </section>
+  </ng-template>
+</div>

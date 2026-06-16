@@ -1,0 +1,61 @@
+﻿<div class="admin-manage-page">
+  <header class="manage-header animate-fade-in">
+    <div>
+      <p class="eyebrow">Admin</p>
+      <h1>Manage Letters</h1>
+      <p>{{ letters.length }} letters in the vault</p>
+    </div>
+    <a class="primary-action" routerLink="/admin/letters/new">Add new letter</a>
+  </header>
+
+  <section class="empty-state glass animate-fade-in" *ngIf="isLoading">
+    <h2>Loading letters</h2>
+    <p>Checking the current vault...</p>
+  </section>
+
+  <section class="empty-state glass animate-fade-in" *ngIf="errorMessage && !isLoading">
+    <h2>Letters need a moment</h2>
+    <p>{{ errorMessage }}</p>
+  </section>
+
+  <section
+    class="items-grid animate-fade-in"
+    style="animation-delay: 0.1s;"
+    *ngIf="letters.length > 0 && !isLoading && !errorMessage"
+  >
+    <article class="admin-card glass" *ngFor="let letter of letters" [class.admin-card--muted]="letter.isLocked || !letter.visibleToPartner">
+      <div class="card-topline">
+        <span class="category-badge">{{ getCategoryLabel(letter.category) }}</span>
+        <button class="favorite-toggle" type="button" (click)="toggleFavorite(letter)" [class.active]="letter.isFavorite">
+          {{ letter.isFavorite ? 'Favorite' : 'Mark favorite' }}
+        </button>
+      </div>
+
+      <h2>{{ letter.title }}</h2>
+      <p class="item-meta">Written {{ formatDate(letter.createdAt) }}</p>
+      <p class="item-preview">{{ letter.body || 'Body hidden by backend rules.' }}</p>
+
+      <div class="status-row">
+        <span [class.status-private]="!letter.visibleToPartner">
+          {{ letter.visibleToPartner ? 'Visible to partner' : 'Private letter' }}
+        </span>
+        <span [class.status-private]="letter.isLocked">
+          {{ letter.isLocked ? 'Locked' : 'Unlocked' }}
+        </span>
+      </div>
+
+      <div class="card-actions">
+        <a [routerLink]="['/letters', letter.id]">View</a>
+        <a [routerLink]="['/admin/letters', letter.id, 'edit']">Edit</a>
+        <button type="button" (click)="deleteLetter(letter)">Delete</button>
+      </div>
+    </article>
+  </section>
+
+  <section class="empty-state glass animate-fade-in" *ngIf="letters.length === 0 && !isLoading && !errorMessage">
+    <div class="empty-icon">#</div>
+    <h2>No letters yet</h2>
+    <p>Add the first letter when it is ready to be sealed.</p>
+    <a class="primary-action" routerLink="/admin/letters/new">Add new letter</a>
+  </section>
+</div>

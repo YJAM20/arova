@@ -1,0 +1,51 @@
+﻿<div class="admin-manage-page">
+  <header class="manage-header animate-fade-in">
+    <div>
+      <p class="eyebrow">Admin</p>
+      <h1>Manage Memories</h1>
+      <p>{{ memories.length }} memories in the universe</p>
+      <p class="item-meta" *ngIf="errorMessage">{{ errorMessage }}</p>
+    </div>
+    <a class="primary-action" routerLink="/admin/memories/new">Add new memory</a>
+  </header>
+
+  <section class="empty-state glass animate-fade-in" *ngIf="isLoading">
+    <div class="empty-icon">[]</div>
+    <h2>Loading memories</h2>
+    <p>Checking memory records.</p>
+  </section>
+
+  <section class="items-grid animate-fade-in" style="animation-delay: 0.1s;" *ngIf="!isLoading && memories.length > 0">
+    <article class="admin-card glass" *ngFor="let memory of memories" [class.admin-card--muted]="!memory.visibleToPartner">
+      <div class="card-topline">
+        <span class="category-badge">{{ getCategoryLabel(memory.category) }}</span>
+        <button class="favorite-toggle" type="button" (click)="toggleFavorite(memory)" [class.active]="memory.isFavorite">
+          {{ memory.isFavorite ? 'Favorite' : 'Mark favorite' }}
+        </button>
+      </div>
+
+      <h2>{{ memory.title }}</h2>
+      <p class="item-meta">{{ formatDate(memory.date) }}</p>
+      <p class="item-preview">{{ memory.description }}</p>
+
+      <div class="status-row">
+        <span [class.status-private]="!memory.visibleToPartner">
+          {{ memory.visibleToPartner ? 'Visible to partner' : 'Private memory' }}
+        </span>
+      </div>
+
+      <div class="card-actions">
+        <a [routerLink]="['/memories', memory.id]">View</a>
+        <a [routerLink]="['/admin/memories', memory.id, 'edit']">Edit</a>
+        <button type="button" (click)="deleteMemory(memory)">Delete</button>
+      </div>
+    </article>
+  </section>
+
+  <section class="empty-state glass animate-fade-in" *ngIf="!isLoading && memories.length === 0">
+    <div class="empty-icon">[]</div>
+    <h2>No memories yet</h2>
+    <p>Add the first memory when you are ready.</p>
+    <a class="primary-action" routerLink="/admin/memories/new">Add new memory</a>
+  </section>
+</div>

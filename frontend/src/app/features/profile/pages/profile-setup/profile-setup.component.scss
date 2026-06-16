@@ -1,0 +1,85 @@
+@use '../../../../../styles/variables' as *;
+
+.profile-page {
+  min-height: 100vh;
+  padding: 24px;
+  background: $bg-deep;
+  color: $text-primary;
+}
+
+.profile-card {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: clamp(24px, 5vw, 44px);
+}
+
+.glass {
+  background: $glass-bg;
+  border: 1px solid $glass-border;
+  border-radius: $radius-md;
+}
+
+.brand,
+h1 {
+  color: $cream;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+label {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 12px;
+  color: $text-muted;
+}
+
+input,
+select,
+textarea {
+  border: 1px solid $glass-border;
+  border-radius: $radius-sm;
+  background: rgba(255, 248, 232, 0.06);
+  color: $text-primary;
+  padding: 10px;
+}
+
+button {
+  border: 1px solid rgba(231, 166, 182, 0.45);
+  border-radius: $radius-sm;
+  background: rgba(231, 166, 182, 0.16);
+  color: $cream;
+  padding: 10px 18px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: rgba(231, 166, 182, 0.28);
+    border-color: rgba(231, 166, 182, 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(231, 166, 182, 0.12);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.mature-note,
+.message {
+  color: $text-muted;
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.error {
+  color: $soft-pink;
+}

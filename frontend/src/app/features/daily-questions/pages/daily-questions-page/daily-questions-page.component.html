@@ -1,0 +1,62 @@
+<div class="questions-page">
+  <header class="page-header animate-fade-in">
+    <p class="page-eyebrow">Daily Questions</p>
+    <h1>A small prompt for today</h1>
+    <p>Gentle relationship-friendly journaling for any couple, saved only in this browser.</p>
+  </header>
+
+  <section class="today-grid animate-fade-in" style="animation-delay: 0.08s;">
+    <article class="question-card glass">
+      <span class="category">{{ categoryLabel(question.category) }}</span>
+      <h2>{{ question.prompt }}</h2>
+      <p class="note">This is a reflection prompt, not medical or therapeutic advice.</p>
+
+      <label for="answer">Your answer</label>
+      <textarea id="answer" rows="5" [(ngModel)]="answerDraft" name="answer"></textarea>
+
+      <button type="button" class="primary-action" (click)="saveAnswer()" [disabled]="!answerDraft.trim()">
+        Save answer locally
+      </button>
+      <p class="message" *ngIf="message">{{ message }}</p>
+    </article>
+
+    <aside class="answers-card glass">
+      <span class="section-label">Today</span>
+      <h2>{{ formatDate(dateKey) }}</h2>
+
+      <div class="answer-list" *ngIf="todayAnswers.length > 0; else noAnswers">
+        <article *ngFor="let answer of todayAnswers">
+          <strong>{{ answer.userName }}</strong>
+          <p>{{ answer.answer }}</p>
+        </article>
+      </div>
+
+      <ng-template #noAnswers>
+        <p class="empty">No answers yet. Each partner can add one from their own login.</p>
+      </ng-template>
+    </aside>
+  </section>
+
+  <section class="history-section animate-fade-in" style="animation-delay: 0.14s;">
+    <div class="section-heading">
+      <span class="section-label">Answer history</span>
+      <p>Recent local answers from this browser.</p>
+    </div>
+
+    <div class="history-grid" *ngIf="history.length > 0; else emptyHistory">
+      <article class="history-card glass" *ngFor="let answer of history">
+        <div class="history-topline">
+          <span>{{ formatDate(answer.dateKey) }}</span>
+          <span>{{ categoryLabel(answer.question.category) }}</span>
+        </div>
+        <h3>{{ answer.question.prompt }}</h3>
+        <strong>{{ answer.userName }}</strong>
+        <p>{{ answer.answer }}</p>
+      </article>
+    </div>
+
+    <ng-template #emptyHistory>
+      <div class="empty-card glass">Answer history will appear here after the first saved response.</div>
+    </ng-template>
+  </section>
+</div>

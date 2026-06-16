@@ -1,0 +1,181 @@
+<div class="reasons-page">
+  <arova-page-header 
+    title="Why I Love You" 
+    [subtitle]="allReasons.length + ' reasons, and still counting' + (isApiMode ? ' / API Mode' : '')"
+    eyebrow="✦ Planet of Reasons"
+  >
+    <a actions class="add-content-link" routerLink="/reasons/new">Add Reason</a>
+  </arova-page-header>
+
+  <arova-loading-state 
+    message="Gathering the constellation of reasons..." 
+    *ngIf="isLoading"
+  ></arova-loading-state>
+
+  <arova-empty-state
+    *ngIf="!isLoading && errorMessage"
+    icon="✧"
+    title="Reasons need a moment"
+    [description]="errorMessage"
+  ></arova-empty-state>
+
+  <!-- Daily Reason Section -->
+  <div class="daily-section animate-fade-in" style="animation-delay: 0.05s;" *ngIf="dailyReason && !isLoading && !errorMessage">
+    <arova-card class="daily-reason-card" [hoverable]="true" [glow]="true">
+      <div class="card-glow-effect"></div>
+      <div class="daily-label">✦ Today's Highlighted Reason</div>
+      <h2 class="daily-title" (click)="openReason(dailyReason)">{{ dailyReason.title }}</h2>
+      <p class="daily-body">{{ dailyReason.body }}</p>
+      
+      <div class="daily-footer">
+        <arova-status-pill type="accent" [showDot]="false">
+          {{ getCategoryLabel(dailyReason.category) }}
+        </arova-status-pill>
+        <button class="open-detail-btn" type="button" (click)="openReason(dailyReason)">
+          Open today's reason
+        </button>
+      </div>
+
+      <div class="reaction-row">
+        <button
+          *ngFor="let reaction of reactionButtons"
+          class="reaction-btn"
+          type="button"
+          [class.active]="hasReaction(dailyReason, reaction.type)"
+          (click)="toggleReaction(dailyReason, reaction.type, $event)"
+        >
+          <span class="reaction-icon-label">{{ reaction.label }}</span>
+          <span class="reaction-count">{{ getReactionCount(dailyReason, reaction.type) }}</span>
+        </button>
+      </div>
+    </arova-card>
+  </div>
+
+  <arova-empty-state
+    *ngIf="dailyErrorMessage && !isLoading && !errorMessage"
+    icon="✧"
+    title="Daily reason is unavailable"
+    [description]="dailyErrorMessage"
+  ></arova-empty-state>
+
+  <!-- Random Reason Button / Widget -->
+  <div class="random-row animate-fade-in" style="animation-delay: 0.1s;" *ngIf="!isLoading && !errorMessage">
+    <button class="random-btn" type="button" (click)="pickRandom()" [disabled]="isRandomLoading">
+      <span class="random-icon">✦</span>
+      {{ isRandomLoading ? 'Finding a reason...' : 'Show me a random reason' }}
+    </button>
+  </div>
+
+  <arova-empty-state
+    *ngIf="randomErrorMessage && !showRandom && !isLoading && !errorMessage"
+    icon="✧"
+    title="Random reason is unavailable"
+    [description]="randomErrorMessage"
+  ></arova-empty-state>
+
+  <!-- Expanded Random Reason Modal/Card -->
+  <div class="random-overlay animate-fade-in" *ngIf="showRandom && randomReason">
+    <arova-card class="random-card" [hoverable]="false" [glow]="true">
+      <button class="close-btn" (click)="closeRandom()">✕</button>
+      <div class="random-label">✦ A reason, just for now</div>
+      <h2 class="random-title" (click)="openReason(randomReason)">{{ randomReason.title }}</h2>
+      <p class="random-body">{{ randomReason.body }}</p>
+      
+      <div class="random-footer">
+        <arova-status-pill type="accent" [showDot]="false">
+          {{ getCategoryLabel(randomReason.category) }}
+        </arova-status-pill>
+        <span class="fav-star" *ngIf="randomReason.isFavorite" title="Favorite">✦</span>
+      </div>
+
+      <div class="reaction-row">
+        <button
+          *ngFor="let reaction of reactionButtons"
+          class="reaction-btn"
+          type="button"
+          [class.active]="hasReaction(randomReason, reaction.type)"
+          (click)="toggleReaction(randomReason, reaction.type, $event)"
+        >
+          <span class="reaction-icon-label">{{ reaction.label }}</span>
+          <span class="reaction-count">{{ getReactionCount(randomReason, reaction.type) }}</span>
+        </button>
+      </div>
+      
+      <div class="random-actions">
+        <button class="action-btn-primary" type="button" (click)="openReason(randomReason)">Open details</button>
+        <button class="action-btn-secondary" type="button" (click)="pickRandom()">Another one</button>
+      </div>
+    </arova-card>
+  </div>
+
+  <!-- Filter & Navigation Tabs -->
+  <div class="filter-tabs animate-fade-in" style="animation-delay: 0.12s;" *ngIf="!isLoading && !errorMessage">
+    <button
+      *ngFor="let cat of categories"
+      class="filter-tab"
+      [class.active]="activeCategory === cat.key"
+      (click)="setCategory(cat.key)"
+    >
+      {{ cat.label }}
+    </button>
+  </div>
+
+  <!-- Reasons Grid -->
+  <div
+    class="reasons-grid animate-fade-in"
+    style="animation-delay: 0.15s;"
+    *ngIf="filtered.length > 0 && !isLoading && !errorMessage"
+  >
+    <arova-card
+      *ngFor="let reason of filtered"
+      class="reason-card"
+      [class.reason-card--favorite]="reason.isFavorite"
+      [class.reason-card--secret]="reason.isSecret"
+      [hoverable]="true"
+      (click)="openReason(reason)"
+      (keydown)="openReasonFromKeyboard($event, reason)"
+      tabindex="0"
+    >
+      <div class="card-inner">
+        <div class="reason-number">{{ reason.order < 10 ? '0' + reason.order : reason.order }}</div>
+        
+        <div class="reason-content">
+          <div class="reason-header">
+            <arova-status-pill type="info" [showDot]="false">
+              {{ getCategoryLabel(reason.category) }}
+            </arova-status-pill>
+            <span class="fav-star" *ngIf="reason.isFavorite">✦</span>
+            <arova-status-pill type="warning" *ngIf="isAdmin && reason.isSecret">Private</arova-status-pill>
+          </div>
+          
+          <h3 class="reason-title">{{ reason.title }}</h3>
+          <p class="reason-body">{{ reason.body }}</p>
+          
+          <div class="reaction-row reaction-row--compact">
+            <button
+              *ngFor="let reaction of reactionButtons"
+              class="reaction-btn"
+              type="button"
+              [class.active]="hasReaction(reason, reaction.type)"
+              (click)="toggleReaction(reason, reaction.type, $event)"
+            >
+              <span class="reaction-icon-label">{{ reaction.label }}</span>
+              <span class="reaction-count">{{ getReactionCount(reason, reaction.type) }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </arova-card>
+  </div>
+
+  <arova-empty-state
+    *ngIf="filtered.length === 0 && !isLoading && !errorMessage"
+    icon="✧"
+    title="No reasons in this category"
+    description="There are always more reasons why we choose each other, explore other categories or add a new one."
+    actionText="Add a Reason"
+    actionLink="/reasons/new"
+  ></arova-empty-state>
+</div>
+
+

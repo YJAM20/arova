@@ -1,0 +1,221 @@
+@use '../../../../../styles/variables' as *;
+
+.letters-page {
+  padding: 40px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.add-content-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 18px;
+  background: rgba(231, 166, 182, 0.08);
+  border: 1px solid var(--arova-accent);
+  border-radius: var(--arova-radius-sm);
+  color: var(--arova-accent) !important;
+  font-size: 0.88rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  transition: all var(--arova-transition-fast);
+  text-decoration: none;
+
+  &:hover {
+    background: rgba(231, 166, 182, 0.16);
+    box-shadow: var(--arova-shadow-glow);
+  }
+}
+
+.letters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.letter-envelope {
+  padding: 0 !important;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  cursor: pointer;
+  opacity: 0;
+  animation: fadeIn 0.4s ease forwards;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 40px;
+    left: 20px;
+    right: 20px;
+    height: 60px;
+    border-radius: var(--arova-radius-sm) var(--arova-radius-sm) 0 0;
+    background: linear-gradient(180deg, rgba(231, 166, 182, 0.04), transparent);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.4s ease;
+  }
+
+  &:hover:not(.letter-envelope--locked) {
+    transform: translateY(-4px);
+    border-color: var(--arova-accent) !important;
+    box-shadow: var(--arova-shadow-glow);
+
+    .wax-seal {
+      transform: scale(1.1) rotate(5deg);
+      opacity: 0.95;
+    }
+
+    .flap-triangle {
+      background: linear-gradient(
+        to bottom right,
+        rgba(231, 166, 182, 0.16),
+        rgba(115, 140, 118, 0.08)
+      );
+      transform: translateY(-5px) scaleY(0.8);
+    }
+
+    &::before {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  &--locked {
+    filter: opacity(0.7);
+    
+    &:hover {
+      border-color: var(--arova-border) !important;
+      transform: none !important;
+    }
+
+    .wax-seal--locked {
+      color: var(--arova-text-secondary);
+      opacity: 0.7;
+    }
+  }
+
+  &--favorite {
+    border-color: rgba(214, 183, 106, 0.3) !important;
+  }
+
+  &--private {
+    border-style: dashed !important;
+  }
+}
+
+.envelope-flap {
+  height: 36px;
+  position: relative;
+  overflow: hidden;
+  background: transparent;
+}
+
+.flap-triangle {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 72px;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  background: linear-gradient(
+    to bottom right,
+    rgba(115, 140, 118, 0.15),
+    rgba(115, 140, 118, 0.05)
+  );
+  transform-origin: top center;
+  transition: all 0.4s ease;
+}
+
+.envelope-body {
+  padding: 16px 24px 24px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.envelope-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+
+  .fav-star {
+    color: var(--arova-warning);
+    font-size: 0.85rem;
+  }
+}
+
+.letter-title {
+  color: var(--arova-text-primary);
+  font-family: 'Cormorant Garamond', 'Georgia', serif;
+  font-size: 1.3rem;
+  font-weight: 400;
+  line-height: 1.25;
+  margin-bottom: 8px;
+}
+
+.letter-date {
+  color: var(--arova-text-secondary);
+  font-size: 0.78rem;
+  margin-bottom: 16px;
+}
+
+.letter-status {
+  margin-top: auto;
+  margin-bottom: 8px;
+}
+
+.private-tag {
+  margin-top: 8px;
+}
+
+.wax-seal {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #b45309, #78350f);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.4),
+    inset -2px -2px 5px rgba(0, 0, 0, 0.5),
+    inset 2px 2px 5px rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fef08a;
+  font-size: 0.95rem;
+  opacity: 0.85;
+  transition: transform var(--arova-transition-normal), opacity var(--arova-transition-normal);
+  line-height: 1;
+  z-index: 5;
+
+  &--locked {
+    background: radial-gradient(circle at 35% 35%, #4b5563, #1f2937);
+    color: #e5e7eb;
+    opacity: 0.75;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .letters-page {
+    padding: 20px;
+  }
+
+  .letters-grid {
+    grid-template-columns: 1fr;
+  }
+}

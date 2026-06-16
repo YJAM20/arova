@@ -1,0 +1,210 @@
+@use '../../../../../styles/variables' as *;
+
+.replay-page {
+  max-width: 980px;
+  padding: 48px 40px;
+}
+
+.replay-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 20px;
+
+  a {
+    color: $soft-pink;
+    font-size: 0.85rem;
+  }
+}
+
+.back-button {
+  color: $text-muted;
+  border: 1px solid rgba(115, 140, 118, 0.25);
+  border-radius: $radius-sm;
+  padding: 9px 14px;
+  transition: all $transition-base;
+
+  &:hover {
+    color: $soft-pink;
+    border-color: rgba(231, 166, 182, 0.35);
+  }
+}
+
+.replay-stage {
+  position: relative;
+  overflow: hidden;
+  border-color: rgba(214, 183, 106, 0.24);
+}
+
+.soft-glow {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(26px);
+  opacity: 0.22;
+  pointer-events: none;
+  animation: replayGlow 5s ease-in-out infinite alternate;
+}
+
+.soft-glow--one {
+  width: 180px;
+  height: 180px;
+  top: 18%;
+  right: 8%;
+  background: rgba(231, 166, 182, 0.35);
+}
+
+.soft-glow--two {
+  width: 220px;
+  height: 220px;
+  bottom: 10%;
+  left: 8%;
+  background: rgba(115, 140, 118, 0.28);
+  animation-delay: 0.8s;
+}
+
+.replay-hero {
+  position: relative;
+  min-height: 380px;
+  background-position: center;
+  background-size: cover;
+  display: flex;
+  align-items: flex-end;
+
+  &--empty {
+    background:
+      radial-gradient(circle at 20% 20%, rgba(231, 166, 182, 0.16), transparent 32%),
+      radial-gradient(circle at 80% 15%, rgba(214, 183, 106, 0.14), transparent 30%),
+      linear-gradient(135deg, rgba(55, 88, 63, 0.3), rgba(7, 19, 15, 0.6));
+  }
+}
+
+.hero-shade {
+  width: 100%;
+  padding: 72px 42px 38px;
+  background: linear-gradient(to top, rgba(7, 19, 15, 0.88), rgba(7, 19, 15, 0.12));
+}
+
+.replay-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 18px;
+
+  span {
+    color: $text-muted;
+    font-size: 0.74rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 4px 9px;
+    background: rgba(7, 19, 15, 0.34);
+  }
+}
+
+h1 {
+  color: $cream;
+  font-family: $font-display;
+  font-size: 2.7rem;
+  font-weight: 500;
+  line-height: 1.08;
+  max-width: 720px;
+}
+
+.replay-timeline {
+  position: relative;
+  display: grid;
+  gap: 18px;
+  padding: 34px 42px 42px;
+}
+
+.replay-section {
+  position: relative;
+  padding: 20px 22px;
+  border: 1px solid rgba(115, 140, 118, 0.18);
+  border-radius: $radius-sm;
+  background: rgba(255, 255, 255, 0.025);
+  opacity: 0;
+  transform: translateY(16px);
+  animation: sceneRise 0.56s ease forwards;
+
+  span {
+    display: block;
+    color: $gold;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+
+  p {
+    color: $text-muted;
+    font-size: 1rem;
+    line-height: 1.85;
+  }
+}
+
+.missing-state {
+  padding: 58px 32px;
+  text-align: center;
+
+  h1 {
+    color: $cream;
+    font-size: 2rem;
+    margin-bottom: 8px;
+  }
+
+  p {
+    color: $text-muted;
+    margin-bottom: 18px;
+  }
+}
+
+@keyframes replayGlow {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  to {
+    transform: translate3d(16px, -12px, 0) scale(1.08);
+  }
+}
+
+@keyframes sceneRise {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .replay-page {
+    padding: 28px 20px 40px;
+  }
+
+  .replay-actions {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .replay-hero {
+    min-height: 320px;
+  }
+
+  .hero-shade {
+    padding: 58px 22px 28px;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  .replay-timeline {
+    padding: 24px 18px 26px;
+  }
+
+  .replay-section {
+    padding: 18px;
+  }
+}

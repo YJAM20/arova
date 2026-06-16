@@ -1,0 +1,91 @@
+@use '../../../../../styles/variables' as *;
+
+.gifted-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at top, rgba(231, 166, 182, 0.16), transparent 34%),
+    $bg-deep;
+  color: $text-primary;
+}
+
+.glass {
+  background: $glass-bg;
+  border: 1px solid $glass-border;
+  border-radius: $radius-md;
+}
+
+.gifted-card {
+  width: min(720px, 100%);
+  padding: clamp(24px, 5vw, 46px);
+}
+
+.back-link,
+.eyebrow {
+  color: $soft-pink;
+}
+
+h1 {
+  color: $cream;
+  font-size: clamp(2.6rem, 7vw, 5rem);
+  margin: 10px 0;
+}
+
+p {
+  color: $text-muted;
+  line-height: 1.7;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 24px 0;
+}
+
+button,
+.actions a {
+  border: 1px solid rgba(231, 166, 182, 0.42);
+  border-radius: $radius-sm;
+  background: rgba(231, 166, 182, 0.14);
+  color: $cream;
+  padding: 10px 18px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover:not(:disabled) {
+    background: rgba(231, 166, 182, 0.28);
+    border-color: rgba(231, 166, 182, 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(231, 166, 182, 0.12);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.feedback {
+  display: grid;
+  gap: 10px;
+  margin-top: 28px;
+
+  input,
+  textarea {
+    border: 1px solid $glass-border;
+    border-radius: $radius-sm;
+    background: rgba(255, 248, 232, 0.06);
+    color: $text-primary;
+    padding: 11px;
+    font: inherit;
+  }
+}
+
+.error {
+  color: $soft-pink;
+}

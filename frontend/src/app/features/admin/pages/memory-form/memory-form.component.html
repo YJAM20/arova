@@ -1,0 +1,95 @@
+﻿<div class="form-page">
+  <ng-container *ngIf="!notFound; else missing">
+    <header class="form-header animate-fade-in">
+      <p class="eyebrow">{{ contextLabel }}</p>
+      <h1>{{ pageTitle }}</h1>
+      <p>{{ pageSubtitle }}</p>
+      <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+    </header>
+
+    <section class="missing-state glass" *ngIf="isLoading">
+      <h1>Loading memory</h1>
+      <p>Preparing the editor.</p>
+    </section>
+
+    <form class="editor-form glass animate-fade-in" style="animation-delay: 0.1s;" [formGroup]="form" (ngSubmit)="save()" *ngIf="!isLoading">
+      <div class="field">
+        <label for="title">Title</label>
+        <input id="title" type="text" formControlName="title" />
+        <p class="error" *ngIf="hasError('title')">Title is required.</p>
+      </div>
+
+      <div class="field">
+        <label for="description">Description</label>
+        <textarea id="description" rows="6" formControlName="description"></textarea>
+        <p class="error" *ngIf="hasError('description')">Description is required.</p>
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label for="date">Date</label>
+          <input id="date" type="date" formControlName="date" />
+          <p class="error" *ngIf="hasError('date')">Date is required.</p>
+        </div>
+
+        <div class="field">
+          <label for="category">Category</label>
+          <select id="category" formControlName="category">
+            <option *ngFor="let category of categories" [value]="category.value">{{ category.label }}</option>
+          </select>
+          <p class="error" *ngIf="hasError('category')">Category is required.</p>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label for="imageUrl">Image URL</label>
+          <input id="imageUrl" type="url" formControlName="imageUrl" />
+        </div>
+
+        <div class="field">
+          <label for="mood">Mood</label>
+          <input id="mood" type="text" formControlName="mood" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="privateNote">Private note</label>
+        <textarea id="privateNote" rows="4" formControlName="privateNote"></textarea>
+        <small>Private notes are never shown to Partner B.</small>
+      </div>
+
+      <div class="toggle-row">
+        <label>
+          <input type="checkbox" formControlName="visibleToPartner" />
+          <span class="toggle-copy">
+            <span>{{ isAdminRoute ? 'Visible to partner' : 'Share with your partner' }}</span>
+            <small>Turn this off to keep the memory private.</small>
+          </span>
+        </label>
+        <label>
+          <input type="checkbox" formControlName="isFavorite" />
+          <span class="toggle-copy">
+            <span>Favorite</span>
+            <small>Mark it as something you want to find quickly.</small>
+          </span>
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="secondary-action" (click)="cancel()">Cancel</button>
+        <button type="submit" class="primary-action" [disabled]="form.invalid || isSaving">
+          {{ isSaving ? 'Saving...' : saveLabel }}
+        </button>
+      </div>
+    </form>
+  </ng-container>
+
+  <ng-template #missing>
+    <section class="missing-state glass">
+      <h1>Memory not found</h1>
+      <p>{{ errorMessage || 'This memory may have already been deleted.' }}</p>
+      <a [routerLink]="isAdminRoute ? '/admin/memories' : '/memories'" class="primary-action">Back to memories</a>
+    </section>
+  </ng-template>
+</div>

@@ -1,0 +1,67 @@
+# =========================
+# General
+# =========================
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.bak
+*.zip
+
+# =========================
+# Environment / Secrets
+# =========================
+.env
+.env.*
+secrets.json
+appsettings.Production.json
+
+# =========================
+# Frontend / Angular
+# =========================
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/coverage/
+frontend/playwright-report/
+frontend/test-results/
+frontend/visual-audit/latest/
+frontend/visual-audit/**/*.png
+frontend/visual-audit/**/*.jpg
+frontend/visual-audit/**/*.jpeg
+frontend/visual-audit/**/*.webp
+
+# Keep visual audit scripts
+!frontend/scripts/
+!frontend/scripts/visual-audit/
+!frontend/scripts/visual-audit/screenshot-audit.js
+!frontend/scripts/visual-audit/README.md
+
+# =========================
+# Backend / .NET
+# =========================
+backend/**/bin/
+backend/**/obj/
+backend/.vs/
+backend/**/*.user
+backend/**/*.suo
+backend/**/publish/
+backend/**/TestResults/
+
+# SQLite / Local DB
+backend/**/*.db
+backend/**/*.db-shm
+backend/**/*.db-wal
+backend/**/*.sqlite
+backend/**/*.sqlite3
+
+# Backups
+backend/**/backups/
+backend/**/backup-exports/
+backend/**/local-backups/
+
+# =========================
+# IDE
+# =========================
+.vscode/
+.idea/

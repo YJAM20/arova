@@ -1,0 +1,50 @@
+# ============================================================
+#  Hardened .gitignore for Arova Backend (ASP.NET Core & .NET 10)
+# ============================================================
+
+# ------ Build Outputs ------
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+[Pp]ublish/
+
+# ------ IDE and Development Tools ------
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.suo
+*.userprefs
+*.csproj.user
+
+# Rider & JetBrains
+.idea/
+*.sln.iml
+
+# VS Code
+.vscode/
+
+# ------ Database Files ------
+# Ignore SQLite database files to avoid leaking developer test data
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# ------ Secret Files ------
+# Ignore ASP.NET Core user secrets files or local env profiles
+secrets.json
+.env
+.env.*
+**/appsettings.Local.json
+**/appsettings.Production.json
+
+# ------ Logs & Backups ------
+*.log
+backups/
+backup-exports/
+local-backups/
+TestResults/

@@ -1,0 +1,82 @@
+# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+
+# Compiled output
+/dist
+/tmp
+/temp
+tmp/
+temp/
+/out-tsc
+/bazel-out
+
+# Node
+/node_modules
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
+logs/
+*.log
+*.local
+
+# IDEs and editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/mcp.json
+.history/*
+
+# Miscellaneous
+/.angular
+/.angular/cache
+.sass-cache/
+/connect.lock
+/coverage
+/libpeerconnection.log
+testem.log
+/typings
+__screenshots__/
+*.tmp
+*.temp
+*.bak
+.env
+.env.*
+backups/
+*.backup.json
+love-universe-backup*.json
+love-universe-backup-*.json
+private/
+secrets/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Visual regression screenshots
+visual-audit/latest/
+visual-audit/**/*.png
+visual-audit/**/*.jpg
+visual-audit/**/*.jpeg
+visual-audit/**/*.webp
+
+# Playwright execution output
+playwright-report/
+test-results/
+
+# Archives & Databases
+*.zip
+*.db
+*.sqlite
+*.sqlite3
+
+

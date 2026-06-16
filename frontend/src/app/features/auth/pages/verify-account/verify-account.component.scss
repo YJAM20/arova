@@ -1,0 +1,80 @@
+@use '../../../../../styles/variables' as *;
+
+.verify-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: $bg-deep;
+  color: $text-primary;
+}
+
+.glass {
+  background: $glass-bg;
+  border: 1px solid $glass-border;
+  border-radius: $radius-md;
+}
+
+.verify-card {
+  width: min(620px, 100%);
+  padding: clamp(24px, 5vw, 42px);
+}
+
+.brand,
+h1 {
+  color: $cream;
+}
+
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin: 22px 0;
+}
+
+form,
+.phone-note {
+  display: grid;
+  gap: 12px;
+}
+
+button,
+input {
+  border: 1px solid $glass-border;
+  border-radius: $radius-sm;
+  background: rgba(255, 248, 232, 0.06);
+  color: $text-primary;
+  padding: 10px;
+}
+
+button {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: rgba(255, 248, 232, 0.12);
+    border-color: rgba(255, 248, 232, 0.25);
+    transform: translateY(-1px);
+  }
+}
+
+button,
+.tabs .active {
+  border-color: rgba(231, 166, 182, 0.45);
+  color: $cream;
+  background: rgba(231, 166, 182, 0.14);
+
+  &:hover:not(:disabled) {
+    background: rgba(231, 166, 182, 0.28);
+    border-color: rgba(231, 166, 182, 0.6);
+    box-shadow: 0 4px 15px rgba(231, 166, 182, 0.12);
+  }
+}
+
+.message,
+small {
+  color: $text-muted;
+}
+
+.error {
+  color: $soft-pink;
+}

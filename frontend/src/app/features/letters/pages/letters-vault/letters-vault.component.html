@@ -1,0 +1,77 @@
+<div class="letters-page">
+  <arova-page-header 
+    title="Words Sealed with Love" 
+    [subtitle]="letters.length + ' letters waiting in the vault' + (isApiMode ? ' / API Mode' : '')"
+    eyebrow="✦ The Letters Vault"
+  >
+    <a actions class="add-content-link" routerLink="/letters/new">Add Letter</a>
+  </arova-page-header>
+
+  <arova-loading-state 
+    message="Opening the vault carefully..." 
+    *ngIf="isLoading"
+  ></arova-loading-state>
+
+  <arova-empty-state
+    *ngIf="!isLoading && errorMessage"
+    icon="✧"
+    title="The vault needs a moment"
+    [description]="errorMessage"
+  ></arova-empty-state>
+
+  <div
+    class="letters-grid animate-fade-in"
+    style="animation-delay: 0.1s;"
+    *ngIf="letters.length > 0 && !isLoading && !errorMessage"
+  >
+    <arova-card
+      class="letter-envelope"
+      *ngFor="let letter of letters; let i = index"
+      [class.letter-envelope--locked]="letter.isLocked"
+      [class.letter-envelope--favorite]="letter.isFavorite"
+      [class.letter-envelope--private]="isAdmin && !letter.visibleToPartner"
+      [routerLink]="['/letters', letter.id]"
+      [style.animation-delay]="(i * 0.05) + 's'"
+      [hoverable]="true"
+    >
+      <div class="envelope-flap">
+        <div class="flap-triangle"></div>
+      </div>
+
+      <div class="envelope-body">
+        <div class="envelope-header">
+          <arova-status-pill type="info" [showDot]="false">
+            {{ getCategoryLabel(letter.category) }}
+          </arova-status-pill>
+          <span class="fav-star" *ngIf="letter.isFavorite">✦</span>
+        </div>
+
+        <h3 class="letter-title">{{ letter.title }}</h3>
+        <div class="letter-date">Written {{ formatDate(letter.createdAt) }}</div>
+
+        <div class="letter-status">
+          <arova-status-pill [type]="letter.isLocked ? 'warning' : 'accent'" [showDot]="true">
+            {{ letter.isLocked ? 'Sealed - Read details only' : 'Open Letter' }}
+          </arova-status-pill>
+        </div>
+
+        <div class="private-tag" *ngIf="isAdmin && !letter.visibleToPartner">
+          <arova-status-pill type="warning">Only you can see this</arova-status-pill>
+        </div>
+      </div>
+
+      <div class="wax-seal" *ngIf="!letter.isLocked">✦</div>
+      <div class="wax-seal wax-seal--locked" *ngIf="letter.isLocked">🔒</div>
+    </arova-card>
+  </div>
+
+  <arova-empty-state
+    *ngIf="letters.length === 0 && !isLoading && !errorMessage"
+    icon="✧"
+    title="The vault is empty"
+    description="Your vault is ready. Write a letter to your partner for them to open later, or when they are sad, happy, or missing you."
+    actionText="Write a Letter"
+    actionLink="/letters/new"
+  ></arova-empty-state>
+</div>
+

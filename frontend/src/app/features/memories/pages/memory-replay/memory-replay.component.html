@@ -1,0 +1,48 @@
+<div class="replay-page">
+  <ng-container *ngIf="memory; else missing">
+    <div class="replay-actions">
+      <button class="back-button" type="button" (click)="goBack()">Back to memory</button>
+      <a *ngIf="isAdmin" [routerLink]="['/admin/memories', memory.id, 'edit']">Edit memory</a>
+    </div>
+
+    <article class="replay-stage glass animate-fade-in">
+      <div class="soft-glow soft-glow--one"></div>
+      <div class="soft-glow soft-glow--two"></div>
+
+      <section
+        class="replay-hero"
+        [class.replay-hero--empty]="!memory.imageUrl"
+        [style.background-image]="memory.imageUrl ? 'url(' + memory.imageUrl + ')' : null"
+      >
+        <div class="hero-shade">
+          <div class="replay-meta">
+            <span>{{ getCategoryLabel(memory.category) }}</span>
+            <span>{{ formatDate(memory.date) }}</span>
+            <span *ngIf="memory.mood">{{ memory.mood }}</span>
+            <span *ngIf="memory.isFavorite">Favorite</span>
+          </div>
+          <h1>{{ memory.title }}</h1>
+        </div>
+      </section>
+
+      <div class="replay-timeline">
+        <section
+          class="replay-section"
+          *ngFor="let section of replaySections; let i = index"
+          [style.animation-delay]="(i * 0.12 + 0.18) + 's'"
+        >
+          <span>Scene {{ i + 1 }}</span>
+          <p>{{ section }}</p>
+        </section>
+      </div>
+    </article>
+  </ng-container>
+
+  <ng-template #missing>
+    <section class="missing-state glass">
+      <h1>Memory replay unavailable</h1>
+      <p>This memory is private or no longer exists.</p>
+      <button type="button" class="back-button" (click)="goBack()">Back to memories</button>
+    </section>
+  </ng-template>
+</div>

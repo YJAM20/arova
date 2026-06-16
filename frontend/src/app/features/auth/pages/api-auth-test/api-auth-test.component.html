@@ -1,0 +1,68 @@
+<div class="api-test-page stars-bg">
+  <main class="api-test-shell">
+    <header class="page-header">
+      <p class="eyebrow">Developer API test</p>
+      <h1>Auth API Foundation</h1>
+      <p>
+        This page is not part of the normal couples app flow. It only tests the ASP.NET Core
+        auth endpoints while LocalStorage mode stays intact.
+      </p>
+    </header>
+
+    <section class="test-grid">
+      <form class="test-card glass" (ngSubmit)="register()">
+        <h2>Register</h2>
+        <label>
+          <span>Display name</span>
+          <input type="text" name="displayName" [(ngModel)]="registerRequest.displayName" />
+        </label>
+        <label>
+          <span>Username</span>
+          <input type="text" name="registerUsername" [(ngModel)]="registerRequest.username" />
+        </label>
+        <label>
+          <span>Email</span>
+          <input type="email" name="email" [(ngModel)]="registerRequest.email" />
+        </label>
+        <label>
+          <span>Password</span>
+          <input type="password" name="registerPassword" [(ngModel)]="registerRequest.password" />
+        </label>
+        <button type="submit" [disabled]="busyAction === 'register'">Register through API</button>
+      </form>
+
+      <form class="test-card glass" (ngSubmit)="login()">
+        <h2>Login</h2>
+        <label>
+          <span>Username or email</span>
+          <input type="text" name="usernameOrEmail" [(ngModel)]="loginRequest.usernameOrEmail" />
+        </label>
+        <label>
+          <span>Password</span>
+          <input type="password" name="loginPassword" [(ngModel)]="loginRequest.password" />
+        </label>
+        <button type="submit" [disabled]="busyAction === 'login'">Login through API</button>
+      </form>
+
+      <article class="test-card glass">
+        <h2>Token + Me</h2>
+        <p class="token-state">Token stored: {{ hasToken ? 'yes' : 'no' }}</p>
+        <div class="action-row">
+          <button type="button" (click)="loadMe()" [disabled]="busyAction === 'me' || !hasToken">
+            Call /api/auth/me
+          </button>
+          <button type="button" class="secondary" (click)="clearToken()" [disabled]="!hasToken">
+            Clear API token
+          </button>
+        </div>
+        <p class="hint">The auth interceptor adds Authorization: Bearer TOKEN for /me.</p>
+      </article>
+    </section>
+
+    <section class="result-card glass" *ngIf="lastResponse || errorMessage">
+      <h2>Result</h2>
+      <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+      <pre *ngIf="lastResponse">{{ lastResponse | json }}</pre>
+    </section>
+  </main>
+</div>

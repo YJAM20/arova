@@ -1,0 +1,426 @@
+@use 'styles/variables' as *;
+@use 'styles/animations';
+@use 'styles/themes';
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  background-color: $bg-deep;
+  color: $text-primary;
+  font-family: $font-body;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: $font-display;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+input, textarea {
+  font-family: inherit;
+}
+
+// Scrollbar
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: $bg-deep; }
+::-webkit-scrollbar-thumb { background: $dark-green; border-radius: 3px; }
+
+// Stars background utility
+body, .stars-bg {
+  position: relative;
+  overflow-x: hidden;
+  background: 
+    radial-gradient(circle at 20% 30%, color-mix(in srgb, var(--theme-accent, #dfe0ff) 32%, transparent) 0%, transparent 60%),
+    radial-gradient(circle at 80% 70%, color-mix(in srgb, var(--theme-accent-2, #f6be38) 24%, transparent) 0%, transparent 55%),
+    radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--theme-soft, #dce2fb) 20%, transparent) 0%, transparent 65%),
+    var(--theme-bg, #051424) !important;
+  background-size: 200% 200% !important;
+  animation: meshBreathing 25s ease-in-out infinite !important;
+
+  &::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1.2px 1.2px at 10% 15%, rgba(255, 255, 255, 0.75) 0%, transparent 100%),
+      radial-gradient(1.2px 1.2px at 25% 45%, rgba(255, 255, 255, 0.55) 0%, transparent 100%),
+      radial-gradient(1.8px 1.8px at 40% 8%, rgba(255, 255, 255, 0.65) 0%, transparent 100%),
+      radial-gradient(1.2px 1.2px at 55% 70%, rgba(255, 255, 255, 0.45) 0%, transparent 100%),
+      radial-gradient(1.2px 1.2px at 70% 30%, rgba(255, 255, 255, 0.75) 0%, transparent 100%),
+      radial-gradient(1.8px 1.8px at 80% 55%, rgba(255, 255, 255, 0.55) 0%, transparent 100%),
+      radial-gradient(1.2px 1.2px at 90% 20%, rgba(255, 255, 255, 0.65) 0%, transparent 100%),
+      radial-gradient(1.2px 1.2px at 15% 80%, rgba(255, 255, 255, 0.45) 0%, transparent 100%),
+      radial-gradient(1.2px 1.2px at 35% 60%, rgba(255, 255, 255, 0.55) 0%, transparent 100%),
+      radial-gradient(1.8px 1.8px at 60% 90%, rgba(255, 255, 255, 0.65) 0%, transparent 100%),
+      radial-gradient(1.2px 1.2px at 85% 75%, rgba(255, 255, 255, 0.45) 0%, transparent 100%),
+      radial-gradient(1.2px 1.2px at 5% 50%, rgba(255, 255, 255, 0.55) 0%, transparent 100%),
+      radial-gradient(1.2px 1.2px at 48% 35%, rgba(231, 166, 182, 0.55) 0%, transparent 100%),
+      radial-gradient(1.8px 1.8px at 72% 12%, rgba(214, 183, 106, 0.45) 0%, transparent 100%),
+      radial-gradient(1.2px 1.2px at 92% 88%, rgba(231, 166, 182, 0.45) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.8;
+  }
+}
+
+// Z-index levels
+.z-bg { z-index: 0 !important; }
+.z-orbit { z-index: 5 !important; }
+.z-content { z-index: 10 !important; }
+.z-nav { z-index: 50 !important; }
+.z-modal { z-index: 100 !important; }
+
+// Glass module definitions
+.glass,
+.glassmorphism,
+.arova-glass-module {
+  background: var(--theme-card, rgba(5, 20, 36, 0.6)) !important;
+  border: 1px solid var(--theme-border, rgba(255, 255, 255, 0.08)) !important;
+  backdrop-filter: blur(var(--arova-glass-blur, 24px)) !important;
+  -webkit-backdrop-filter: blur(var(--arova-glass-blur, 24px)) !important;
+  border-radius: var(--arova-radius-md, 16px);
+  box-shadow: var(--arova-shadow-soft);
+  transition: all var(--arova-transition-normal, 0.3s ease);
+
+  &--deep {
+    background: rgba(2, 8, 16, 0.8) !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(32px) !important;
+    -webkit-backdrop-filter: blur(32px) !important;
+  }
+
+  &--flat {
+    background: rgba(5, 20, 36, 0.35) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+  }
+
+  &--tinted {
+    background: rgba(246, 190, 56, 0.06) !important;
+    border-color: rgba(246, 190, 56, 0.15) !important;
+    box-shadow: 0 0 20px rgba(246, 190, 56, 0.08) !important;
+  }
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+}
+
+// Media queries to reduce blur on mobile and handle prefers-reduced-motion
+@media (max-width: 768px) {
+  .stars-bg {
+    animation-duration: 40s !important;
+    &::before {
+      opacity: 0.5;
+    }
+  }
+  .glass,
+  .arova-glass-module {
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    background: rgba(5, 20, 36, 0.85) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stars-bg {
+    animation: none !important;
+  }
+  .glass,
+  .arova-glass-module {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(5, 20, 36, 0.95) !important;
+  }
+}
+
+// Category badge
+.category-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: rgba(55, 88, 63, 0.3);
+  border: 1px solid rgba(115, 140, 118, 0.3);
+  color: $soft-green;
+}
+
+// Standardized Arova layout system
+.arova-page {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 2.5rem 2rem;
+  min-height: calc(100vh - 60px);
+  animation: fadeIn 0.4s ease-out;
+
+  &--wide {
+    max-width: 1200px;
+  }
+  
+  &--compact {
+    max-width: 860px;
+  }
+  
+  &--full {
+    max-width: 1440px;
+  }
+}
+
+.arova-panel {
+  background: rgba(25, 20, 35, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  transition: all 0.3s ease;
+}
+
+.arova-dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.arova-form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.arova-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .arova-page {
+    padding: 1.5rem 1rem;
+  }
+}
+
+// ── Stitch Handoff Utility Helpers (CSS Fallbacks) ──────────────────────────
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.flex-wrap { flex-wrap: wrap; }
+.flex-shrink-0 { flex-shrink: 0; }
+.flex-1 { flex: 1 1 0%; }
+
+.grid { display: grid; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.gap-4 { gap: 16px; }
+.gap-8 { gap: 32px; }
+
+.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+@media (min-width: 768px) {
+  .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .md\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+.relative { position: relative; }
+.absolute { position: absolute; }
+.fixed { position: fixed; }
+.inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+.z-10 { z-index: 10; }
+.z-50 { z-index: 50; }
+
+.mb-1 { margin-bottom: 4px; }
+.mb-2 { margin-bottom: 8px; }
+.mb-3 { margin-bottom: 12px; }
+.mb-4 { margin-bottom: 16px; }
+.mb-6 { margin-bottom: 24px; }
+.mb-8 { margin-bottom: 32px; }
+.mt-4 { margin-top: 16px; }
+.pb-3 { padding-bottom: 12px; }
+.pb-6 { padding-bottom: 24px; }
+.p-3 { padding: 12px; }
+.p-4 { padding: 16px; }
+.p-5 { padding: 20px; }
+.p-6 { padding: 24px; }
+.px-4 { padding-left: 16px; padding-right: 16px; }
+.px-6 { padding-left: 24px; padding-right: 24px; }
+.py-2\.5 { padding-top: 10px; padding-bottom: 10px; }
+
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+.w-11 { width: 44px; }
+.h-6 { height: 24px; }
+.w-5 { width: 20px; }
+.h-5 { height: 20px; }
+.w-24 { width: 96px; }
+.h-24 { height: 96px; }
+.w-4 { width: 16px; }
+.h-4 { height: 16px; }
+.w-38 { width: 38px; }
+.h-38 { height: 38px; }
+.w-44 { width: 44px; }
+.h-44 { height: 44px; }
+.w-3 { width: 12px; }
+.h-3 { height: 12px; }
+.w-32 { width: 32px; }
+.h-32 { height: 32px; }
+.block { display: block; }
+
+.rounded-xl { border-radius: 12px; }
+.rounded-2xl { border-radius: 16px; }
+.rounded-full { border-radius: 9999px; }
+.overflow-hidden { overflow: hidden; }
+.object-cover { object-fit: cover; }
+
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+.text-3xs { font-size: 0.65rem; }
+.text-2xs { font-size: 0.75rem; }
+.text-xs { font-size: 0.8rem; }
+.text-sm { font-size: 0.9rem; }
+.text-xl { font-size: 1.25rem; }
+.text-2xl { font-size: 1.5rem; }
+.text-3xl { font-size: 1.85rem; }
+
+.font-bold { font-weight: 700; }
+.font-extrabold { font-weight: 800; }
+.font-semibold { font-weight: 600; }
+.uppercase { text-transform: uppercase; }
+.tracking-wide { letter-spacing: 0.05em; }
+.tracking-widest { letter-spacing: 0.15em; }
+.font-mono { font-family: monospace; }
+
+.border-b { border-bottom: 1px solid var(--theme-border, rgba(255, 255, 255, 0.08)); }
+.border-neutral-800 { border-color: rgba(255, 255, 255, 0.08); }
+.border-neutral-800\/60 { border-color: rgba(255, 255, 255, 0.08); }
+.bg-neutral-900\/40 { background: rgba(5, 20, 36, 0.4); }
+.bg-neutral-900\/60 { background: rgba(5, 20, 36, 0.6); }
+.border-neutral-800\/40 { border-color: rgba(255, 255, 255, 0.06); }
+.border-neutral-800\/60 { border-color: rgba(255, 255, 255, 0.08); }
+
+// Grid & Spacing fallbacks
+.grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.gap-6 { gap: 24px; }
+.gap-1\.5 { gap: 6px; }
+
+@media (min-width: 1024px) {
+  .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .lg\:col-span-2 { grid-column: span 2 / span 2; }
+  .lg\:col-span-1 { grid-column: span 1 / span 1; }
+}
+
+.cursor-pointer { cursor: pointer; }
+.transition-all { transition: all 0.2s ease-in-out; }
+
+.toggle-switch {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  
+  &.enabled {
+    background: linear-gradient(135deg, var(--theme-accent) 0%, var(--theme-accent-2) 100%) !important;
+  }
+}
+
+.toggle-nob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  
+  &.enabled {
+    transform: translateX(20px);
+  }
+}
+
+.bg-neutral-800 { background-color: rgba(255, 255, 255, 0.08); }
+.h-2 { height: 8px; }
+.bg-gradient-to-r { background-image: linear-gradient(to right, var(--theme-accent-2), var(--theme-accent)); }
+
+// Progress meter for plan distribution
+.plan-distribution {
+  display: flex;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.bg-emerald-500 { background-color: var(--arova-success, #37b24d); }
+.bg-purple-500 { background-color: var(--theme-accent); }
+.bg-sky-500 { background-color: var(--theme-accent-2); }
+
+.w-2\.5 { width: 10px; }
+.h-2\.5 { height: 10px; }
+
+.max-h-\[460px\] { max-height: 460px; }
+.max-h-\[320px\] { max-height: 320px; }
+.max-h-\[300px\] { max-height: 300px; }
+.overflow-y-auto { overflow-y: auto; }
+.pr-2 { padding-right: 8px; }
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--theme-border) transparent;
+}
+
+.px-1\.5 { padding-left: 6px; padding-right: 6px; }
+.py-0\.5 { padding-top: 2px; padding-bottom: 2px; }
+
+.bg-purple-500\/10 { background-color: rgba(168, 85, 247, 0.1); }
+.text-purple-300 { color: var(--theme-accent); }
+.bg-sky-500\/10 { background-color: rgba(14, 165, 233, 0.1); }
+.text-sky-300 { color: var(--theme-accent-2); }
+
+// Safety log badges
+.badge-info { background: rgba(59, 130, 246, 0.1); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.2); }
+.badge-warning { background: rgba(245, 158, 11, 0.1); color: #fde047; border: 1px solid rgba(245, 158, 11, 0.2); }
+.badge-safety { background: rgba(239, 68, 68, 0.1); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.2); }
+.badge-success { background: rgba(16, 185, 129, 0.1); color: #a7f3d0; border: 1px solid rgba(16, 185, 129, 0.2); }
+
+

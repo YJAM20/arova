@@ -1,0 +1,430 @@
+:root {
+  --theme-bg: #051424;
+  --theme-surface: #051424;
+  --theme-card: rgba(5, 20, 36, 0.6);
+  --theme-border: rgba(255, 255, 255, 0.08);
+  --theme-accent: #dfe0ff;
+  --theme-accent-2: #f6be38;
+  --theme-soft: #dce2fb;
+  --theme-text: #fff8ef;
+  --theme-muted: #b8b8b8;
+  --theme-dim: #8e8e8e;
+
+  /* Living Nebula v2 Tokens */
+  --arova-bg-main: #051424;
+  --arova-surface-dim: #051424;
+  --arova-surface-bright: #2c3a4c;
+  --arova-primary: #dfe0ff;
+  --arova-secondary: #f6be38;
+  --arova-tertiary: #dce2fb;
+  --primary-color: var(--theme-accent);
+  --accent-color: var(--theme-accent-2);
+  
+  --arova-glass-blur: 24px;
+  --arova-glass-border: 1px solid rgba(255, 255, 255, 0.08);
+  --arova-glass-bg: rgba(5, 20, 36, 0.6);
+  
+  --arova-radius-xl: 24px;
+  --arova-radius-full: 9999px;
+  --arova-gutter: 24px;
+  --arova-margin-desktop: 64px;
+  --arova-margin-mobile: 16px;
+  
+  --arova-font-display: 'Playfair Display', serif;
+  --arova-font-technical: 'Geist', sans-serif;
+  
+  --z-shader: 0;
+  --z-content: 10;
+  --z-nav: 50;
+  --z-modal: 100;
+
+  // Arova Design Tokens v1 mappings
+  --arova-background: var(--theme-bg);
+  --arova-surface: var(--theme-surface);
+  --arova-surface-elevated: color-mix(in srgb, var(--theme-surface) 88%, #ffffff 12%);
+  --arova-text-primary: var(--theme-text);
+  --arova-text-secondary: var(--theme-muted);
+  --arova-muted: var(--theme-dim);
+  --arova-border: var(--theme-border);
+  --arova-accent: var(--theme-accent);
+  --arova-accent-soft: var(--theme-soft);
+  --arova-danger: #f03e3e;
+  --arova-success: #37b24d;
+  --arova-warning: #fcc419;
+  --arova-radius-sm: 8px;
+  --arova-radius-md: 16px;
+  --arova-radius-lg: 24px;
+  --arova-radius-xl: 36px;
+  --arova-shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.12);
+  --arova-shadow-card: 0 8px 30px rgba(0, 0, 0, 0.18);
+  --arova-transition-fast: 0.15s ease;
+  --arova-transition-normal: 0.3s ease;
+}
+
+:root.theme-dark-romantic,
+:root.theme-dark-universe {
+  color-scheme: dark;
+}
+
+:root.theme-soft-pink {
+  --theme-bg: #170d12;
+  --theme-surface: #24141c;
+  --theme-card: rgba(231, 166, 182, 0.12);
+  --theme-border: rgba(247, 235, 221, 0.18);
+  --theme-accent: #f1a7c2;
+  --theme-accent-2: #ffd7a1;
+  --theme-soft: #c98ca4;
+  --theme-text: #fff5f8;
+  --theme-muted: #dec5cf;
+  --theme-dim: #b597a4;
+}
+
+:root.theme-midnight-stars {
+  --theme-bg: #050d1a;
+  --theme-surface: #0b1729;
+  --theme-card: rgba(84, 113, 158, 0.14);
+  --theme-border: rgba(139, 171, 220, 0.22);
+  --theme-accent: #9db7ff;
+  --theme-accent-2: #d8c47a;
+  --theme-soft: #82a6c8;
+  --theme-text: #eef4ff;
+  --theme-muted: #b7c2d7;
+  --theme-dim: #8290a8;
+}
+
+:root.theme-vintage-letters {
+  --theme-bg: #17110b;
+  --theme-surface: #24190f;
+  --theme-card: rgba(214, 183, 106, 0.12);
+  --theme-border: rgba(247, 235, 221, 0.18);
+  --theme-accent: #d9a46f;
+  --theme-accent-2: #ecd39a;
+  --theme-soft: #b89666;
+  --theme-text: #fff2dc;
+  --theme-muted: #d1bea4;
+  --theme-dim: #a28e77;
+}
+
+:root.theme-minimal-cream {
+  --theme-bg: #1a1812;
+  --theme-surface: #242217;
+  --theme-card: rgba(247, 235, 221, 0.09);
+  --theme-border: rgba(247, 235, 221, 0.2);
+  --theme-accent: #dfcfae;
+  --theme-accent-2: #b9d0aa;
+  --theme-soft: #aab998;
+  --theme-text: #fff8ef;
+  --theme-muted: #d2c8b8;
+  --theme-dim: #a89f8d;
+}
+
+:root.theme-aurora-glass {
+  --theme-bg: #030d0a;
+  --theme-surface: #071c15;
+  --theme-card: rgba(55, 180, 120, 0.1);
+  --theme-border: rgba(140, 220, 180, 0.2);
+  --theme-accent: #52e5a4;
+  --theme-accent-2: #d6b76a;
+  --theme-soft: #7ca88a;
+  --theme-text: #f0fdf4;
+  --theme-muted: #cbd5e1;
+  --theme-dim: #94a3b8;
+}
+
+:root.theme-cosmic-blue {
+  --theme-bg: #02071a;
+  --theme-surface: #050f30;
+  --theme-card: rgba(70, 130, 250, 0.12);
+  --theme-border: rgba(120, 180, 255, 0.22);
+  --theme-accent: #60a5fa;
+  --theme-accent-2: #ffd766;
+  --theme-soft: #8ba3c7;
+  --theme-text: #f0f9ff;
+  --theme-muted: #cbd5e1;
+  --theme-dim: #94a3b8;
+}
+
+:root.theme-rose-noir {
+  --theme-bg: #100609;
+  --theme-surface: #1e0b11;
+  --theme-card: rgba(231, 110, 140, 0.12);
+  --theme-border: rgba(231, 166, 182, 0.22);
+  --theme-accent: #f43f5e;
+  --theme-accent-2: #facc15;
+  --theme-soft: #be123c;
+  --theme-text: #fff1f2;
+  --theme-muted: #fda4af;
+  --theme-dim: #e11d48;
+}
+
+:root.theme-lavender-fog {
+  --theme-bg: #110e1a;
+  --theme-surface: #1b162a;
+  --theme-card: rgba(186, 170, 240, 0.1);
+  --theme-border: rgba(200, 190, 250, 0.18);
+  --theme-accent: #c084fc;
+  --theme-accent-2: #fb7185;
+  --theme-soft: #a855f7;
+  --theme-text: #faf5ff;
+  --theme-muted: #e9d5ff;
+  --theme-dim: #d8b4fe;
+}
+
+:root.theme-golden-hour {
+  --theme-bg: #170f07;
+  --theme-surface: #26170a;
+  --theme-card: rgba(245, 158, 11, 0.1);
+  --theme-border: rgba(253, 186, 116, 0.2);
+  --theme-accent: #f59e0b;
+  --theme-accent-2: #ec4899;
+  --theme-soft: #d97706;
+  --theme-text: #fffbeb;
+  --theme-muted: #fde68a;
+  --theme-dim: #fcd34d;
+}
+
+:root.theme-moonlit-sage {
+  --theme-bg: #0f1411;
+  --theme-surface: #1a221d;
+  --theme-card: rgba(143, 168, 150, 0.1);
+  --theme-border: rgba(180, 200, 185, 0.2);
+  --theme-accent: #86efac;
+  --theme-accent-2: #fef08a;
+  --theme-soft: #4ade80;
+  --theme-text: #f0fdf4;
+  --theme-muted: #bbf7d0;
+  --theme-dim: #86efac;
+}
+
+:root.theme-ocean-quiet {
+  --theme-bg: #041014;
+  --theme-surface: #0a2028;
+  --theme-card: rgba(14, 116, 144, 0.12);
+  --theme-border: rgba(34, 211, 238, 0.18);
+  --theme-accent: #22d3ee;
+  --theme-accent-2: #a7f3d0;
+  --theme-soft: #0891b2;
+  --theme-text: #ecfeff;
+  --theme-muted: #cffafe;
+  --theme-dim: #67e8f9;
+}
+
+:root.theme-velvet-plum {
+  --theme-bg: #12030f;
+  --theme-surface: #20071a;
+  --theme-card: rgba(219, 39, 119, 0.1);
+  --theme-border: rgba(244, 114, 182, 0.2);
+  --theme-accent: #ec4899;
+  --theme-accent-2: #a78bfa;
+  --theme-soft: #be185d;
+  --theme-text: #fdf2f8;
+  --theme-muted: #fbcfe8;
+  --theme-dim: #f472b6;
+}
+
+:root.theme-warm-sand {
+  --theme-bg: #14110f;
+  --theme-surface: #201b17;
+  --theme-card: rgba(194, 120, 3, 0.08);
+  --theme-border: rgba(251, 191, 36, 0.18);
+  --theme-accent: #fbbf24;
+  --theme-accent-2: #f87171;
+  --theme-soft: #d97706;
+  --theme-text: #fffdfa;
+  --theme-muted: #fef3c7;
+  --theme-dim: #fde68a;
+}
+
+:root.theme-arctic-glow {
+  --theme-bg: #091216;
+  --theme-surface: #122129;
+  --theme-card: rgba(186, 230, 253, 0.09);
+  --theme-border: rgba(14, 165, 233, 0.2);
+  --theme-accent: #38bdf8;
+  --theme-accent-2: #f472b6;
+  --theme-soft: #0284c7;
+  --theme-text: #f0f9ff;
+  --theme-muted: #bae6fd;
+  --theme-dim: #7dd3fc;
+}
+
+:root.theme-ember-night {
+  --theme-bg: #0c0807;
+  --theme-surface: #1a100e;
+  --theme-card: rgba(239, 68, 68, 0.1);
+  --theme-border: rgba(248, 113, 113, 0.2);
+  --theme-accent: #f87171;
+  --theme-accent-2: #fbbf24;
+  --theme-soft: #dc2626;
+  --theme-text: #fffdfd;
+  --theme-muted: #fca5a5;
+  --theme-dim: #f87171;
+}
+
+:root.theme-pearl-blush {
+  --theme-bg: #1c1817;
+  --theme-surface: #292422;
+  --theme-card: rgba(231, 166, 182, 0.08);
+  --theme-border: rgba(243, 224, 217, 0.18);
+  --theme-accent: #f3e0d9;
+  --theme-accent-2: #f9a8d4;
+  --theme-soft: #dda7a5;
+  --theme-text: #fffaf9;
+  --theme-muted: #eed2cc;
+  --theme-dim: #cca8a1;
+}
+
+:root.theme-forest-whisper {
+  --theme-bg: #050d08;
+  --theme-surface: #0a1710;
+  --theme-card: rgba(52, 211, 153, 0.08);
+  --theme-border: rgba(167, 243, 208, 0.18);
+  --theme-accent: #34d399;
+  --theme-accent-2: #fb7185;
+  --theme-soft: #059669;
+  --theme-text: #f0fdf4;
+  --theme-muted: #a7f3d0;
+  --theme-dim: #6ee7b7;
+}
+
+:root.theme-solar-dusk {
+  --theme-bg: #0e0717;
+  --theme-surface: #1a0d26;
+  --theme-card: rgba(139, 92, 246, 0.1);
+  --theme-border: rgba(167, 139, 250, 0.2);
+  --theme-accent: #a78bfa;
+  --theme-accent-2: #f59e0b;
+  --theme-soft: #7c3aed;
+  --theme-text: #faf5ff;
+  --theme-muted: #ddd6fe;
+  --theme-dim: #c084fc;
+}
+
+:root.theme-monochrome-luxe {
+  --theme-bg: #0c0c0c;
+  --theme-surface: #181818;
+  --theme-card: rgba(255, 255, 255, 0.06);
+  --theme-border: rgba(255, 255, 255, 0.14);
+  --theme-accent: #ffffff;
+  --theme-accent-2: #cccccc;
+  --theme-soft: #888888;
+  --theme-text: #ffffff;
+  --theme-muted: #e5e5e5;
+  --theme-dim: #a3a3a3;
+}
+
+body {
+  background: var(--theme-bg);
+  color: var(--theme-text) !important;
+}
+
+.sidebar,
+.mobile-header {
+  background: color-mix(in srgb, var(--theme-surface) 92%, transparent) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.glass,
+.user-greeting,
+.planet-card,
+.memory-card,
+.reason-card,
+.letter-envelope,
+.detail-card,
+.settings-card,
+.info-card,
+.panel,
+.summary-card,
+.status-card,
+.mood-option,
+.song-card,
+.challenge-card,
+.plan-card {
+  background: var(--theme-card) !important;
+  border-color: var(--theme-border) !important;
+}
+
+h1,
+h2,
+h3,
+.page-title,
+.sidebar-title,
+.planet-name {
+  color: var(--theme-text) !important;
+}
+
+p,
+small,
+.page-sub,
+.planet-desc,
+.memory-desc,
+.reason-body,
+.letter-date,
+.main-copy {
+  color: var(--theme-muted) !important;
+}
+
+.page-eyebrow,
+.section-label,
+.nav-icon,
+.category-badge,
+.mood-tag,
+.type-tag {
+  color: var(--theme-soft) !important;
+}
+
+a,
+.nav-link.active,
+.primary-action,
+.secondary-action,
+.save-button,
+.random-btn,
+.done-button,
+.save-mood,
+.danger-action,
+.file-input span,
+button:hover {
+  color: var(--theme-accent) !important;
+}
+
+.category-badge,
+.mood-tag,
+.type-tag,
+.priority-tag,
+input,
+textarea,
+select,
+button {
+  border-color: var(--theme-border) !important;
+}
+
+input,
+textarea,
+select {
+  background: color-mix(in srgb, var(--theme-surface) 80%, transparent) !important;
+  color: var(--theme-text) !important;
+  transition: border-color var(--arova-transition-fast), box-shadow var(--arova-transition-fast);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none !important;
+  border-color: var(--theme-accent) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--theme-accent) 25%, transparent) !important;
+}
+
+.favorite-star,
+.fav-star,
+.gold,
+.summary-card strong {
+  color: var(--theme-accent-2) !important;
+}
+
+:root.animations-off *,
+:root.animations-off *::before,
+:root.animations-off *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+}

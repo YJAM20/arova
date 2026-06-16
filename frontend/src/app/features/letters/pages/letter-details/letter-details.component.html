@@ -1,0 +1,62 @@
+<div class="detail-page letter-detail-page">
+  <section class="missing-state glass animate-fade-in" *ngIf="isLoading">
+    <h1>Loading letter</h1>
+    <p>Opening the envelope carefully...</p>
+  </section>
+
+  <ng-container *ngIf="!isLoading">
+    <ng-container *ngIf="letter; else missing">
+      <button class="back-button" type="button" (click)="goBack()">Back to letters</button>
+
+      <article class="detail-card glass animate-fade-in">
+        <div class="letter-top">
+          <div class="detail-meta">
+            <span class="category-badge">{{ getCategoryLabel(letter.category) }}</span>
+            <span>{{ formatDate(letter.createdAt) }}</span>
+            <span *ngIf="letter.isFavorite">Favorite</span>
+          </div>
+
+          <h1>{{ letter.title }}</h1>
+          <p class="lock-note" *ngIf="letter.isLocked && !isAdmin">This letter is sealed for now.</p>
+          <p class="lock-note" *ngIf="errorMessage">{{ errorMessage }}</p>
+        </div>
+
+        <div class="opening-stage" [class.opening-stage--locked]="!canReadBody()">
+          <div class="detail-envelope" aria-hidden="true">
+            <div class="detail-envelope-flap"></div>
+            <div class="detail-envelope-pocket"></div>
+            <div class="detail-envelope-seal"></div>
+          </div>
+
+          <div class="detail-body letter-paper" *ngIf="canReadBody(); else lockedBody">
+            <p class="letter-paragraph" *ngFor="let paragraph of letter.body.split('\n\n')">{{ paragraph }}</p>
+          </div>
+        </div>
+
+        <ng-template #lockedBody>
+          <div class="locked-panel">
+            <h2>Locked letter</h2>
+            <p>The words inside are waiting for the right time.</p>
+          </div>
+        </ng-template>
+
+        <div class="detail-footer">
+          <span *ngIf="isAdmin">{{ letter.visibleToPartner ? 'Visible to partner' : 'Private letter' }}</span>
+          <span *ngIf="isAdmin">{{ letter.isLocked ? 'Locked' : 'Unlocked' }}</span>
+          <div class="detail-actions">
+            <a *ngIf="canEdit" [routerLink]="[isAdmin ? '/admin/letters' : '/letters', letter.id, 'edit']">Edit letter</a>
+            <button *ngIf="canEdit" type="button" (click)="deleteLetter()">Delete letter</button>
+          </div>
+        </div>
+      </article>
+    </ng-container>
+  </ng-container>
+
+  <ng-template #missing>
+    <section class="missing-state glass">
+      <h1>Letter not found</h1>
+      <p>{{ errorMessage || 'This letter is private or no longer exists.' }}</p>
+      <button type="button" class="back-button" (click)="goBack()">Back to letters</button>
+    </section>
+  </ng-template>
+</div>

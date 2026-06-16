@@ -1,0 +1,260 @@
+@use '../../../../../styles/variables' as *;
+
+.future-page {
+  padding: 48px 40px;
+  max-width: 1220px;
+}
+
+.page-header {
+  margin-bottom: 30px;
+
+  .page-eyebrow {
+    color: $gold;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  h1 {
+    color: $cream;
+    font-size: 2.2rem;
+    margin-bottom: 8px;
+  }
+
+  p:last-child {
+    color: $text-muted;
+  }
+}
+
+.quick-add {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  margin-bottom: 22px;
+
+  input,
+  textarea,
+  select {
+    min-height: 38px;
+    border: 1px solid rgba(231, 166, 182, 0.18);
+    border-radius: $radius-sm;
+    background: rgba(7, 19, 15, 0.42);
+    color: $text-primary;
+    padding: 8px 10px;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  label {
+    display: grid;
+    gap: 7px;
+
+    span {
+      color: $text-muted;
+      font-size: 0.76rem;
+    }
+  }
+
+  button {
+    justify-self: start;
+    border: 1px solid rgba(231, 166, 182, 0.32);
+    border-radius: $radius-sm;
+    color: $soft-pink;
+    padding: 8px 14px;
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+    }
+  }
+}
+
+.quick-add-intro {
+  .section-label {
+    color: $gold;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  p {
+    color: $text-muted;
+    line-height: 1.6;
+    margin-top: 6px;
+  }
+}
+
+.quick-add-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(220px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.status-column {
+  min-width: 0;
+}
+
+.column-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+
+  h2 {
+    color: $soft-green;
+    font-family: $font-body;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  span {
+    color: $text-dim;
+    font-size: 0.78rem;
+  }
+}
+
+.plan-list,
+.secret-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.plan-card {
+  padding: 18px;
+  border-left: 2px solid rgba(231, 166, 182, 0.32);
+
+  &--low {
+    border-left-color: rgba(115, 140, 118, 0.45);
+  }
+
+  &--medium {
+    border-left-color: rgba(214, 183, 106, 0.45);
+  }
+
+  &--high {
+    border-left-color: rgba(231, 166, 182, 0.55);
+  }
+
+  &--done {
+    opacity: 0.72;
+  }
+
+  &--secret {
+    border-style: dashed;
+  }
+
+  h3 {
+    color: $cream;
+    font-size: 1.15rem;
+    margin: 10px 0 8px;
+  }
+
+  p {
+    color: $text-muted;
+    line-height: 1.65;
+  }
+}
+
+.plan-topline,
+.plan-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.type-tag,
+.priority-tag {
+  min-height: 22px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 0.68rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.type-tag {
+  color: $soft-green;
+  border: 1px solid rgba(115, 140, 118, 0.3);
+  background: rgba(55, 88, 63, 0.16);
+}
+
+.priority-tag {
+  color: $gold;
+  border: 1px solid rgba(214, 183, 106, 0.28);
+  background: rgba(214, 183, 106, 0.08);
+}
+
+.plan-meta {
+  margin-top: 14px;
+
+  span {
+    color: $text-dim;
+    font-size: 0.74rem;
+  }
+}
+
+.done-button {
+  width: 100%;
+  min-height: 38px;
+  margin-top: 14px;
+  border: 1px solid rgba(231, 166, 182, 0.32);
+  border-radius: $radius-sm;
+  background: rgba(231, 166, 182, 0.1);
+  color: $soft-pink;
+}
+
+.empty-column {
+  padding: 22px 16px;
+  color: $text-dim;
+  font-size: 0.82rem;
+  text-align: center;
+}
+
+.secret-section {
+  margin-top: 30px;
+}
+
+.secret-grid {
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+
+@media (max-width: 1100px) {
+  .board {
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .future-page {
+    padding: 28px 20px 40px;
+  }
+
+  .page-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .board,
+  .secret-grid,
+  .quick-add,
+  .quick-add-row {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-add button {
+    width: 100%;
+  }
+}

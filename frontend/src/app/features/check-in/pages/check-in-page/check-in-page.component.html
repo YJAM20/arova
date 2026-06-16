@@ -1,0 +1,107 @@
+<div class="checkin-page">
+  <header class="page-header animate-fade-in">
+    <p class="page-eyebrow">Check-In</p>
+    <h1>A light emotional snapshot</h1>
+    <p>Use this as simple journaling. It does not diagnose, treat, or replace professional support.</p>
+  </header>
+
+  <section class="checkin-grid animate-fade-in" style="animation-delay: 0.08s;">
+    <form class="checkin-form glass" (ngSubmit)="save()">
+      <span class="section-label">Today</span>
+
+      <div class="scale-field">
+        <label>Connection level</label>
+        <div class="scale-buttons">
+          <button
+            type="button"
+            *ngFor="let level of levels"
+            [class.active]="draft.connectionLevel === level"
+            (click)="draft.connectionLevel = level"
+          >
+            {{ level }}
+          </button>
+        </div>
+        <small>{{ levelLabel(draft.connectionLevel) }}</small>
+      </div>
+
+      <div class="scale-field">
+        <label>Energy level</label>
+        <div class="scale-buttons">
+          <button
+            type="button"
+            *ngFor="let level of levels"
+            [class.active]="draft.energyLevel === level"
+            (click)="draft.energyLevel = level"
+          >
+            {{ level }}
+          </button>
+        </div>
+        <small>{{ levelLabel(draft.energyLevel) }}</small>
+      </div>
+
+      <div class="scale-field">
+        <label>Communication feeling</label>
+        <div class="scale-buttons">
+          <button
+            type="button"
+            *ngFor="let level of levels"
+            [class.active]="draft.communicationFeeling === level"
+            (click)="draft.communicationFeeling = level"
+          >
+            {{ level }}
+          </button>
+        </div>
+        <small>{{ levelLabel(draft.communicationFeeling) }}</small>
+      </div>
+
+      <label class="note-field">
+        <span>Optional note</span>
+        <textarea name="note" rows="4" [(ngModel)]="draft.note"></textarea>
+      </label>
+
+      <button type="submit" class="primary-action">Save check-in locally</button>
+      <p class="message" *ngIf="message">{{ message }}</p>
+    </form>
+
+    <aside class="today-card glass">
+      <span class="section-label">Today&apos;s check-ins</span>
+      <div class="today-list" *ngIf="today.length > 0; else noCheckIns">
+        <article *ngFor="let item of today">
+          <strong>{{ item.userName }}</strong>
+          <div class="mini-grid">
+            <span>Connection {{ item.connectionLevel }}/5</span>
+            <span>Energy {{ item.energyLevel }}/5</span>
+            <span>Communication {{ item.communicationFeeling }}/5</span>
+          </div>
+          <p *ngIf="item.note">{{ item.note }}</p>
+        </article>
+      </div>
+
+      <ng-template #noCheckIns>
+        <p class="empty">No check-ins saved for today yet.</p>
+      </ng-template>
+    </aside>
+  </section>
+
+  <section class="history-section animate-fade-in" style="animation-delay: 0.14s;">
+    <span class="section-label">Recent history</span>
+    <div class="history-grid" *ngIf="history.length > 0; else emptyHistory">
+      <article class="history-card glass" *ngFor="let item of history">
+        <div class="history-topline">
+          <strong>{{ item.userName }}</strong>
+          <span>{{ formatDate(item.dateKey) }}</span>
+        </div>
+        <div class="mini-grid">
+          <span>Connection {{ item.connectionLevel }}/5</span>
+          <span>Energy {{ item.energyLevel }}/5</span>
+          <span>Communication {{ item.communicationFeeling }}/5</span>
+        </div>
+        <p *ngIf="item.note">{{ item.note }}</p>
+      </article>
+    </div>
+
+    <ng-template #emptyHistory>
+      <div class="empty-card glass">Check-in history will appear after the first saved entry.</div>
+    </ng-template>
+  </section>
+</div>

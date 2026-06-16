@@ -1,0 +1,408 @@
+@use '../../../../../styles/variables' as *;
+
+.pairing-page {
+  min-height: 100vh;
+  padding: 64px 24px;
+  background: radial-gradient(circle at top, rgba(231, 166, 182, 0.05) 0%, $bg-deep 80%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $text-primary;
+}
+
+.pairing-card {
+  max-width: 860px;
+  width: 100%;
+  padding: clamp(32px, 6vw, 56px);
+  border-radius: $radius-lg;
+}
+
+.pairing-header {
+  text-align: center;
+  margin-bottom: 44px;
+
+  .brand {
+    font-family: $font-display;
+    font-size: 2.2rem;
+    color: $cream;
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    display: inline-block;
+    margin-bottom: 16px;
+    text-shadow: 0 0 12px rgba(255, 255, 255, 0.1);
+  }
+
+  h1 {
+    font-family: $font-display;
+    font-size: 2rem;
+    color: $cream;
+    font-weight: 300;
+    margin-bottom: 12px;
+  }
+
+  .subtitle {
+    color: $text-muted;
+    font-size: 1.05rem;
+    max-width: 580px;
+    margin: 0 auto;
+    line-height: 1.6;
+    font-weight: 300;
+  }
+}
+
+.choice-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.choice-box {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: $radius-md;
+  padding: 36px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: all $transition-base;
+
+  .choice-icon {
+    font-size: 2.2rem;
+    color: $soft-pink;
+    margin-bottom: 16px;
+    text-shadow: 0 0 10px rgba(231, 166, 182, 0.2);
+  }
+
+  h2 {
+    color: $cream;
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+
+  .choice-desc {
+    color: $text-muted;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    margin-bottom: 24px;
+    height: 40px;
+  }
+
+  .form-field {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .pairing-input {
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: $radius-sm;
+    background: rgba(0, 0, 0, 0.2);
+    color: $text-primary;
+    padding: 12px 16px;
+    font-size: 0.94rem;
+    text-align: center;
+    outline: none;
+    transition: all $transition-base;
+
+    &:focus {
+      border-color: rgba(231, 166, 182, 0.5);
+      background: rgba(0, 0, 0, 0.35);
+      box-shadow: 0 0 10px rgba(231, 166, 182, 0.15);
+    }
+  }
+
+  .submit-btn {
+    width: 100%;
+    min-height: 44px;
+    border: 1px solid rgba(231, 166, 182, 0.35);
+    border-radius: $radius-sm;
+    background: rgba(231, 166, 182, 0.12);
+    color: $cream;
+    font-size: 0.94rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all $transition-base;
+
+    &:hover:not(:disabled) {
+      background: rgba(231, 166, 182, 0.22);
+      border-color: rgba(231, 166, 182, 0.55);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(231, 166, 182, 0.15);
+    }
+
+    &:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: rgba(231, 166, 182, 0.2);
+    background: rgba(255, 255, 255, 0.04);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* Generated Code Card Widget */
+.generated-widget {
+  padding: 32px;
+  text-align: center;
+  border-color: rgba(214, 183, 106, 0.3);
+  margin-top: 12px;
+
+  h3 {
+    color: $gold;
+    font-size: 1.25rem;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+
+  p {
+    color: $text-muted;
+    font-size: 0.94rem;
+    margin-bottom: 20px;
+  }
+
+  .code-display-box {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(214, 183, 106, 0.25);
+    padding: 16px 36px;
+    border-radius: $radius-sm;
+    cursor: pointer;
+    transition: all $transition-base;
+    margin-bottom: 16px;
+
+    .code-text {
+      color: $cream;
+      font-size: 2.2rem;
+      font-family: monospace;
+      letter-spacing: 0.1em;
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+    }
+
+    .copy-hint {
+      color: $gold;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 6px;
+      font-weight: 600;
+      opacity: 0.8;
+    }
+
+    &:hover {
+      background: rgba(214, 183, 106, 0.05);
+      border-color: rgba(214, 183, 106, 0.5);
+      transform: scale(1.02);
+      box-shadow: 0 4px 15px rgba(214, 183, 106, 0.1);
+    }
+  }
+
+  .code-meta {
+    color: $text-dim;
+    font-size: 0.8rem;
+  }
+}
+
+/* Ready / Success State */
+.ready-state {
+  padding: 44px;
+  text-align: center;
+  border-color: rgba(231, 166, 182, 0.25);
+
+  .success-ring {
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    background: rgba(231, 166, 182, 0.12);
+    border: 1px solid rgba(231, 166, 182, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    box-shadow: 0 0 20px rgba(231, 166, 182, 0.1);
+
+    .heart-pulse {
+      color: $soft-pink;
+      font-size: 2.2rem;
+      animation: heartPulse 1.8s infinite ease-in-out;
+    }
+  }
+
+  h2 {
+    color: $cream;
+    font-family: $font-display;
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+    font-weight: 300;
+  }
+
+  .success-desc {
+    color: $text-muted;
+    font-size: 1.02rem;
+    margin-bottom: 32px;
+  }
+
+  .quick-actions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 36px;
+    max-width: 580px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .action-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 16px 20px;
+    border-radius: $radius-sm;
+    text-decoration: none;
+    color: $text-primary;
+    transition: all $transition-base;
+
+    .action-icon {
+      font-size: 1.4rem;
+      color: $gold;
+    }
+
+    .action-label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: $cream;
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(214, 183, 106, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  .enter-arova-btn {
+    min-height: 48px;
+    padding: 12px 36px;
+    border: 1px solid rgba(231, 166, 182, 0.45);
+    border-radius: $radius-sm;
+    background: rgba(231, 166, 182, 0.16);
+    color: $cream;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all $transition-base;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    span {
+      transition: transform 0.25s ease;
+    }
+
+    &:hover {
+      background: rgba(231, 166, 182, 0.28);
+      border-color: rgba(231, 166, 182, 0.6);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(231, 166, 182, 0.2);
+
+      span {
+        transform: translateX(4px);
+      }
+    }
+
+    &:active {
+      transform: translateY(1px);
+    }
+  }
+}
+
+/* Banner for alerts */
+.message-banner {
+  margin-top: 24px;
+  padding: 12px 18px;
+  border-radius: $radius-sm;
+  animation: fadeIn 0.3s ease;
+
+  p {
+    margin: 0;
+    font-size: 0.9rem;
+    text-align: center;
+  }
+
+  .message {
+    color: $soft-green;
+  }
+
+  .error {
+    color: $soft-pink;
+  }
+}
+
+/* Animations */
+@keyframes heartPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+    text-shadow: 0 0 12px rgba(231, 166, 182, 0.6);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .pairing-page {
+    padding: 32px 16px;
+  }
+
+  .pairing-card {
+    padding: 28px 20px;
+  }
+
+  .choice-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .choice-box {
+    padding: 24px 20px;
+
+    .choice-desc {
+      height: auto;
+      margin-bottom: 16px;
+    }
+  }
+
+  .ready-state {
+    padding: 28px 20px;
+
+    .quick-actions-grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+  }
+}

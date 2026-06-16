@@ -1,0 +1,49 @@
+<div class="detail-page">
+  <section class="missing-state glass" *ngIf="isLoading">
+    <h1>Loading memory</h1>
+    <p>Checking the current memory details.</p>
+  </section>
+
+  <ng-container *ngIf="!isLoading && memory; else missing">
+    <button class="back-button" type="button" (click)="goBack()">Back to memories</button>
+
+    <article class="detail-card glass animate-fade-in">
+      <div class="detail-hero" *ngIf="memory.imageUrl" [style.background-image]="'url(' + memory.imageUrl + ')'">
+        <span class="image-label">Memory image</span>
+      </div>
+
+      <div class="detail-body">
+        <div class="detail-meta">
+          <span class="category-badge">{{ getCategoryLabel(memory.category) }}</span>
+          <span>{{ formatDate(memory.date) }}</span>
+          <span *ngIf="memory.isFavorite">Favorite</span>
+        </div>
+
+        <h1>{{ memory.title }}</h1>
+        <p class="main-copy">{{ memory.description }}</p>
+
+        <div class="admin-note" *ngIf="memory.privateNote && (isAdmin || isApiMode)">
+          <span>Private note</span>
+          <p>{{ memory.privateNote }}</p>
+        </div>
+
+        <div class="detail-footer">
+          <span *ngIf="isAdmin">{{ memory.visibleToPartner ? 'Visible to partner' : 'Private memory' }}</span>
+          <div class="detail-actions">
+            <a *ngIf="!isApiMode" [routerLink]="['/memories', memory.id, 'replay']">Replay Memory</a>
+            <a *ngIf="canEdit" [routerLink]="[isAdmin ? '/admin/memories' : '/memories', memory.id, 'edit']">Edit memory</a>
+            <button *ngIf="canEdit" type="button" (click)="deleteMemory()">Delete memory</button>
+          </div>
+        </div>
+      </div>
+    </article>
+  </ng-container>
+
+  <ng-template #missing>
+    <section class="missing-state glass" *ngIf="!isLoading">
+      <h1>Memory not found</h1>
+      <p>{{ errorMessage || 'This memory is private or no longer exists.' }}</p>
+      <button type="button" class="back-button" (click)="goBack()">Back to memories</button>
+    </section>
+  </ng-template>
+</div>

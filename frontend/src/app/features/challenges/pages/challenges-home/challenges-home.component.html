@@ -1,0 +1,105 @@
+<div class="challenges-page">
+  <header class="page-header animate-fade-in">
+    <p class="page-eyebrow">{{ t('challenges') }}</p>
+    <h1>{{ t('challengesTitle') }}</h1>
+    <p>{{ t('challengesSubtitle') }}</p>
+  </header>
+
+  <section class="daily-section glass animate-fade-in" style="animation-delay: 0.1s;" *ngIf="dailyChallenge">
+    <div class="daily-copy">
+      <span>{{ t('dailyChallenge') }}</span>
+      <h2>{{ dailyChallenge.title }}</h2>
+      <p>{{ dailyChallenge.description }}</p>
+      <em>{{ getCategoryLabel(dailyChallenge.category) }}</em>
+    </div>
+
+    <div class="completion-panel" [class.completed]="isCompleted(dailyChallenge)">
+      <ng-container *ngIf="getCompletion(dailyChallenge) as completion; else dailyInput">
+        <span>Completed</span>
+        <p *ngIf="completion.answer">{{ completion.answer }}</p>
+        <small>{{ formatDate(completion.completedAt) }}</small>
+      </ng-container>
+      <ng-template #dailyInput>
+        <textarea
+          rows="3"
+          [(ngModel)]="answerDrafts[dailyChallenge.id]"
+          placeholder="Your answer, if this one needs words."
+        ></textarea>
+        <button type="button" (click)="complete(dailyChallenge)">{{ t('completeChallenge') }}</button>
+      </ng-template>
+    </div>
+  </section>
+
+  <section class="filters animate-fade-in" style="animation-delay: 0.16s;">
+    <button
+      type="button"
+      *ngFor="let category of categories"
+      [class.active]="activeCategory === category.key"
+      (click)="setCategory(category.key)"
+    >
+      {{ category.label }}
+    </button>
+  </section>
+
+  <section class="challenge-grid animate-fade-in" style="animation-delay: 0.22s;" *ngIf="filteredChallenges.length > 0">
+    <article
+      class="challenge-card glass"
+      *ngFor="let challenge of filteredChallenges"
+      [class.challenge-card--done]="isCompleted(challenge)"
+    >
+      <div class="card-top">
+        <span class="category-badge">{{ getCategoryLabel(challenge.category) }}</span>
+        <small *ngIf="challenge.isDaily">Daily</small>
+      </div>
+
+      <h2>{{ challenge.title }}</h2>
+      <p>{{ challenge.description }}</p>
+
+      <div class="answer-area" *ngIf="!isCompleted(challenge); else doneState">
+        <textarea
+          rows="3"
+          [(ngModel)]="answerDrafts[challenge.id]"
+          placeholder="Optional answer"
+        ></textarea>
+        <button type="button" (click)="complete(challenge)">Complete</button>
+      </div>
+
+      <ng-template #doneState>
+        <div class="done-state" *ngIf="getCompletion(challenge) as completion">
+          <span>Completed</span>
+          <blockquote *ngIf="completion.answer">{{ completion.answer }}</blockquote>
+          <small>{{ formatDate(completion.completedAt) }}</small>
+        </div>
+      </ng-template>
+    </article>
+  </section>
+
+  <section class="empty-state glass" *ngIf="filteredChallenges.length === 0">
+    <h2>No challenges here yet</h2>
+    <p>This category is waiting for its first little adventure.</p>
+  </section>
+
+  <section class="history-section animate-fade-in" style="animation-delay: 0.28s;">
+    <div class="section-row">
+      <h2>Challenge history</h2>
+      <span>{{ completedChallenges.length }} completed</span>
+    </div>
+
+    <div class="history-list" *ngIf="completedChallenges.length > 0; else noHistory">
+      <article class="history-item glass" *ngFor="let challenge of completedChallenges">
+        <div>
+          <span>{{ getCategoryLabel(challenge.category) }}</span>
+          <h3>{{ challenge.title }}</h3>
+        </div>
+        <p *ngIf="getCompletion(challenge)?.answer">{{ getCompletion(challenge)?.answer }}</p>
+      </article>
+    </div>
+
+    <ng-template #noHistory>
+      <div class="empty-state glass">
+        <h2>No completed challenges yet</h2>
+        <p>The first one can be small. That still counts.</p>
+      </div>
+    </ng-template>
+  </section>
+</div>

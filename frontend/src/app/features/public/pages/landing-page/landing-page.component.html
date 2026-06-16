@@ -1,0 +1,187 @@
+<main class="public-page stars-bg">
+  <nav class="public-nav">
+    <a routerLink="/" class="brand">{{ brand.name }}</a>
+    <div class="nav-links">
+      <a routerLink="/plans">Plans</a>
+      <a routerLink="/auth">Sign In</a>
+    </div>
+  </nav>
+
+  <header class="hero-container">
+    <!-- Cosmic orbit animation background -->
+    <div class="solar-system" aria-hidden="true">
+      <div class="sun"></div>
+      <div class="orbit orbit-1"><div class="planet planet-1"></div></div>
+      <div class="orbit orbit-2"><div class="planet planet-2"></div></div>
+      <div class="orbit orbit-3"><div class="planet planet-3"></div></div>
+    </div>
+    
+    <section class="hero content-reveal">
+      <p class="eyebrow">{{ brand.brandLine }}</p>
+      <h1>{{ brand.name }}</h1>
+      <h2>{{ brand.tagline }}</h2>
+      <p class="hero-copy">
+        Memories, letters, moods, questions, plans, and private conversations — all in one shared space made for two.
+      </p>
+      <div class="hero-actions">
+        <a routerLink="/auth" class="primary">Start Free</a>
+        <a routerLink="/auth" class="secondary">Sign In</a>
+        <a routerLink="/plans" class="secondary">See Plans</a>
+      </div>
+    </section>
+  </header>
+
+  <!-- About section -->
+  <section class="section glass content-reveal">
+    <span class="section-label">About Arova</span>
+    <h2>A private shared space for two people in a relationship.</h2>
+    <p>
+      Arova helps partners remember, communicate, plan, and feel closer without forcing romance or turning care into performance. It provides a digital sanctuary away from general social feed noise.
+    </p>
+  </section>
+
+  <!-- How it works -->
+  <section class="section content-reveal">
+    <span class="section-label">How it works</span>
+    <div class="steps">
+      <div class="glass step-card">
+        <h3>1. Create Account</h3>
+        <p>Set up your profile and choose your preferred UI language.</p>
+      </div>
+      <div class="glass step-card">
+        <h3>2. Configure Space</h3>
+        <p>Run onboarding questions and mature content checks.</p>
+      </div>
+      <div class="glass step-card">
+        <h3>3. Invite Partner</h3>
+        <p>Share a privately generated pairing token to link your views.</p>
+      </div>
+      <div class="glass step-card">
+        <h3>4. Start Sharing</h3>
+        <p>Begin exchanging live notes, moods, letters, and custom memories.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature Grid -->
+  <section class="section content-reveal">
+    <span class="section-label">Core Features</span>
+    <div class="feature-grid">
+      <article class="glass feature-card" *ngFor="let group of featureGroups">
+        <h3>{{ group.title }}</h3>
+        <p *ngFor="let item of group.items">✧ {{ item }}</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- Plans section -->
+  <section class="section glass content-reveal">
+    <span class="section-label">Subscription Tiers</span>
+    <h2>One plan covers both partners.</h2>
+    <p class="section-subtitle">Upgrade for extra themes, extended timelines, and custom rituals.</p>
+    <div class="plan-row">
+      <a *ngFor="let plan of plans" [routerLink]="plan === 'Free' ? '/auth' : '/plans/gifted'" [queryParams]="{ plan }">
+        {{ plan }} Tier
+      </a>
+    </div>
+  </section>
+
+  <!-- Privacy and Security Note -->
+  <section class="section glass content-reveal">
+    <span class="section-label">Privacy & Transparency</span>
+    <h2>Private by design, honest about what is implemented.</h2>
+    <p>
+      True end-to-end encryption is a roadmap item, not a current claim. Arova supports couple-scoped data, Local Mode storage, API Mode database configurations, and secure WebSocket chat. All communications use standard transport layer security.
+    </p>
+  </section>
+
+  <!-- Roadmap Section -->
+  <section class="section content-reveal">
+    <span class="section-label">Roadmap & Coming Soon</span>
+    <div class="roadmap-grid">
+      <div class="glass roadmap-card">
+        <h3>Phase 1 (Active)</h3>
+        <p>Standalone Local Mode, API mode sync, SignalR live chat, letters vault, reasons log, and settings customization.</p>
+      </div>
+      <div class="glass roadmap-card">
+        <h3>Phase 2 (Planned)</h3>
+        <p>Cryptographic client-side E2EE implementation, Apple & Google sign-in templates, and SMS pairing confirmation gateways.</p>
+      </div>
+      <div class="glass roadmap-card">
+        <h3>Phase 3 (Mobile)</h3>
+        <p>Native iOS & Android mobile wrappers (Capacitor), push notifications, and widget shortcuts for home screens.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="section content-reveal">
+    <span class="section-label">Frequently Asked Questions</span>
+    <div class="faq-list accordion-faq-list">
+      <div class="glass faq-card accordion-card" 
+           *ngFor="let faq of faqs; let i = index" 
+           [class.open]="activeFaqIndex === i" 
+           (click)="toggleFaq(i)">
+        <div class="faq-header">
+          <h4>{{ faq.q }}</h4>
+          <span class="faq-icon" [class.rotated]="activeFaqIndex === i">＋</span>
+        </div>
+        <div class="faq-body" [class.open]="activeFaqIndex === i">
+          <p>{{ faq.a }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact/Feedback Section -->
+  <section class="section glass content-reveal">
+    <span class="section-label">Share Feedback / Contact</span>
+    <h2>We would love to hear from you.</h2>
+    <p class="section-subtitle">Submit suggestions, feature requests, or report visual bugs to the team.</p>
+    
+    <form class="feedback-form" (ngSubmit)="sendFeedback()" *ngIf="!feedbackSent">
+      <div class="form-row">
+        <input type="text" name="name" [(ngModel)]="feedback.name" placeholder="Name (optional)" [disabled]="isBusy" />
+        <input type="email" name="email" [(ngModel)]="feedback.email" placeholder="Email (optional)" [disabled]="isBusy" />
+      </div>
+      <textarea name="message" rows="4" [(ngModel)]="feedback.message" placeholder="Message or suggestion..." [disabled]="isBusy" required></textarea>
+      <button type="submit" [disabled]="isBusy || !feedback.message.trim()">
+        {{ isBusy ? 'Submitting...' : 'Send Feedback' }}
+      </button>
+      <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+    </form>
+    
+    <div class="feedback-success" *ngIf="feedbackSent">
+      <p>✦ Thank you for your feedback! It helps us improve Arova.</p>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="final-cta content-reveal">
+    <h2>Create your shared space today.</h2>
+    <a routerLink="/auth" class="primary">Start Free</a>
+  </section>
+
+  <!-- Footer -->
+  <footer class="public-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>{{ brand.name }}</h3>
+        <p>{{ brand.brandLine }}</p>
+        <small>© 2026 Arova. All rights reserved.</small>
+      </div>
+      <div class="footer-links-col">
+        <h4>Product</h4>
+        <a routerLink="/plans">Pricing Plans</a>
+        <a routerLink="/auth">Account Sign In</a>
+        <a routerLink="/plans/gifted">Redeem Gifted Plan</a>
+      </div>
+      <div class="footer-links-col">
+        <h4>Security & Privacy</h4>
+        <p>Planned: End-to-end encryption (E2EE)</p>
+        <p>Active: Local Mode / API Mode options</p>
+        <p>No fake payment processors or fake SMS gateways</p>
+      </div>
+    </div>
+  </footer>
+</main>

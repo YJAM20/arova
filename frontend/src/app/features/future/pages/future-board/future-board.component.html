@@ -1,0 +1,140 @@
+<div class="future-page">
+  <header class="page-header animate-fade-in">
+    <p class="page-eyebrow">{{ t('future') }}</p>
+    <h1>{{ t('futureTitle') }}</h1>
+    <p>{{ t('futureSubtitle') }}</p>
+  </header>
+
+  <form class="quick-add glass animate-fade-in" style="animation-delay: 0.06s;" (ngSubmit)="addPlan()">
+    <div class="quick-add-intro">
+      <span class="section-label">Add gently</span>
+      <p>Plan something small, practical, dreamy, or private. Secret plans are only available to admin.</p>
+    </div>
+
+    <label class="wide-field">
+      <span>Plan title</span>
+      <input type="text" name="title" [(ngModel)]="draft.title" placeholder="A future moment to remember" required />
+    </label>
+
+    <label class="wide-field">
+      <span>Optional note</span>
+      <textarea name="description" rows="3" [(ngModel)]="draft.description" placeholder="What would make this meaningful?"></textarea>
+    </label>
+
+    <div class="quick-add-row">
+      <label>
+        <span>Type</span>
+        <select name="type" [(ngModel)]="draft.type">
+          <option value="travel">Travel</option>
+          <option value="movie">Movie</option>
+          <option value="food">Food</option>
+          <option value="date">Date</option>
+          <option value="dream">Dream</option>
+          <option value="promise">Promise</option>
+          <option value="learning">Learning</option>
+        </select>
+      </label>
+
+      <label>
+        <span>Visibility</span>
+        <select name="status" [(ngModel)]="draft.status">
+          <option value="one-day">One day</option>
+          <option value="planned">Planned</option>
+          <option value="in-progress">In progress</option>
+          <option value="secret" *ngIf="isAdmin">Secret</option>
+        </select>
+      </label>
+
+      <label>
+        <span>Priority</span>
+        <select name="priority" [(ngModel)]="draft.priority">
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+      </label>
+
+      <label>
+        <span>Optional date</span>
+        <input type="date" name="targetDate" [(ngModel)]="draft.targetDate" />
+      </label>
+    </div>
+
+    <button type="submit" [disabled]="!draft.title.trim()">Add to Future Board</button>
+  </form>
+
+  <section class="board animate-fade-in" style="animation-delay: 0.1s;">
+    <div class="status-column" *ngFor="let column of columns">
+      <div class="column-heading">
+        <h2>{{ column.label }}</h2>
+        <span>{{ getPlans(column.status).length }}</span>
+      </div>
+
+      <div class="plan-list" *ngIf="getPlans(column.status).length > 0; else emptyColumn">
+        <article
+          class="plan-card glass"
+          *ngFor="let plan of getPlans(column.status)"
+          [class.plan-card--done]="plan.status === 'done'"
+          [class.plan-card--low]="plan.priority === 'low'"
+          [class.plan-card--medium]="plan.priority === 'medium'"
+          [class.plan-card--high]="plan.priority === 'high'"
+        >
+          <div class="plan-topline">
+            <span class="type-tag">{{ getTypeLabel(plan.type) }}</span>
+            <span class="priority-tag">{{ getPriorityLabel(plan.priority) }}</span>
+          </div>
+
+          <h3>{{ plan.title }}</h3>
+          <p *ngIf="plan.description">{{ plan.description }}</p>
+
+          <div class="plan-meta">
+            <span>{{ formatDate(plan.targetDate) }}</span>
+            <span>{{ column.label }}</span>
+          </div>
+
+          <button
+            *ngIf="canEdit(plan) && plan.status !== 'done'"
+            type="button"
+            class="done-button"
+            (click)="markDone(plan)"
+          >
+            {{ t('markDone') }}
+          </button>
+        </article>
+      </div>
+
+      <ng-template #emptyColumn>
+        <div class="empty-column glass">Nothing here yet</div>
+      </ng-template>
+    </div>
+  </section>
+
+  <section class="secret-section animate-fade-in" style="animation-delay: 0.18s;" *ngIf="getSecretPlans().length > 0">
+    <div class="column-heading">
+      <h2>Secret</h2>
+      <span>{{ getSecretPlans().length }}</span>
+    </div>
+
+    <div class="secret-grid">
+      <article
+        class="plan-card plan-card--secret glass"
+        *ngFor="let plan of getSecretPlans()"
+        [class.plan-card--low]="plan.priority === 'low'"
+        [class.plan-card--medium]="plan.priority === 'medium'"
+        [class.plan-card--high]="plan.priority === 'high'"
+      >
+        <div class="plan-topline">
+          <span class="type-tag">{{ getTypeLabel(plan.type) }}</span>
+          <span class="priority-tag">{{ getPriorityLabel(plan.priority) }}</span>
+        </div>
+        <h3>{{ plan.title }}</h3>
+        <p *ngIf="plan.description">{{ plan.description }}</p>
+        <div class="plan-meta">
+          <span>{{ formatDate(plan.targetDate) }}</span>
+          <span>Hidden from partner</span>
+        </div>
+        <button type="button" class="done-button" (click)="markDone(plan)">{{ t('markDone') }}</button>
+      </article>
+    </div>
+  </section>
+</div>

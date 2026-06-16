@@ -1,0 +1,173 @@
+<div class="arova-page arova-page--compact">
+  <arova-page-header
+    [title]="t('settingsTitle')"
+    [subtitle]="t('settingsSubtitle')"
+    eyebrow="✦ Universe Settings"
+  ></arova-page-header>
+
+  <!-- Premium Tabs Navigation -->
+  <nav class="settings-tabs-nav flex gap-2 border-b border-neutral-800/60 pb-3 mb-8 animate-fade-in">
+    <button type="button" 
+            (click)="activeTab = 'general'" 
+            class="tab-nav-btn px-4 py-2.5 rounded-xl text-sm font-semibold transition-all"
+            [class.active]="activeTab === 'general'">
+      ⚙️ General
+    </button>
+    <button type="button" 
+            (click)="activeTab = 'appearance'" 
+            class="tab-nav-btn px-4 py-2.5 rounded-xl text-sm font-semibold transition-all"
+            [class.active]="activeTab === 'appearance'">
+      🎨 Appearance
+    </button>
+    <button type="button" 
+            (click)="activeTab = 'account'" 
+            class="tab-nav-btn px-4 py-2.5 rounded-xl text-sm font-semibold transition-all"
+            [class.active]="activeTab === 'account'">
+      🪐 Partner & Profile
+    </button>
+  </nav>
+
+  <!-- Settings Panels form wrapper -->
+  <form (ngSubmit)="saveSettings()" class="settings-form animate-fade-in" style="animation-delay: 0.05s;">
+    
+    <!-- Tab 1: General Preferences -->
+    <arova-card *ngIf="activeTab === 'general'" [hoverable]="false" [glow]="true" class="settings-card mb-6">
+      <arova-section-header 
+        title="App Space Mode" 
+        description="Choose how this app should behave. Switching modes never deletes LocalStorage data."
+      ></arova-section-header>
+
+      <div class="mode-options-container mb-6">
+        <label class="mode-option" *ngFor="let option of modeOptions">
+          <input type="radio" name="appMode" [value]="option.value" [(ngModel)]="appMode" />
+          <span class="mode-info">
+            <strong class="mode-title">
+              {{ option.label }}
+              <arova-status-pill type="accent" [showDot]="false" *ngIf="appMode === option.value">Active</arova-status-pill>
+            </strong>
+            <small class="mode-desc">{{ option.description }}</small>
+          </span>
+        </label>
+      </div>
+
+      <div class="api-warning-container mb-6" *ngIf="appMode === 'api'">
+        <arova-status-pill type="warning" [showDot]="true">
+          API Mode active: Requires ASP.NET Core backend at {{ apiBaseUrl }}
+        </arova-status-pill>
+      </div>
+
+      <arova-section-header 
+        [title]="t('languageMode')" 
+        description="Select language preference for universe interfaces."
+      ></arova-section-header>
+
+      <div class="form-group mb-6">
+        <select name="languageMode" [(ngModel)]="settings.languageMode" class="arova-select">
+          <option *ngFor="let language of languageOptions" [value]="language.value">{{ language.label }}</option>
+        </select>
+      </div>
+
+      <arova-section-header 
+        title="Interface Preferences" 
+        description="Adjust sensory options for a calm, premium experience."
+      ></arova-section-header>
+
+      <div class="toggle-container mb-6">
+        <label class="toggle-row">
+          <span class="toggle-label">
+            <strong>{{ t('animations') }}</strong>
+            <small>Enable fluid transitions and motion</small>
+          </span>
+          <div class="checkbox-wrapper">
+            <input type="checkbox" name="animationsEnabled" [(ngModel)]="settings.animationsEnabled" />
+          </div>
+        </label>
+
+        <label class="toggle-row">
+          <span class="toggle-label">
+            <strong>{{ t('musicEnabled') }}</strong>
+            <small>Enable ambient sounds and melodies</small>
+          </span>
+          <div class="checkbox-wrapper">
+            <input type="checkbox" name="musicEnabled" [(ngModel)]="settings.musicEnabled" />
+          </div>
+        </label>
+      </div>
+
+      <div class="actions-row">
+        <button type="submit" class="save-button">{{ t('saveSettings') }}</button>
+        <div class="success-message" *ngIf="message">
+          <arova-status-pill type="success">{{ message }}</arova-status-pill>
+        </div>
+      </div>
+    </arova-card>
+
+    <!-- Tab 2: Appearance & Themes -->
+    <arova-card *ngIf="activeTab === 'appearance'" [hoverable]="false" [glow]="true" class="settings-card mb-6">
+      <arova-section-header 
+        [title]="t('theme')" 
+        description="Personalize the visual atmosphere of your shared universe. Select a preset below."
+      ></arova-section-header>
+
+      <div class="theme-selector-grid">
+        <button 
+          type="button" 
+          *ngFor="let theme of themeOptions" 
+          class="theme-select-btn"
+          [class.active]="settings.activeTheme === theme.value"
+          (click)="settings.activeTheme = theme.value"
+        >
+          <span class="theme-swatch" [ngClass]="'swatch-' + theme.value"></span>
+          <span class="theme-label">{{ theme.label }}</span>
+        </button>
+      </div>
+
+      <div class="actions-row">
+        <button type="submit" class="save-button">{{ t('saveSettings') }}</button>
+        <div class="success-message" *ngIf="message">
+          <arova-status-pill type="success">{{ message }}</arova-status-pill>
+        </div>
+      </div>
+    </arova-card>
+
+    <!-- Tab 3: Account & Pairing Details -->
+    <arova-card *ngIf="activeTab === 'account'" [hoverable]="false" [glow]="true" class="settings-card">
+      <div class="user-profile-summary mb-6 pb-6 border-b border-neutral-800/60">
+        <span class="section-label uppercase tracking-wider text-accent text-3xs font-semibold block mb-2">{{ t('currentUser') }}</span>
+        <h2 class="profile-name text-2xl font-extrabold text-white mb-2">{{ currentUser?.displayName || 'Arova Member' }}</h2>
+        <div class="profile-badge-row">
+          <arova-status-pill type="accent" [showDot]="true">
+            {{ currentUser?.role === 'admin' ? 'Creator Account' : 'Partner Account' }}
+          </arova-status-pill>
+        </div>
+      </div>
+
+      <div class="info-section mb-6 pb-6 border-b border-neutral-800/60">
+        <span class="section-label uppercase tracking-wider text-accent text-3xs font-semibold block mb-2">{{ t('localPrivacy') }}</span>
+        <p class="section-text text-sm text-neutral-300">
+          Your private universe lives in this browser's LocalStorage unless you export a backup file.
+          Keep personal media and backup files private.
+        </p>
+      </div>
+
+      <div class="info-section mb-6 pb-6 border-b border-neutral-800/60">
+        <span class="section-label uppercase tracking-wider text-accent text-3xs font-semibold block mb-2">Couple Setup</span>
+        <p class="section-text text-sm text-neutral-300 mb-4">
+          Connect your space with your partner's space using a pairing code.
+        </p>
+        <a routerLink="/couple-setup" class="settings-link-btn inline-block px-4 py-2 border border-neutral-700 hover:border-accent hover:text-accent rounded-xl text-xs font-semibold transition-all">
+          Link to Partner
+        </a>
+      </div>
+
+      <div class="info-section">
+        <span class="section-label uppercase tracking-wider text-accent text-3xs font-semibold block mb-2">Onboarding Setup</span>
+        <p class="section-text text-sm text-neutral-300">Reset the onboarding questionnaire without losing memories, letters, or backups.</p>
+        <button type="button" class="reset-onboarding-btn px-4 py-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl text-xs font-semibold mt-4 transition-all" (click)="resetOnboarding()">
+          Reset onboarding flow
+        </button>
+      </div>
+    </arova-card>
+
+  </form>
+</div>

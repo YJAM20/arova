@@ -1,0 +1,73 @@
+<div class="login-page stars-bg">
+  <div class="nebula nebula-1"></div>
+  <div class="nebula nebula-2"></div>
+
+  <div class="login-container animate-fade-in-scale">
+    <div class="login-header">
+      <div class="orbit-icon">✦</div>
+      <h1 class="app-title">Arova</h1>
+      <p class="app-subtitle">A private place for two</p>
+    </div>
+
+    <div class="login-card glass">
+      <p class="card-hint">Use a generic demo account to enter the shared space.</p>
+      <p class="demo-hint">Owner: owner / 1234 | Partner: partner / 1234</p>
+
+      <div class="form-group">
+        <label for="username">Who are you?</label>
+        <input
+          id="username"
+          type="text"
+          [(ngModel)]="username"
+          placeholder="Your name"
+          autocomplete="username"
+          [class.has-error]="!!errorMessage"
+          (keyup.enter)="onSubmit()"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="passcode">Your passcode</label>
+        <div class="input-wrapper">
+          <input
+            id="passcode"
+            [type]="showPasscode ? 'text' : 'password'"
+            [(ngModel)]="passcode"
+            placeholder="••••••"
+            autocomplete="current-password"
+            [class.has-error]="!!errorMessage"
+            (keyup.enter)="onSubmit()"
+          />
+          <button
+            type="button"
+            class="toggle-passcode"
+            (click)="showPasscode = !showPasscode"
+            [attr.aria-label]="showPasscode ? 'Hide passcode' : 'Show passcode'"
+          >
+            {{ showPasscode ? '○' : '●' }}
+          </button>
+        </div>
+      </div>
+
+      <div class="error-message" *ngIf="errorMessage" role="alert">
+        <span class="error-icon">✧</span> {{ errorMessage }}
+      </div>
+
+      <button
+        class="login-btn"
+        (click)="onSubmit()"
+        [disabled]="isLoading"
+        [class.loading]="isLoading"
+      >
+        <span *ngIf="!isLoading">Enter the Universe</span>
+        <span *ngIf="isLoading" class="loading-dots">
+          <span></span><span></span><span></span>
+        </span>
+      </button>
+    </div>
+
+    <p class="footer-note">
+      Only two people know the way in. ✦
+    </p>
+  </div>
+</div>

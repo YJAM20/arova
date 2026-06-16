@@ -1,0 +1,29 @@
+<main class="gifted-page">
+  <section class="gifted-card glass">
+    <a routerLink="/plans" class="back-link">Back to plans</a>
+    <p class="eyebrow">{{ selectedPlan }} access</p>
+    <h1>This one is on us.</h1>
+    <p>
+      You can try this plan for free while Arova is still growing.
+      If Arova helps you feel closer, leave us your feedback — it means more than a payment right now.
+    </p>
+
+    <div class="actions">
+      <button type="button" (click)="continueWithPlan()" [disabled]="isBusy">
+        Continue with {{ selectedPlan }}
+      </button>
+      <a routerLink="/auth">Create account</a>
+    </div>
+
+    <form class="feedback" (ngSubmit)="sendFeedback()">
+      <h2>Share feedback</h2>
+      <input name="name" [(ngModel)]="feedback.name" placeholder="Name optional" />
+      <input name="email" [(ngModel)]="feedback.email" placeholder="Email optional" />
+      <textarea name="message" rows="4" [(ngModel)]="feedback.message" placeholder="What should we improve?" required></textarea>
+      <button type="submit" [disabled]="isBusy || !feedback.message.trim()">Send feedback</button>
+    </form>
+
+    <p class="message" *ngIf="message">{{ message }}</p>
+    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+  </section>
+</main>

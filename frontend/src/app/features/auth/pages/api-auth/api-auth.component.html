@@ -1,0 +1,98 @@
+<div class="api-auth-page stars-bg">
+  <main class="api-auth-shell">
+    <header class="page-header animate-fade-in">
+      <p class="eyebrow">API Mode</p>
+      <h1>API Account Access</h1>
+      <p>
+        Register or login with the ASP.NET Core backend. This does not replace the local demo login.
+      </p>
+    </header>
+
+    <section class="mode-note glass animate-fade-in" style="animation-delay: 0.06s;">
+      <strong>Backend</strong>
+      <span>{{ apiBaseUrl }}</span>
+      <p>Use Local Mode for the original browser-only demo. Use API Mode when the backend is running.</p>
+    </section>
+
+    <div class="tabs animate-fade-in" style="animation-delay: 0.1s;">
+      <button type="button" [class.active]="activeTab === 'register'" (click)="activeTab = 'register'">
+        Register
+      </button>
+      <button type="button" [class.active]="activeTab === 'login'" (click)="activeTab = 'login'">
+        Login
+      </button>
+      <button type="button" [class.active]="activeTab === 'me'" (click)="activeTab = 'me'">
+        Current API User
+      </button>
+    </div>
+
+    <section class="auth-card glass animate-fade-in" style="animation-delay: 0.14s;">
+      <form *ngIf="activeTab === 'register'" (ngSubmit)="register()">
+        <h2>Create API account</h2>
+        <label>
+          <span>Display name</span>
+          <input type="text" name="displayName" [(ngModel)]="registerRequest.displayName" required />
+        </label>
+        <label>
+          <span>Username</span>
+          <input type="text" name="username" [(ngModel)]="registerRequest.username" required />
+        </label>
+        <label>
+          <span>Email</span>
+          <input type="email" name="email" [(ngModel)]="registerRequest.email" required />
+        </label>
+        <label>
+          <span>Password</span>
+          <input type="password" name="password" [(ngModel)]="registerRequest.password" required />
+        </label>
+        <button type="submit" class="primary-action" [disabled]="busyAction === 'register'">
+          Register with API
+        </button>
+      </form>
+
+      <form *ngIf="activeTab === 'login'" (ngSubmit)="login()">
+        <h2>Login to API account</h2>
+        <label>
+          <span>Username or email</span>
+          <input
+            type="text"
+            name="usernameOrEmail"
+            [(ngModel)]="loginRequest.usernameOrEmail"
+            required
+          />
+        </label>
+        <label>
+          <span>Password</span>
+          <input type="password" name="loginPassword" [(ngModel)]="loginRequest.password" required />
+        </label>
+        <button type="submit" class="primary-action" [disabled]="busyAction === 'login'">
+          Login with API
+        </button>
+      </form>
+
+      <div *ngIf="activeTab === 'me'" class="me-panel">
+        <h2>Current API User</h2>
+        <p class="token-state">Stored API token: {{ hasToken ? 'yes' : 'no' }}</p>
+
+        <div class="action-row">
+          <button type="button" class="primary-action" (click)="loadMe()" [disabled]="!hasToken || busyAction === 'me'">
+            Call /api/auth/me
+          </button>
+          <button type="button" class="secondary-action" (click)="apiLogout()" [disabled]="!hasToken">
+            Clear API token
+          </button>
+          <a routerLink="/couple-setup" class="link-action" *ngIf="hasToken">Go to Couple Setup</a>
+        </div>
+
+        <article class="user-result" *ngIf="currentUser">
+          <span>Signed in through API as</span>
+          <h3>{{ currentUser.displayName }}</h3>
+          <p>{{ currentUser.username }} | {{ currentUser.email }}</p>
+        </article>
+      </div>
+
+      <p class="message" *ngIf="message">{{ message }}</p>
+      <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+    </section>
+  </main>
+</div>

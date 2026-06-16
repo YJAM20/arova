@@ -1,0 +1,126 @@
+<div class="couple-setup-page stars-bg">
+  <main class="setup-shell">
+    <header class="page-header animate-fade-in">
+      <p class="eyebrow">API Mode</p>
+      <h1>Couple Setup</h1>
+      <p>Create a backend couple space, generate a private pairing code, or join with a code.</p>
+    </header>
+
+    <section class="access-card glass animate-fade-in" style="animation-delay: 0.06s;" *ngIf="!canUseCoupleApi">
+      <h2>Before couple setup</h2>
+      <p *ngIf="!isApiMode">
+        Couple Setup uses API Mode. Your local app data will stay untouched when you switch modes.
+      </p>
+      <p *ngIf="isApiMode && !hasToken">
+        Login or register with the backend before using couple endpoints.
+      </p>
+      <div class="action-row">
+        <button type="button" class="primary-action" *ngIf="!isApiMode" (click)="switchToApiMode()">
+          Switch to API Mode
+        </button>
+        <a routerLink="/api-auth" class="link-action">Open API Account</a>
+      </div>
+    </section>
+
+    <section class="status-row animate-fade-in" style="animation-delay: 0.08s;">
+      <div class="status-card glass">
+        <span>App Mode</span>
+        <strong>{{ isApiMode ? 'API Mode' : 'Local Mode' }}</strong>
+      </div>
+      <div class="status-card glass">
+        <span>API token</span>
+        <strong>{{ hasToken ? 'Stored' : 'Missing' }}</strong>
+      </div>
+      <div class="status-card glass">
+        <span>Backend</span>
+        <strong>{{ apiBaseUrl }}</strong>
+      </div>
+    </section>
+
+    <section class="setup-grid animate-fade-in" style="animation-delay: 0.12s;">
+      <article class="setup-card glass">
+        <div class="card-heading">
+          <span>Current Couple</span>
+          <button type="button" (click)="loadMyCouple()" [disabled]="!canUseCoupleApi || busyAction === 'load-couple'">
+            Load My Couple
+          </button>
+        </div>
+
+        <div class="current-couple" *ngIf="currentCouple; else noCouple">
+          <h2>{{ currentCouple.name }}</h2>
+          <p>ID: {{ currentCouple.id }}</p>
+          <p>Active: {{ currentCouple.isActive === false ? 'No' : 'Yes' }}</p>
+          <p>Created: {{ formatDate(currentCouple.createdAt) }}</p>
+        </div>
+
+        <ng-template #noCouple>
+          <p class="empty">No couple space loaded yet.</p>
+        </ng-template>
+      </article>
+
+      <form class="setup-card glass" (ngSubmit)="createCouple()">
+        <span class="section-label">Create Couple Space</span>
+        <label>
+          <span>Couple name</span>
+          <input type="text" name="coupleName" [(ngModel)]="coupleName" />
+        </label>
+        <button type="submit" class="primary-action" [disabled]="!canUseCoupleApi || busyAction === 'create-couple'">
+          Create Couple
+        </button>
+      </form>
+
+      <article class="setup-card glass">
+        <span class="section-label">Generate Pairing Code</span>
+        <p>Only the Owner can generate a code. Codes expire after 30 minutes and can be used once.</p>
+        <button
+          type="button"
+          class="primary-action"
+          (click)="generatePairingCode()"
+          [disabled]="!canUseCoupleApi || busyAction === 'pairing-code'"
+        >
+          Generate Pairing Code
+        </button>
+        <div class="pairing-code" *ngIf="pairingCode">
+          <strong>{{ pairingCode.code }}</strong>
+          <span>Expires: {{ formatDate(pairingCode.expiresAt) }}</span>
+          <small>Share this code privately.</small>
+        </div>
+      </article>
+
+      <form class="setup-card glass" (ngSubmit)="joinCouple()">
+        <span class="section-label">Join Couple Space</span>
+        <label>
+          <span>Pairing code</span>
+          <input type="text" name="pairingCode" [(ngModel)]="pairingCodeInput" />
+        </label>
+        <button type="submit" class="primary-action" [disabled]="!canUseCoupleApi || busyAction === 'join-couple'">
+          Join Couple
+        </button>
+      </form>
+    </section>
+
+    <section class="members-card glass animate-fade-in" style="animation-delay: 0.16s;">
+      <div class="card-heading">
+        <span>Members</span>
+        <button type="button" (click)="loadMembers()" [disabled]="!canUseCoupleApi || busyAction === 'members'">
+          Load Members
+        </button>
+      </div>
+
+      <div class="members-list" *ngIf="members.length > 0; else noMembers">
+        <article *ngFor="let member of members">
+          <strong>{{ member.displayName || member.username || member.userId }}</strong>
+          <span>{{ member.role }}</span>
+          <small>Joined: {{ formatDate(member.joinedAt) }}</small>
+        </article>
+      </div>
+
+      <ng-template #noMembers>
+        <p class="empty">Members will appear after a couple space is loaded.</p>
+      </ng-template>
+    </section>
+
+    <p class="message" *ngIf="message">{{ message }}</p>
+    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+  </main>
+</div>

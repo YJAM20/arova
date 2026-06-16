@@ -1,0 +1,127 @@
+<div class="arova-page arova-page--wide universe-dashboard animate-fade-in">
+  <!-- Welcome Hero -->
+  <header class="welcome-hero glass">
+    <div class="hero-left">
+      <p class="hero-eyebrow">✦ {{ coupleSpaceName }}</p>
+      <h1 class="hero-title">{{ greeting }}</h1>
+      <p class="hero-subtitle">A quiet place for everything you share.</p>
+    </div>
+    <div class="hero-badge">
+      <span class="sparkle">✦</span>
+    </div>
+  </header>
+
+  <div class="dashboard-grid">
+    <!-- Left Column: Today & Quiet Moments -->
+    <div class="main-column">
+      <!-- Today in Arova Section -->
+      <section class="dashboard-section">
+        <h2 class="section-title">Today in Arova</h2>
+        <div class="shortcuts-row">
+          <a routerLink="/daily-questions" class="shortcut-btn glass">
+            <span class="shortcut-icon">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </span>
+            <span class="shortcut-label">Daily Question</span>
+          </a>
+          <a routerLink="/check-in" class="shortcut-btn glass">
+            <span class="shortcut-icon">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+            </span>
+            <span class="shortcut-label">Mood Check-in</span>
+          </a>
+          <a routerLink="/chat" class="shortcut-btn glass">
+            <span class="shortcut-icon">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </span>
+            <span class="shortcut-label">Open Chat</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- Quiet Moments Section -->
+      <section class="dashboard-section">
+        <h2 class="section-title">Quiet Moments</h2>
+        <div class="prompts-column">
+          <div class="prompt-card glass" *ngFor="let prompt of quietMoments">
+            <p class="prompt-text">“{{ prompt.text }}”</p>
+            <a [routerLink]="prompt.link" class="prompt-action-btn">{{ prompt.buttonText }}</a>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Right Column: Stats Overview & Recent Areas -->
+    <div class="sidebar-column">
+      <!-- Shared Space Overview -->
+      <section class="dashboard-section">
+        <h2 class="section-title">Shared Space Overview</h2>
+        <div class="stats-grid">
+          <div class="stat-card glass">
+            <span class="stat-number">{{ memoriesCount }}</span>
+            <span class="stat-label">Memories</span>
+          </div>
+          <div class="stat-card glass">
+            <span class="stat-number">{{ reasonsCount }}</span>
+            <span class="stat-label">Reasons</span>
+          </div>
+          <div class="stat-card glass">
+            <span class="stat-number">{{ lettersCount }}</span>
+            <span class="stat-label">Letters</span>
+          </div>
+          <div class="stat-card glass">
+            <span class="stat-number">{{ plansCount }}</span>
+            <span class="stat-label">Future Plans</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Continue Navigation -->
+      <section class="dashboard-section">
+        <h2 class="section-title">Explore Space</h2>
+        <div class="explore-list">
+          <a routerLink="/memories" class="explore-item glass">
+            <span class="explore-icon">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            </span>
+            <div class="explore-info">
+              <span class="explore-title">Memories Vault</span>
+              <span class="explore-desc">The moments you lived</span>
+            </div>
+            <span class="arrow">→</span>
+          </a>
+          <a routerLink="/reasons" class="explore-item glass">
+            <span class="explore-icon">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </span>
+            <div class="explore-info">
+              <span class="explore-title">Reasons Grid</span>
+              <span class="explore-desc">Why you love each other</span>
+            </div>
+            <span class="arrow">→</span>
+          </a>
+          <a routerLink="/letters" class="explore-item glass">
+            <span class="explore-icon">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </span>
+            <div class="explore-info">
+              <span class="explore-title">Sealed Letters</span>
+              <span class="explore-desc">Words for the future</span>
+            </div>
+            <span class="arrow">→</span>
+          </a>
+          <a routerLink="/settings" class="explore-item glass">
+            <span class="explore-icon">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            </span>
+            <div class="explore-info">
+              <span class="explore-title">Space Settings</span>
+              <span class="explore-desc">Configure your universe</span>
+            </div>
+            <span class="arrow">→</span>
+          </a>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>

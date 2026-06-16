@@ -1,0 +1,91 @@
+<div class="arova-page arova-page--compact">
+  <header class="page-header animate-fade-in">
+    <div class="header-left">
+      <p class="page-eyebrow">Communication</p>
+      <h1>Couples Live Chat</h1>
+      <p class="page-sub">A private space for your conversations.</p>
+    </div>
+    <div class="header-right">
+      <span class="status-badge" [ngClass]="connectionStatus">
+        ● {{ statusLabel }}
+      </span>
+    </div>
+  </header>
+
+  <section class="chat-shell glass animate-fade-in">
+    <!-- State banners -->
+    <div class="chat-status" *ngIf="statusMessage && connectionStatus !== 'connected'">
+      <span class="status-icon">✧</span> {{ statusMessage }}
+    </div>
+    <div class="chat-error" *ngIf="errorMessage && connectionStatus !== 'local'">
+      <span class="error-icon">✧</span> {{ errorMessage }}
+    </div>
+
+    <!-- Messages Viewport -->
+    <div class="messages-viewport" #scrollContainer>
+      <div class="chat-loading" *ngIf="isLoading">
+        <div class="shimmer-bubble"></div>
+        <p>Gathering previous messages...</p>
+      </div>
+
+      <div class="message-list" *ngIf="!isLoading && messages.length > 0">
+        <article 
+          class="message-bubble-wrapper" 
+          *ngFor="let message of messages"
+          [class.own-message]="message.senderUserId === myUserId"
+        >
+          <div class="message-bubble">
+            <p class="message-body">{{ message.body }}</p>
+            <div class="message-info">
+              <span class="sender" *ngIf="message.senderUserId !== myUserId">
+                {{ message.senderDisplayName || 'Partner' }}
+              </span>
+              <span class="timestamp">{{ formatDate(message.createdAt) }}</span>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="empty-state" *ngIf="!isLoading && messages.length === 0 && !errorMessage">
+        <div class="empty-illustration">✧</div>
+        <h2>Start the conversation</h2>
+        <p>Send a quiet word to your partner. No rush, no performance.</p>
+      </div>
+    </div>
+
+    <!-- Composer Form -->
+    <form class="composer" (ngSubmit)="sendMessage()">
+      <!-- Quick Emoji Bar -->
+      <div class="emoji-bar" *ngIf="connectionStatus !== 'local'">
+        <button type="button" *ngFor="let emoji of ['❤️', '😊', '😢', '😂', '👍', '✨', '☕', '✉️']" (click)="appendEmoji(emoji)" class="emoji-btn" [disabled]="isSending">
+          {{ emoji }}
+        </button>
+      </div>
+
+      <!-- Local mode warning banner -->
+      <div class="local-mode-warning" *ngIf="connectionStatus === 'local'">
+        <span>Live Chat is only available in API Mode. Please toggle API Mode under Settings to sync messages with your partner.</span>
+      </div>
+
+      <textarea
+        name="message"
+        rows="2"
+        [(ngModel)]="draft"
+        placeholder="Write a message... (Enter to send, Shift+Enter for new line)"
+        [disabled]="isSending || connectionStatus === 'local'"
+        (keydown)="onEnterKey($event)"
+      ></textarea>
+      
+      <div class="composer-actions">
+        <span class="chat-disclosure">Secure couple-scoped chat. End-to-end encryption is planned, not active yet.</span>
+        <button 
+          type="submit" 
+          [disabled]="!draft.trim() || isSending || connectionStatus === 'local'"
+          class="send-btn"
+        >
+          {{ isSending ? 'Sending...' : 'Send message' }}
+        </button>
+      </div>
+    </form>
+  </section>
+</div>

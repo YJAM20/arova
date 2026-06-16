@@ -1,0 +1,98 @@
+<main class="auth-page stars-bg">
+  <section class="auth-intro relative">
+    <a routerLink="/" class="brand">Arova</a>
+    <div class="intro-cosmic-glow">
+      <div class="orbital-ellipse orb-1"></div>
+      <div class="orbital-ellipse orb-2"></div>
+      <div class="sparkle-point pt-1"></div>
+      <div class="sparkle-point pt-2"></div>
+    </div>
+    <h1>A private space for two.</h1>
+    <p>A quiet, beautiful sanctuary for memories, letters, questions, plans, and private dialogues.</p>
+  </section>
+
+  <section class="auth-card glass">
+    <div class="tabs">
+      <button type="button" [class.active]="mode === 'login'" (click)="setMode('login')">Sign In</button>
+      <button type="button" [class.active]="mode === 'register'" (click)="setMode('register')">Create Account</button>
+    </div>
+
+    <form *ngIf="mode === 'login'" (ngSubmit)="login()">
+      <label>
+        <span>Username or email</span>
+        <input name="usernameOrEmail" [(ngModel)]="loginRequest.usernameOrEmail" autocomplete="username" [disabled]="isBusy" />
+      </label>
+      <label>
+        <span>Password</span>
+        <input name="loginPassword" type="password" [(ngModel)]="loginRequest.password" autocomplete="current-password" [disabled]="isBusy" />
+      </label>
+      <button type="submit" [disabled]="isBusy || !loginRequest.usernameOrEmail || !loginRequest.password">{{ isBusy ? 'Signing in...' : 'Sign In' }}</button>
+    </form>
+
+    <form *ngIf="mode === 'register'" (ngSubmit)="register()">
+      <label>
+        <span>Display name</span>
+        <input name="displayName" [(ngModel)]="registerRequest.displayName" [disabled]="isBusy" />
+      </label>
+      <label>
+        <span>Username</span>
+        <input name="username" [(ngModel)]="registerRequest.username" autocomplete="username" [disabled]="isBusy" />
+      </label>
+      <label>
+        <span>Email</span>
+        <input name="email" type="email" [(ngModel)]="registerRequest.email" autocomplete="email" [disabled]="isBusy" />
+      </label>
+      <label>
+        <span>Phone number optional</span>
+        <input name="phoneNumber" [(ngModel)]="registerRequest.phoneNumber" [disabled]="isBusy" />
+        <small>Phone verification is not available yet.</small>
+      </label>
+      <label>
+        <span>Preferred language</span>
+        <select name="preferredLanguage" [(ngModel)]="registerRequest.preferredLanguage" [disabled]="isBusy">
+          <option value="en">English</option>
+          <option value="ar">Arabic</option>
+          <option value="es">Spanish</option>
+        </select>
+      </label>
+      <label>
+        <span>Date of birth</span>
+        <input name="dateOfBirth" type="date" [(ngModel)]="registerRequest.dateOfBirth" [disabled]="isBusy" />
+      </label>
+      <label>
+        <span>Password</span>
+        <input
+          name="password"
+          type="password"
+          [(ngModel)]="registerRequest.password"
+          (input)="checkPasswordStrength()"
+          autocomplete="new-password"
+          [disabled]="isBusy"
+        />
+      </label>
+      <div class="strength">
+        <span>Password strength: {{ strength.label }}</span>
+        <div><i [style.width.%]="(strength.score || 0) * 25"></i></div>
+      </div>
+      <label>
+        <span>Confirm password</span>
+        <input name="confirmPassword" type="password" [(ngModel)]="confirmPassword" autocomplete="new-password" [disabled]="isBusy" />
+      </label>
+      <button type="submit" [disabled]="isBusy || !registerRequest.displayName || !registerRequest.username || !registerRequest.email || !registerRequest.password || !confirmPassword || (strength.score ?? 0) < 3">{{ isBusy ? 'Creating...' : 'Create Account' }}</button>
+    </form>
+
+    <div class="providers">
+      <button type="button" (click)="providerPlaceholder('Google')">Continue with Google</button>
+      <button type="button" (click)="providerPlaceholder('Apple')">Continue with Apple</button>
+    </div>
+
+    <a routerLink="/auth/login" class="local-demo">Continue with local demo</a>
+    <div class="fallback-actions" *ngIf="message">
+      <p>{{ message }}</p>
+      <a routerLink="/couple-setup">Couple setup</a>
+      <a routerLink="/universe">Enter Arova</a>
+    </div>
+    <p class="message" *ngIf="providerMessage">{{ providerMessage }}</p>
+    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+  </section>
+</main>

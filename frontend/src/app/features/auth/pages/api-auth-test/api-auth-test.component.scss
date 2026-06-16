@@ -1,0 +1,125 @@
+@use '../../../../../styles/variables' as *;
+
+.api-test-page {
+  min-height: 100vh;
+  background: $bg-deep;
+  padding: 42px 24px;
+}
+
+.api-test-shell {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.page-header {
+  margin-bottom: 24px;
+
+  .eyebrow {
+    color: $gold;
+    font-size: 0.76rem;
+    letter-spacing: 0.12em;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    color: $cream;
+    font-size: 2.2rem;
+    margin-bottom: 8px;
+  }
+
+  p:last-child {
+    color: $text-muted;
+    line-height: 1.7;
+    max-width: 720px;
+  }
+}
+
+.test-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.test-card,
+.result-card {
+  padding: 22px;
+}
+
+h2 {
+  color: $cream;
+  font-size: 1.25rem;
+  margin-bottom: 16px;
+}
+
+label {
+  display: grid;
+  gap: 7px;
+  margin-bottom: 12px;
+
+  span {
+    color: $text-muted;
+    font-size: 0.78rem;
+  }
+}
+
+input {
+  border: 1px solid rgba(231, 166, 182, 0.18);
+  border-radius: $radius-sm;
+  background: rgba(7, 19, 15, 0.46);
+  color: $text-primary;
+  min-height: 40px;
+  padding: 9px 11px;
+}
+
+button {
+  min-height: 40px;
+  border: 1px solid rgba(231, 166, 182, 0.35);
+  border-radius: $radius-sm;
+  background: rgba(231, 166, 182, 0.12);
+  color: $soft-pink;
+  padding: 9px 13px;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+
+  &.secondary {
+    border-color: rgba(115, 140, 118, 0.28);
+    color: $text-muted;
+  }
+}
+
+.action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.token-state,
+.hint {
+  color: $text-muted;
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+
+.result-card {
+  margin-top: 16px;
+
+  pre {
+    color: $text-primary;
+    overflow: auto;
+    white-space: pre-wrap;
+  }
+}
+
+.error {
+  color: $soft-pink;
+}
+
+@media (max-width: 900px) {
+  .test-grid {
+    grid-template-columns: 1fr;
+  }
+}

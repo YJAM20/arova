@@ -1,0 +1,168 @@
+<div class="arova-page arova-page--wide animate-fade-in">
+  <header class="page-header">
+    <p class="page-eyebrow">{{ t('music') }}</p>
+    <h1>{{ t('musicTitle') }}</h1>
+    <p>{{ t('musicSubtitle') }}</p>
+  </header>
+
+  <div class="music-dashboard">
+    <!-- Main Premium Player Panel -->
+    <section class="player-panel glass">
+      <div class="player-layout">
+        <!-- Vinyl Record / Artwork Container -->
+        <div class="artwork-container">
+          <div class="vinyl-record" [class.rotating]="hasPlayablePreview(selectedSong)" [style.background-image]="selectedSong?.coverUrl ? 'url(' + selectedSong.coverUrl + ')' : ''">
+            <div class="vinyl-center"></div>
+          </div>
+          <!-- Animated sound waves -->
+          <div class="wave-visualizer" *ngIf="hasPlayablePreview(selectedSong)">
+            <span class="wave-bar bar-1"></span>
+            <span class="wave-bar bar-2"></span>
+            <span class="wave-bar bar-3"></span>
+            <span class="wave-bar bar-4"></span>
+            <span class="wave-bar bar-5"></span>
+          </div>
+        </div>
+
+        <!-- Track info and metadata -->
+        <div class="track-details-wrapper">
+          <div class="player-copy" *ngIf="selectedSong; else noSelection">
+            <div class="player-header-row">
+              <span class="now-label">✦ {{ t('nowPlaying') }}</span>
+              <button
+                type="button"
+                class="favorite-heart-btn"
+                [class.active]="selectedSong.isFavorite"
+                (click)="toggleFavorite(selectedSong, $event)"
+                aria-label="Toggle favorite"
+              >
+                <svg viewBox="0 0 24 24" class="heart-svg">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+              </button>
+            </div>
+            <h2>{{ selectedSong.title }}</h2>
+            <p class="track-artist">{{ selectedSong.artist || 'Unknown Artist' }}</p>
+            <span class="mood-tag" *ngIf="selectedSong.mood">
+              {{ getMoodLabel(selectedSong.mood) }}
+            </span>
+            <div class="source-meta">
+              <span>Source: {{ getSourceLabel(selectedSong) }}</span>
+              <span *ngIf="selectedSong.license">License: {{ selectedSong.license }}</span>
+              <span *ngIf="selectedSong.attribution">Attribution: {{ selectedSong.attribution }}</span>
+            </div>
+          </div>
+
+          <ng-template #noSelection>
+            <div class="player-copy">
+              <span class="now-label">Silence</span>
+              <h2>No song selected</h2>
+              <p>Select a melody from the list below to play.</p>
+            </div>
+          </ng-template>
+
+          <div class="player-controls">
+            <button type="button" class="random-btn" (click)="pickRandomSong()" [disabled]="songs.length === 0">
+              <span class="btn-icon">✦</span> {{ t('randomSong') }}
+            </button>
+          </div>
+
+          <div class="audio-container">
+            <audio
+              *ngIf="hasPlayablePreview(selectedSong); else noPreview"
+              class="audio-player"
+              controls
+              preload="none"
+              [src]="selectedSong?.audioUrl"
+            ></audio>
+            <ng-template #noPreview>
+              <div class="preview-unavailable">
+                <span class="warning-icon">ℹ</span>
+                <span>{{ t('previewUnavailable') }}</span>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Playlist & Filters Section -->
+    <section class="songs-section">
+      <div class="playlist-header">
+        <div class="section-row">
+          <h2>{{ t('playlist') }}</h2>
+          <span class="count-badge">{{ filteredSongs.length }} / {{ songs.length }} Melodies</span>
+        </div>
+
+        <!-- Filter Chips -->
+        <div class="mood-filters-scroll">
+          <div class="mood-filters">
+            <button
+              type="button"
+              *ngFor="let mood of moodFilters"
+              class="filter-chip"
+              [class.active]="activeMood === mood.key"
+              (click)="setMoodFilter(mood.key)"
+            >
+              {{ mood.label }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="songs-grid" *ngIf="filteredSongs.length > 0; else emptySongs">
+        <article
+          class="song-card glass"
+          *ngFor="let song of filteredSongs"
+          [class.song-card--active]="selectedSong?.id === song.id"
+          (click)="selectSong(song)"
+        >
+          <!-- Cover Art -->
+          <div class="cover-wrapper">
+            <div class="cover" *ngIf="song.coverUrl; else plainCover" [style.background-image]="'url(' + song.coverUrl + ')'"></div>
+            <ng-template #plainCover>
+              <div class="cover cover--plain">
+                <span>🎵</span>
+              </div>
+            </ng-template>
+            <!-- Active Overlay -->
+            <div class="active-playing-overlay" *ngIf="selectedSong?.id === song.id">
+              <span class="playing-icon">✦</span>
+            </div>
+          </div>
+
+          <!-- Info -->
+          <div class="song-info">
+            <div class="song-title-row">
+              <h3>{{ song.title }}</h3>
+              <button
+                type="button"
+                class="favorite-heart-btn-small"
+                [class.active]="song.isFavorite"
+                (click)="toggleFavorite(song, $event)"
+                aria-label="Toggle favorite"
+              >
+                <svg viewBox="0 0 24 24" class="heart-svg">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+              </button>
+            </div>
+            <p class="song-artist-name">{{ song.artist || 'Unknown Artist' }}</p>
+            <div class="song-footer-row">
+              <span class="mood-tag" *ngIf="song.mood">{{ getMoodLabel(song.mood) }}</span>
+              <span class="source-tag" *ngIf="song.sourceName">{{ song.sourceName }}</span>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <ng-template #emptySongs>
+        <div class="empty-state glass">
+          <span class="empty-music-icon">🎵</span>
+          <h3>No melodies found</h3>
+          <p>No tracks matching this emotional filter are currently listed.</p>
+        </div>
+      </ng-template>
+    </section>
+  </div>
+</div>

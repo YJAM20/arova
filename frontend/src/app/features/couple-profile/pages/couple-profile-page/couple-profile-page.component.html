@@ -1,0 +1,82 @@
+<div class="profile-page">
+  <header class="page-header animate-fade-in">
+    <p class="page-eyebrow">Our Space</p>
+    <h1>{{ profile.coupleSpaceName }}</h1>
+    <p>A simple local profile for the two people using this browser.</p>
+  </header>
+
+  <section class="profile-grid animate-fade-in" style="animation-delay: 0.08s;">
+    <article class="profile-card glass">
+      <span class="section-label">Partners</span>
+      <div class="partner-row">
+        <div>
+          <small>Partner A</small>
+          <strong>{{ profile.partnerADisplayName }}</strong>
+        </div>
+        <div>
+          <small>Partner B</small>
+          <strong>{{ profile.partnerBDisplayName }}</strong>
+        </div>
+      </div>
+
+      <div class="profile-facts">
+        <div>
+          <small>Important date</small>
+          <span>{{ profile.importantDate || 'Optional placeholder' }}</span>
+        </div>
+        <div>
+          <small>Favorite shared activity</small>
+          <span>{{ profile.favoriteSharedActivity || 'Optional placeholder' }}</span>
+        </div>
+        <div>
+          <small>Relationship intention</small>
+          <span>{{ profile.relationshipIntention || 'Optional placeholder' }}</span>
+        </div>
+      </div>
+
+      <button type="button" class="primary-action" (click)="startEditing()">Edit profile</button>
+      <p class="message" *ngIf="message">{{ message }}</p>
+    </article>
+
+    <form class="edit-card glass" *ngIf="editing" (ngSubmit)="save()">
+      <span class="section-label">Local edit</span>
+
+      <label>
+        <span>Couple space name</span>
+        <input type="text" name="coupleSpaceName" [(ngModel)]="draft.coupleSpaceName" required />
+      </label>
+
+      <div class="form-grid">
+        <label>
+          <span>Partner A name</span>
+          <input type="text" name="partnerA" [(ngModel)]="draft.partnerADisplayName" required />
+        </label>
+
+        <label>
+          <span>Partner B name</span>
+          <input type="text" name="partnerB" [(ngModel)]="draft.partnerBDisplayName" required />
+        </label>
+      </div>
+
+      <label>
+        <span>Important date</span>
+        <input type="date" name="importantDate" [(ngModel)]="draft.importantDate" />
+      </label>
+
+      <label>
+        <span>Favorite shared activity</span>
+        <input type="text" name="favoriteActivity" [(ngModel)]="draft.favoriteSharedActivity" />
+      </label>
+
+      <label>
+        <span>Relationship intention</span>
+        <textarea name="intention" rows="4" [(ngModel)]="draft.relationshipIntention"></textarea>
+      </label>
+
+      <div class="actions">
+        <button type="button" class="secondary-action" (click)="cancel()">Cancel</button>
+        <button type="submit" class="primary-action">Save profile</button>
+      </div>
+    </form>
+  </section>
+</div>

@@ -1,0 +1,30 @@
+<main class="plans-page">
+  <nav class="public-nav">
+    <a routerLink="/" class="brand">{{ brand.name }}</a>
+    <a routerLink="/auth">Sign In</a>
+  </nav>
+
+  <header class="page-hero">
+    <p>{{ brand.brandLine }}</p>
+    <h1>Plans for a shared space.</h1>
+    <span>One plan covers both partners.</span>
+  </header>
+
+  <p class="message" *ngIf="message">{{ message }}</p>
+
+  <section class="plans-grid">
+    <article class="plan-card glass" *ngFor="let plan of plans">
+      <span>{{ plan.name }}</span>
+      <h2>{{ plan.description }}</h2>
+      <ul>
+        <li *ngFor="let feature of plan.features">{{ feature }}</li>
+      </ul>
+      <a
+        [routerLink]="plan.name.toLowerCase() === 'free' ? '/auth' : '/plans/gifted'"
+        [queryParams]="{ plan: plan.name }"
+      >
+        {{ plan.name.toLowerCase() === 'free' ? 'Start Free' : 'Continue with ' + plan.name }}
+      </a>
+    </article>
+  </section>
+</main>

@@ -1,0 +1,79 @@
+<div class="backup-page">
+  <arova-page-header 
+    [title]="t('backupTitle')" 
+    [subtitle]="t('backupSubtitle')"
+    eyebrow="✦ Local Data Safety"
+  ></arova-page-header>
+
+  <div class="backup-content-layout animate-fade-in" style="animation-delay: 0.05s;">
+    <!-- Active Status Card -->
+    <arova-card class="status-card" [hoverable]="false" [glow]="true">
+      <div class="status-info">
+        <span class="section-label">{{ t('lastBackup') }}</span>
+        <strong class="backup-date">{{ lastBackupDate }}</strong>
+      </div>
+      <button type="button" class="primary-action-btn" (click)="exportBackup()" [disabled]="actionsDisabled">
+        {{ exporting ? 'Preparing backup...' : t('exportBackup') }}
+      </button>
+    </arova-card>
+
+    <!-- Local Summary stats (Only in Local Mode) -->
+    <section class="summary-section" *ngIf="!isApiMode">
+      <arova-section-header 
+        title="Local Database Status" 
+        description="Statistics of items currently preserved in this browser's LocalStorage."
+      ></arova-section-header>
+      
+      <div class="summary-grid">
+        <arova-card class="summary-card" *ngFor="let item of summary" [hoverable]="true">
+          <span class="summary-label">{{ item.label }}</span>
+          <strong class="summary-count">{{ item.count }}</strong>
+        </arova-card>
+      </div>
+    </section>
+
+    <!-- Restore & Danger Zones -->
+    <div class="backup-grid">
+      <!-- Import panel -->
+      <arova-card class="backup-panel" [hoverable]="false">
+        <arova-section-header 
+          title="Restore from JSON" 
+          description="Upload a previously exported backup file to restore your settings and content."
+        ></arova-section-header>
+        <p class="panel-text">Only valid Arova backup files are accepted. Invalid files are rejected without changing current data.</p>
+        <label class="file-input-btn">
+           <input type="file" accept=".json,application/json" (change)="importBackup($event)" [disabled]="actionsDisabled" />
+           <span>{{ importing ? 'Checking file...' : 'Choose JSON backup file' }}</span>
+        </label>
+      </arova-card>
+
+      <!-- Warning panel (Local Mode only) -->
+      <arova-card class="backup-panel danger-panel" [hoverable]="false" *ngIf="!isApiMode">
+        <arova-section-header 
+          title="Reset Universe" 
+          description="Warning: This will replace all local content with initial seed data."
+        ></arova-section-header>
+        <p class="panel-text">This action is permanent and cannot be undone. To proceed, please confirm by typing the text below exactly.</p>
+        <div class="confirmation-text">Type <strong>RESET OUR UNIVERSE</strong> below:</div>
+        <input
+          type="text"
+          class="reset-input"
+          [(ngModel)]="resetConfirmation"
+          placeholder="RESET OUR UNIVERSE"
+          autocomplete="off"
+        />
+        <button type="button" class="reset-danger-btn" [disabled]="!canReset || actionsDisabled" (click)="resetData()">
+          {{ t('resetData') }}
+        </button>
+      </arova-card>
+    </div>
+
+    <!-- Alert Messages -->
+    <div class="message-container" *ngIf="message">
+      <arova-status-pill [type]="messageType === 'success' ? 'success' : 'danger'" [showDot]="true">
+        {{ message }}
+      </arova-status-pill>
+    </div>
+  </div>
+</div>
+

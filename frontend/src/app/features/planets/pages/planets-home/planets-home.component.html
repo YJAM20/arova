@@ -1,0 +1,146 @@
+<div class="arova-page arova-page--wide animate-fade-in">
+  <!-- Top header -->
+  <header class="page-header">
+    <p class="page-eyebrow">✦ Arova Solar System</p>
+    <h1>Relationship Planets</h1>
+    <p>Every day, a new planetary ritual aligns your shared space to focus on key areas of your connection.</p>
+  </header>
+
+  <!-- Daily Planet Hero Card -->
+  <section class="daily-hero glass">
+    <div class="hero-grid">
+      <!-- Planet visual container -->
+      <div class="planet-visual-column">
+        <div class="orbit-visualizer">
+          <div class="orbital-ring ring-1"></div>
+          <div class="orbital-ring ring-2"></div>
+          <!-- Dynamic planet sphere with styles corresponding to planet -->
+          <div class="planet-sphere" [class]="todayPlanet.visualClass">
+            <span class="planet-icon">{{ todayPlanet.icon }}</span>
+            <div class="planet-atmosphere"></div>
+          </div>
+        </div>
+        <div class="completion-stats" *ngIf="state">
+          <div class="progress-ring-container">
+            <svg class="progress-ring-svg" width="120" height="120">
+              <defs>
+                <linearGradient id="planetProgressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#e7a6b6" />
+                  <stop offset="100%" stop-color="#f6be38" />
+                </linearGradient>
+                <filter id="planetGlow">
+                  <feGaussianBlur stdDeviation="3" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
+              <circle class="progress-ring-track" cx="60" cy="60" r="50" fill="transparent" stroke="rgba(255,255,255,0.05)" stroke-width="4" />
+              <circle class="progress-ring-fill" cx="60" cy="60" r="50" fill="transparent"
+                      stroke="url(#planetProgressGradient)" stroke-width="4"
+                      stroke-linecap="round"
+                      [style.stroke-dasharray]="314.16"
+                      [style.stroke-dashoffset]="314.16 - (314.16 * getProgressPercent() / 100)"
+                      filter="url(#planetGlow)" />
+            </svg>
+            <span class="progress-text">{{ getProgressPercent() }}% Ritual Progress</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Planet Info and tasks checklist -->
+      <div class="planet-details-column">
+        <div class="planet-badge-row">
+          <span class="planet-status-pill">Active Daily Planet</span>
+          <span class="difficulty-badge" [class]="todayPlanet.difficulty.toLowerCase()">
+            {{ todayPlanet.difficulty }}
+          </span>
+          <span class="time-badge">⏱ {{ todayPlanet.estimatedTime }}</span>
+        </div>
+
+        <h2 class="planet-name">{{ todayPlanet.name }}</h2>
+        <h3 class="planet-purpose">{{ todayPlanet.purpose }}</h3>
+        <p class="planet-prompt">“{{ todayPlanet.couplePrompt }}”</p>
+
+        <!-- Tasks list -->
+        <div class="tasks-checklist">
+          <span class="checklist-title">Daily Couple Rituals (+{{ todayPlanet.pointsReward }} Points)</span>
+          <div class="task-rows">
+            <label class="task-checkbox-row" *ngFor="let task of todayPlanet.tasks; let i = index">
+              <div class="checkbox-wrapper">
+                <input 
+                  type="checkbox" 
+                  [checked]="state.completedTasks[i]" 
+                  (change)="toggleTask(i, $event)"
+                />
+                <span class="custom-checkbox"></span>
+              </div>
+              <span class="task-text" [class.completed]="state.completedTasks[i]">
+                {{ task }}
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Completion banner -->
+        <div class="completion-banner" *ngIf="state.rewardClaimed">
+          <span class="star-spark">✦</span>
+          <div>
+            <strong>Ritual Complete!</strong>
+            <p>You have aligned with {{ todayPlanet.name }} today. +50 points added to your shared points ledger.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Daily Question section -->
+  <section class="daily-question-card glass">
+    <div class="question-header">
+      <span class="question-icon">💬</span>
+      <div class="question-title-group">
+        <span class="question-label">Daily Planet Question</span>
+        <h2>{{ todayPlanet.dailyQuestion }}</h2>
+      </div>
+    </div>
+    <div class="question-body" *ngIf="!answerSaved">
+      <textarea 
+        rows="3" 
+        [(ngModel)]="answerText" 
+        placeholder="Type a gentle, honest response to share with your partner..."
+        class="arova-textarea"
+      ></textarea>
+      <button type="button" class="submit-question-btn" (click)="saveQuestionAnswer()" [disabled]="!answerText.trim()">
+        Share Response (+15 Points)
+      </button>
+    </div>
+    <div class="question-success" *ngIf="answerSaved">
+      <span class="check-icon">✓</span>
+      <p>Your response has been saved and shared in your universe space! +15 points awarded.</p>
+    </div>
+  </section>
+
+  <!-- Map Grid of all Planets -->
+  <section class="planets-system-map">
+    <h2 class="section-title">The Arova System Map</h2>
+    <div class="planets-grid">
+      <article 
+        class="planet-grid-card glass" 
+        *ngFor="let planet of allPlanets"
+        [class.active-planet]="planet.id === todayPlanet.id"
+      >
+        <div class="planet-card-header">
+          <span class="mini-planet-sphere" [class]="planet.visualClass">{{ planet.icon }}</span>
+          <span class="active-badge-mini" *ngIf="planet.id === todayPlanet.id">Today</span>
+        </div>
+        <h3 class="planet-card-name">{{ planet.name }}</h3>
+        <p class="planet-card-purpose">{{ planet.purpose }}</p>
+        <div class="planet-card-meta">
+          <span class="difficulty-indicator" [class]="planet.difficulty.toLowerCase()">{{ planet.difficulty }}</span>
+          <span>{{ planet.estimatedTime }}</span>
+        </div>
+      </article>
+    </div>
+  </section>
+</div>

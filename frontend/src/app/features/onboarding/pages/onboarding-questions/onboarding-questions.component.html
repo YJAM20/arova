@@ -1,0 +1,17 @@
+<main class="questions-page">
+  <section class="question-card glass" *ngIf="current">
+    <a routerLink="/" class="brand">Arova</a>
+    <p class="eyebrow">Quick start {{ index + 1 }} of {{ questions.length }}</p>
+    <div class="progress"><i [style.width.%]="progress"></i></div>
+    <h1>{{ current.prompt }}</h1>
+    <textarea rows="5" [(ngModel)]="answers[current.id]" placeholder="A short answer is enough."></textarea>
+    <div class="actions">
+      <button type="button" (click)="back()" [disabled]="index === 0">Back</button>
+      <button type="button" (click)="next()" *ngIf="index < questions.length - 1">Next</button>
+      <button type="button" (click)="save()" *ngIf="index === questions.length - 1" [disabled]="isBusy">Save answers</button>
+    </div>
+    <button type="button" class="skip" (click)="skip()">Skip for now — use the default experience.</button>
+    <p class="message" *ngIf="message">{{ message }}</p>
+    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+  </section>
+</main>

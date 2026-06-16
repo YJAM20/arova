@@ -1,0 +1,74 @@
+<main class="profile-page">
+  <form class="profile-card glass" (ngSubmit)="save()">
+    <a routerLink="/" class="brand">Arova</a>
+    <h1>Set up your profile</h1>
+    <p>These details help Arova feel calm, useful, and personal without exposing private data publicly.</p>
+
+    <div class="grid">
+      <label>
+        <span>Display name</span>
+        <input name="displayName" [(ngModel)]="profile.displayName" />
+      </label>
+      <label>
+        <span>Avatar URL</span>
+        <input name="avatarUrl" [(ngModel)]="profile.avatarUrl" />
+      </label>
+      <label>
+        <span>Date of birth</span>
+        <input name="dateOfBirth" type="date" [(ngModel)]="profile.dateOfBirth" />
+      </label>
+      <label>
+        <span>Relationship status</span>
+        <input name="relationshipStatus" [(ngModel)]="profile.relationshipStatus" />
+      </label>
+      <label>
+        <span>Relationship type</span>
+        <input name="relationshipType" [(ngModel)]="profile.relationshipType" />
+      </label>
+      <label>
+        <span>Preferred language</span>
+        <select name="preferredLanguage" [(ngModel)]="profile.preferredLanguage">
+          <option value="en">English</option>
+          <option value="ar">Arabic</option>
+          <option value="es">Spanish</option>
+        </select>
+      </label>
+      <label>
+        <span>Preferred theme</span>
+        <select name="preferredTheme" [(ngModel)]="profile.preferredTheme">
+          <option value="dark-romantic">Dark Romantic</option>
+          <option value="soft-pink">Soft Pink</option>
+          <option value="midnight-stars">Midnight Stars</option>
+        </select>
+      </label>
+      <label>
+        <span>Love language optional</span>
+        <input name="loveLanguage" [(ngModel)]="profile.loveLanguage" />
+      </label>
+      <label>
+        <span>Personality style optional</span>
+        <input name="personalityStyle" [(ngModel)]="profile.personalityStyle" />
+      </label>
+    </div>
+
+    <label>
+      <span>Bio</span>
+      <textarea name="bio" rows="3" [(ngModel)]="profile.bio"></textarea>
+    </label>
+
+    <section class="mature-note" *ngIf="isAdult; else underAge">
+      <label class="toggle">
+        <input type="checkbox" name="matureContentEnabled" [(ngModel)]="profile.matureContentEnabled" />
+        <span>Mature mode</span>
+      </label>
+      <p>Available only when both partners are 18+.</p>
+    </section>
+    <ng-template #underAge>
+      <p class="mature-note">Mature mode is unavailable unless both partners are 18+.</p>
+    </ng-template>
+
+    <button type="submit" [disabled]="isBusy">{{ isBusy ? 'Saving...' : 'Save profile' }}</button>
+    <p class="message" *ngIf="message">{{ message }}</p>
+    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+  </form>
+</main>

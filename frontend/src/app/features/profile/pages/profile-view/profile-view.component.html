@@ -1,0 +1,354 @@
+<div class="arova-page arova-page--wide">
+  <!-- Success / Error Alerts -->
+  <div *ngIf="successMessage" class="alert alert-success mb-6 p-4 rounded-xl flex items-center justify-between">
+    <span>✨ {{ successMessage }}</span>
+    <button (click)="successMessage = ''" class="close-btn text-lg">&times;</button>
+  </div>
+  <div *ngIf="errorMessage" class="alert alert-danger mb-6 p-4 rounded-xl flex items-center justify-between">
+    <span>⚠️ {{ errorMessage }}</span>
+    <button (click)="errorMessage = ''" class="close-btn text-lg">&times;</button>
+  </div>
+
+  <!-- Header Card (Premium Glassmorphism Profile Card) -->
+  <div class="profile-header-card glassmorphism p-6 rounded-2xl mb-8 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
+    <div class="glow-sphere pos-1"></div>
+    <div class="glow-sphere pos-2"></div>
+
+    <!-- Avatar with Rank Border -->
+    <div class="avatar-wrapper relative">
+      <svg class="progress-ring-svg absolute" width="140" height="140">
+        <defs>
+          <linearGradient id="avatarGlowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#a855f7" />
+            <stop offset="100%" stop-color="#ec4899" />
+          </linearGradient>
+          <filter id="avatarGlow">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+        <!-- Background track circle -->
+        <circle class="progress-ring-track" cx="70" cy="70" r="64" fill="transparent" stroke="rgba(255,255,255,0.05)" stroke-width="3" />
+        <!-- Animated fill circle -->
+        <circle class="progress-ring-fill" cx="70" cy="70" r="64" fill="transparent"
+                stroke="url(#avatarGlowGradient)" stroke-width="3"
+                stroke-linecap="round"
+                [style.stroke-dasharray]="402.1"
+                [style.stroke-dashoffset]="402.1 - (402.1 * progressPercent / 100)"
+                filter="url(#avatarGlow)" />
+      </svg>
+      <div class="avatar-inner">
+        <img [src]="profile.avatarUrl || 'assets/images/default-avatar.png'" alt="Avatar" class="avatar-img object-cover w-32 h-32 rounded-full" />
+      </div>
+      <span class="streak-badge flex items-center justify-center gap-1" title="Current Daily Streak">
+        🔥 <span>{{ streak }}</span>
+      </span>
+    </div>
+
+    <!-- Profile Text Information -->
+    <div class="profile-info flex-1 text-center md:text-left z-10">
+      <div class="flex flex-col md:flex-row md:items-center gap-3 mb-2">
+        <h1 class="display-name text-3xl font-extrabold tracking-tight text-white">
+          {{ profile.displayName || 'Adventurer' }}
+        </h1>
+        <div class="rank-badge px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
+          🪐 {{ currentRank?.title }}
+        </div>
+      </div>
+      
+      <p class="bio-text text-sm text-neutral-300 max-w-xl mb-4 italic">
+        "{{ profile.bio || 'Just another soul in this shared universe.' }}"
+      </p>
+
+      <!-- Tag Metadata Grid -->
+      <div class="metadata-tags flex flex-wrap gap-2 justify-center md:justify-start">
+        <span class="meta-tag flex items-center gap-1">
+          📅 <span class="label">Duration:</span> {{ relationshipDurationText }}
+        </span>
+        <span class="meta-tag flex items-center gap-1">
+          💖 <span class="label">Love Language:</span> {{ profile.loveLanguage || 'Not set yet' }}
+        </span>
+        <span class="meta-tag flex items-center gap-1">
+          ✨ <span class="label">Style:</span> {{ profile.personalityStyle || 'Not set yet' }}
+        </span>
+        <span class="meta-tag flex items-center gap-1">
+          🔗 <span class="label">Status:</span> {{ profile.relationshipStatus || 'Paired' }} ({{ profile.relationshipType || 'Monogamous' }})
+        </span>
+      </div>
+    </div>
+
+    <!-- Edit Profile Button -->
+    <div class="edit-action z-10">
+      <button (click)="enableEdit()" class="btn-edit px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2">
+        ✏️ Edit Profile
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Section: Left Stats + Level; Right Memories Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Left Column: Gamification & Relationship Status -->
+    <div class="space-y-8">
+      <!-- Statistics Row -->
+      <div class="stats-card glassmorphism p-6 rounded-2xl">
+        <h3 class="section-title text-lg font-bold mb-4 flex items-center gap-2">📊 Universe Stats</h3>
+        <div class="grid grid-cols-3 gap-4 text-center">
+          <div class="stat-box p-3 rounded-xl">
+            <span class="stat-value text-2xl font-bold block text-primary">{{ totalMemories }}</span>
+            <span class="stat-label text-xs text-neutral-400">Memories</span>
+          </div>
+          <div class="stat-box p-3 rounded-xl">
+            <span class="stat-value text-2xl font-bold block text-accent">{{ totalLetters }}</span>
+            <span class="stat-label text-xs text-neutral-400">Letters</span>
+          </div>
+          <div class="stat-box p-3 rounded-xl">
+            <span class="stat-value text-2xl font-bold block text-info">{{ totalReasons }}</span>
+            <span class="stat-label text-xs text-neutral-400">Reasons</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rank and Points Progress Ring -->
+      <div class="rank-card glassmorphism p-6 rounded-2xl">
+        <h3 class="section-title text-lg font-bold mb-3 flex items-center gap-2">⭐ Level Progression</h3>
+        <div class="points-summary flex justify-between items-baseline mb-2">
+          <span class="text-xs text-neutral-400">Total Points</span>
+          <span class="text-xl font-extrabold text-white">{{ totalPoints }} <span class="text-xs text-neutral-400">pts</span></span>
+        </div>
+        
+        <div class="progress-bar-container w-full h-3 bg-neutral-800 rounded-full overflow-hidden mb-3">
+          <div class="progress-fill h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-500" [style.width.%]="progressPercent"></div>
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-neutral-400">
+          <span>Current: <strong>{{ currentRank?.title }}</strong></span>
+          <span *ngIf="nextRank">Next: <strong>{{ nextRank?.title }}</strong> (requires {{ nextRank?.minPoints }} pts)</span>
+          <span *ngIf="!nextRank">Maximum Rank Achieved!</span>
+        </div>
+      </div>
+
+      <!-- Activity Feed / Points Ledger -->
+      <div class="ledger-card glassmorphism p-6 rounded-2xl max-h-96 flex flex-col">
+        <h3 class="section-title text-lg font-bold mb-4 flex items-center gap-2">📜 Connection Ledger</h3>
+        <div class="ledger-list overflow-y-auto space-y-3 pr-2 flex-1 scrollbar-thin">
+          <div *ngFor="let item of pointsLedger" class="ledger-item p-3 rounded-xl flex items-center justify-between gap-3 text-xs bg-neutral-900/40 border border-neutral-800/40">
+            <div class="flex-1">
+              <span class="action-desc font-semibold text-white block">{{ item.action }}</span>
+              <span class="action-time text-neutral-400">{{ item.timestamp | date:'short' }}</span>
+            </div>
+            <div class="points-reward font-bold text-emerald-400 flex items-center gap-0.5">
+              +{{ item.points }}
+            </div>
+          </div>
+          <div *ngIf="pointsLedger.length === 0" class="text-center py-6 text-xs text-neutral-400">
+            No activities logged yet. Go create memories or answers to gain points!
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Instagram-like Photo Grid -->
+    <div class="lg:col-span-2">
+      <div class="memories-grid-card glassmorphism p-6 rounded-2xl h-full flex flex-col">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="section-title text-xl font-bold flex items-center gap-2">🖼️ Shared Memory Grid</h2>
+          <span class="badge-count px-3 py-1 rounded-full text-xs bg-neutral-800 text-neutral-300">
+            {{ totalMemories }} Memories preserved
+          </span>
+        </div>
+
+        <!-- Instagram Grid -->
+        <div class="grid grid-cols-3 gap-2 md:gap-4 flex-1 align-content-start overflow-y-auto max-h-[600px] pr-2 scrollbar-thin">
+          <!-- Create Memory block if empty -->
+          <div *ngIf="memories.length === 0" class="col-span-3 py-20 text-center flex flex-col items-center justify-center gap-4">
+            <span class="text-4xl">📸</span>
+            <h4 class="text-lg font-bold">No Memories Shared Yet</h4>
+            <p class="text-sm text-neutral-400 max-w-xs">
+              Every couple has a story. Preserving your first memory starts a beautiful galaxy.
+            </p>
+            <a routerLink="/memories/new" class="btn-create px-4 py-2 rounded-xl text-sm font-semibold">
+              + Share a Memory
+            </a>
+          </div>
+
+          <div *ngFor="let memory of memories" 
+               (click)="openMemoryPreview(memory)" 
+               class="grid-item relative aspect-square rounded-xl overflow-hidden cursor-pointer group">
+            
+            <!-- Image View -->
+            <img *ngIf="memory.imageUrl" 
+                 [src]="memory.imageUrl" 
+                 alt="{{ memory.title }}" 
+                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+
+            <!-- Fallback Gradient View -->
+            <div *ngIf="!memory.imageUrl" 
+                 [style.background]="getMemoryPlaceholderGradient(memory)" 
+                 class="w-full h-full flex flex-col items-center justify-center p-3 text-center transition-transform duration-500 group-hover:scale-110">
+              <span class="text-3xl mb-1">{{ getMemoryCategoryIcon(memory.category) }}</span>
+              <span class="text-xs font-bold text-white line-clamp-2 px-2">{{ memory.title }}</span>
+            </div>
+
+            <!-- Dark Overlay Hover Grid UI (Like Instagram Likes/Comments) -->
+            <div class="grid-hover-overlay absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-3 text-center">
+              <span class="heart-icon text-xl mb-1">❤️</span>
+              <span class="hover-title text-sm font-bold text-white line-clamp-1 mb-1">{{ memory.title }}</span>
+              <span class="hover-date text-2xs text-neutral-300">{{ memory.date | date:'mediumDate' }}</span>
+              <span class="category-badge mt-2 px-2 py-0.5 rounded-full text-3xs font-semibold uppercase bg-white/20 text-white">
+                {{ memory.category }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile Edit Drawer / Modal Backdrop -->
+  <div *ngIf="isEditing" class="modal-backdrop fixed inset-0 bg-black/85 flex items-center justify-center p-4 z-50 animate-fade-in">
+    <div class="modal-card glassmorphism max-w-lg w-full p-6 rounded-2xl relative overflow-hidden max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-extrabold text-white">Edit Your Profile</h2>
+        <button (click)="cancelEdit()" class="text-neutral-400 hover:text-white text-2xl">&times;</button>
+      </div>
+
+      <form (ngSubmit)="saveProfile()" class="space-y-4">
+        <!-- Display Name -->
+        <div>
+          <label class="block text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-1">Display Name</label>
+          <input type="text" [(ngModel)]="editedProfile.displayName" name="displayName" class="input-field w-full px-4 py-2.5 rounded-xl" placeholder="Your display name" required />
+        </div>
+
+        <!-- Custom Avatar URL -->
+        <div>
+          <label class="block text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-1">Avatar Image URL</label>
+          <input type="text" [(ngModel)]="editedProfile.avatarUrl" name="avatarUrl" class="input-field w-full px-4 py-2.5 rounded-xl mb-2" placeholder="https://unsplash.com/..." />
+          
+          <!-- Presets -->
+          <label class="block text-2xs text-neutral-400 mb-1">Or choose a cosmic preset:</label>
+          <div class="flex gap-2 overflow-x-auto pb-1">
+            <button type="button" *ngFor="let preset of avatarPresets" (click)="selectPresetAvatar(preset.url)" class="preset-avatar-btn flex-shrink-0 w-10 h-10 rounded-full border border-neutral-700 overflow-hidden" [class.active]="editedProfile.avatarUrl === preset.url">
+              <img [src]="preset.url" alt="{{preset.name}}" class="w-full h-full object-cover" />
+            </button>
+          </div>
+        </div>
+
+        <!-- Bio -->
+        <div>
+          <label class="block text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-1">Personal Bio</label>
+          <textarea [(ngModel)]="editedProfile.bio" name="bio" class="input-field w-full px-4 py-2.5 rounded-xl h-20 resize-none" placeholder="Describe your placement in the shared stars..."></textarea>
+        </div>
+
+        <!-- Love Language & Personality Style -->
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-1">Love Language</label>
+            <select [(ngModel)]="editedProfile.loveLanguage" name="loveLanguage" class="input-field w-full px-4 py-2.5 rounded-xl">
+              <option value="">Choose one...</option>
+              <option value="Words of Affirmation">Words of Affirmation</option>
+              <option value="Quality Time">Quality Time</option>
+              <option value="Receiving Gifts">Receiving Gifts</option>
+              <option value="Acts of Service">Acts of Service</option>
+              <option value="Physical Touch">Physical Touch</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-1">Personality Style</label>
+            <input type="text" [(ngModel)]="editedProfile.personalityStyle" name="personalityStyle" class="input-field w-full px-4 py-2.5 rounded-xl" placeholder="e.g. Dreamer, Adventurer" />
+          </div>
+        </div>
+
+        <!-- Relationship Info -->
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-1">Status</label>
+            <input type="text" [(ngModel)]="editedProfile.relationshipStatus" name="relationshipStatus" class="input-field w-full px-4 py-2.5 rounded-xl" placeholder="e.g. Paired, Dating" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-1">Type</label>
+            <input type="text" [(ngModel)]="editedProfile.relationshipType" name="relationshipType" class="input-field w-full px-4 py-2.5 rounded-xl" placeholder="e.g. Monogamous" />
+          </div>
+        </div>
+
+        <!-- Date of birth (to compute if adult) -->
+        <div>
+          <label class="block text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-1">Date of Birth</label>
+          <input type="date" [(ngModel)]="editedProfile.dateOfBirth" name="dateOfBirth" class="input-field w-full px-4 py-2.5 rounded-xl" />
+        </div>
+
+        <!-- Mature content toggle -->
+        <div class="flex items-center gap-2 pt-2">
+          <input type="checkbox" id="matureContent" [(ngModel)]="editedProfile.matureContentEnabled" name="matureContentEnabled" class="checkbox-input" />
+          <label for="matureContent" class="text-xs text-neutral-300">Enable Mature Content / Filters (18+ only)</label>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex gap-3 pt-4 justify-end">
+          <button type="button" (click)="cancelEdit()" class="btn-cancel px-5 py-2.5 rounded-xl text-sm font-semibold">
+            Cancel
+          </button>
+          <button type="submit" [disabled]="isSaving" class="btn-save px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2">
+            <span *ngIf="isSaving" class="spinner border-t-2 border-white w-4 h-4 rounded-full animate-spin"></span>
+            {{ isSaving ? 'Saving...' : 'Save Profile' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Memory Details Modal -->
+  <div *ngIf="selectedMemory" class="modal-backdrop fixed inset-0 bg-black/90 flex items-center justify-center p-4 z-50 animate-fade-in" (click)="closeMemoryPreview()">
+    <div class="memory-modal-card glassmorphism max-w-2xl w-full rounded-2xl relative overflow-hidden flex flex-col md:flex-row max-h-[85vh]" (click)="$event.stopPropagation()">
+      <!-- Close Button -->
+      <button (click)="closeMemoryPreview()" class="absolute top-4 right-4 text-white hover:text-neutral-300 text-2xl z-20">&times;</button>
+
+      <!-- Image Column -->
+      <div class="memory-modal-image w-full md:w-1/2 aspect-square md:aspect-auto md:h-full bg-neutral-900 relative">
+        <img *ngIf="selectedMemory.imageUrl" [src]="selectedMemory.imageUrl" alt="{{ selectedMemory.title }}" class="w-full h-full object-cover" />
+        
+        <div *ngIf="!selectedMemory.imageUrl" 
+             [style.background]="getMemoryPlaceholderGradient(selectedMemory)" 
+             class="w-full h-full flex flex-col items-center justify-center p-6 text-center">
+          <span class="text-6xl mb-2">{{ getMemoryCategoryIcon(selectedMemory.category) }}</span>
+          <span class="text-sm font-semibold text-white/50">Shared Moment</span>
+        </div>
+      </div>
+
+      <!-- Content Column -->
+      <div class="memory-modal-content w-full md:w-1/2 p-6 flex flex-col justify-between">
+        <div class="space-y-4">
+          <div class="flex items-center gap-2">
+            <span class="category-badge px-2 py-0.5 rounded-full text-xs font-semibold uppercase bg-primary/20 text-primary">
+              {{ selectedMemory.category }}
+            </span>
+            <span *ngIf="selectedMemory.mood" class="mood-badge px-2 py-0.5 rounded-full text-xs font-semibold bg-neutral-800 text-neutral-300">
+              Mood: {{ selectedMemory.mood }}
+            </span>
+          </div>
+
+          <h2 class="text-2xl font-extrabold text-white leading-tight">
+            {{ selectedMemory.title }}
+          </h2>
+
+          <p class="text-xs text-neutral-400">
+            📆 preserved on {{ selectedMemory.date | date:'longDate' }}
+          </p>
+
+          <p class="text-sm text-neutral-300 leading-relaxed overflow-y-auto max-h-48 pr-1 scrollbar-thin">
+            {{ selectedMemory.description }}
+          </p>
+        </div>
+
+        <div class="pt-6 border-t border-neutral-800 flex justify-between items-center text-xs">
+          <span class="text-neutral-400">Locked in Arova vault</span>
+          <a [routerLink]="['/memories', selectedMemory.id]" (click)="closeMemoryPreview()" class="text-accent hover:underline font-semibold flex items-center gap-1">
+            View Details &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

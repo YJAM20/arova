@@ -1,0 +1,167 @@
+<div class="arova-page arova-page--wide animate-fade-in">
+  <header class="page-header">
+    <p class="page-eyebrow">{{ t('mood') }}</p>
+    <h1>{{ t('moodTitle') }}</h1>
+    <p>{{ t('moodSubtitle') }}</p>
+  </header>
+
+  <section class="mood-layout">
+    <div class="mood-compose glass">
+      <!-- Daily Prompt Banner -->
+      <div class="daily-prompt-banner">
+        <span class="prompt-star">✦</span>
+        <div class="prompt-text">
+          <span class="prompt-label">Daily Prompt</span>
+          <p class="prompt-question">"{{ dailyPrompt }}"</p>
+        </div>
+      </div>
+
+      <div class="section-heading">
+        <span>How are you feeling?</span>
+        <strong *ngIf="todayMood" class="active-badge">
+          Currently: {{ getMoodEmoji(todayMood.mood) }} {{ getMoodLabel(todayMood.mood) }}
+        </strong>
+      </div>
+
+      <div class="mood-grid" role="listbox" aria-label="Choose today's mood">
+        <button
+          type="button"
+          class="mood-card-option"
+          *ngFor="let option of moodOptions"
+          [class.active]="selectedMood === option.value"
+          (click)="selectMood(option.value)"
+        >
+          <span class="mood-emoji-display">{{ option.icon }}</span>
+          <span class="mood-meta">
+            <span class="mood-label-name">{{ option.label }}</span>
+            <small class="mood-hint-desc">{{ option.hint }}</small>
+          </span>
+        </button>
+      </div>
+
+      <label class="note-field" for="mood-note">
+        <span>Add a gentle note (optional)</span>
+        <textarea
+          id="mood-note"
+          rows="3"
+          [(ngModel)]="note"
+          placeholder="What's on your mind or heart? Your partner will see this..."
+          class="arova-textarea"
+        ></textarea>
+      </label>
+
+      <div class="save-actions">
+        <button class="save-mood-btn" type="button" (click)="saveMood()">
+          <span>✦</span> {{ t('saveMood') }}
+        </button>
+        <span class="saved-indicator" *ngIf="savedMessage">✓ Saved</span>
+      </div>
+
+      <div class="mood-message" *ngIf="savedMessage">
+        <p>{{ savedMessage }}</p>
+      </div>
+    </div>
+
+    <aside class="today-card glass">
+      <div class="sidebar-header-row">
+        <span class="card-label">Your heart today</span>
+        <span class="star-accent">✦</span>
+      </div>
+      <ng-container *ngIf="todayMood; else noMood">
+        <div class="current-mood-status">
+          <span class="large-mood-emoji">{{ getMoodEmoji(todayMood.mood) }}</span>
+          <div class="status-text">
+            <h2>{{ getMoodLabel(todayMood.mood) }}</h2>
+            <small>Shared today</small>
+          </div>
+        </div>
+        <div class="mood-desc-box">
+          <p>{{ getMoodMessage(todayMood.mood) }}</p>
+        </div>
+        <blockquote *ngIf="todayMood.note" class="mood-quote">
+          “{{ todayMood.note }}”
+        </blockquote>
+      </ng-container>
+      <ng-template #noMood>
+        <div class="empty-state-sidebar">
+          <span class="empty-icon">🤍</span>
+          <h2>Not set yet</h2>
+          <p>Choose an emotion from the grid to let your partner know how you are holding up.</p>
+        </div>
+      </ng-template>
+    </aside>
+  </section>
+
+  <!-- Partner's Mood Today -->
+  <section class="other-moods" *ngIf="otherTodayMoods.length > 0">
+    <h2 class="section-title">Their mood today</h2>
+    <article class="other-card glass" *ngFor="let entry of otherTodayMoods">
+      <div class="partner-mood-details">
+        <span class="entry-owner">{{ getUserName(entry.userId) }}’s Space</span>
+        <div class="partner-mood-display">
+          <span class="partner-emoji">{{ getMoodEmoji(entry.mood) }}</span>
+          <div class="partner-status">
+            <h3>{{ getMoodLabel(entry.mood) }}</h3>
+            <p>{{ getMoodMessage(entry.mood) }}</p>
+          </div>
+        </div>
+        <blockquote *ngIf="entry.note" class="partner-quote">“{{ entry.note }}”</blockquote>
+        
+        <div class="response-display" *ngIf="entry.response">
+          <span class="response-label">Your response</span>
+          <p class="response-text">“{{ entry.response }}”</p>
+        </div>
+      </div>
+
+      <div class="response-box-wrapper" *ngIf="!entry.response">
+        <span class="response-title">Leave a soft response</span>
+        <textarea
+          rows="2"
+          [(ngModel)]="responseDrafts[entry.id]"
+          placeholder="Send reassurance, support, or love..."
+          class="arova-textarea"
+        ></textarea>
+        <button class="send-response-btn" type="button" (click)="respond(entry)">
+          Send response
+        </button>
+      </div>
+    </article>
+  </section>
+
+  <!-- History section -->
+  <section class="history-section">
+    <h2 class="section-title">Mood history</h2>
+
+    <div class="history-list" *ngIf="history.length > 0; else emptyHistory">
+      <article class="history-item-card glass" *ngFor="let entry of history">
+        <div class="history-header">
+          <div class="history-user-info">
+            <span class="history-owner-badge" [class.partner-a]="entry.userId === currentUser?.id">
+              {{ getUserName(entry.userId) }}
+            </span>
+            <span class="history-date">{{ formatDate(entry.date) }}</span>
+          </div>
+          <div class="history-mood-badge">
+            <span class="history-emoji">{{ getMoodEmoji(entry.mood) }}</span>
+            <span class="history-label">{{ getMoodLabel(entry.mood) }}</span>
+          </div>
+        </div>
+        <div class="history-body">
+          <blockquote *ngIf="entry.note" class="history-quote">“{{ entry.note }}”</blockquote>
+          <div class="history-response" *ngIf="entry.response">
+            <span class="response-badge">Response</span>
+            <p class="response-content">“{{ entry.response }}”</p>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <ng-template #emptyHistory>
+      <div class="empty-state-placeholder glass">
+        <span class="empty-history-icon">📜</span>
+        <h3>No moods logged yet</h3>
+        <p>Your logged moods and shared notes will appear here over time.</p>
+      </div>
+    </ng-template>
+  </section>
+</div>

@@ -1,0 +1,34 @@
+<main class="verify-page">
+  <section class="verify-card glass">
+    <a routerLink="/" class="brand">Arova</a>
+    <h1>Verify your account</h1>
+    <p>Email verification keeps your shared space safer.</p>
+
+    <div class="tabs">
+      <button type="button" [class.active]="activeTab === 'email'" (click)="setTab('email')">Email</button>
+      <button type="button" [class.active]="activeTab === 'phone'" (click)="setTab('phone')">Phone</button>
+    </div>
+
+    <form *ngIf="activeTab === 'email'" (ngSubmit)="verify()">
+      <label>
+        <span>Email address</span>
+        <input name="email" type="email" [(ngModel)]="email" />
+      </label>
+      <button type="button" (click)="requestCode()" [disabled]="isBusy">Request code</button>
+      <label>
+        <span>6-digit code</span>
+        <input name="code" maxlength="6" [(ngModel)]="code" />
+      </label>
+      <button type="submit" [disabled]="isBusy || !/^\d{6}$/.test((code || '').trim())">Verify</button>
+      <small>In local development, the verification code appears in the backend console.</small>
+    </form>
+
+    <section *ngIf="activeTab === 'phone'" class="phone-note">
+      <h2>Phone verification placeholder</h2>
+      <p>Phone verification is not available yet. Please use email verification for now.</p>
+    </section>
+
+    <p class="message" *ngIf="message">{{ message }}</p>
+    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+  </section>
+</main>
