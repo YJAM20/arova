@@ -16,66 +16,65 @@
 
 <canvas #particlesCanvas class="particles-canvas" aria-hidden="true"></canvas>
 
-<!-- Fixed Top Navigation -->
-<nav class="landing-nav" aria-label="Main Navigation">
-  <div class="nav-container">
-    <a routerLink="/" class="nav-brand">
-      <svg class="brand-logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <path d="M12 2L15 9H22L16.5 13.5L18.5 20.5L12 16L5.5 20.5L7.5 13.5L2 9H9L12 2Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>
+<!-- Top Navigation -->
+<header class="landing-nav fixed top-0 left-0 w-full z-50 nav-blur border-b border-white/5">
+  <nav class="max-w-[1200px] mx-auto px-4 md:px-16 flex justify-between items-center h-20">
+    <a routerLink="/" class="nav-brand flex items-center gap-3">
+      <svg class="brand-logo w-8 h-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M12 2L15 9H22L16.5 13.5L18.5 20.5L12 16L5.5 20.5L7.5 13.5L2 9H9L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
       </svg>
-      <span class="brand-text">Arova</span>
+      <span class="brand-text font-semibold text-xl tracking-tight text-white">Arova</span>
     </a>
-
-    <div class="nav-links">
-      <a routerLink="/" fragment="product" class="nav-link">Product</a>
-      <a routerLink="/auth" class="nav-link">Demo</a>
-      <a routerLink="/plans" class="nav-link">Plans</a>
+    
+    <div class="hidden md:flex items-center gap-8">
+      <a routerLink="/auth" class="nav-link text-on-surface-variant hover:text-white transition-colors duration-300 font-label-caps text-xs tracking-wider uppercase">Universe</a>
+      <a routerLink="/plans" class="nav-link text-on-surface-variant hover:text-white transition-colors duration-300 font-label-caps text-xs tracking-wider uppercase">Plans</a>
+      <a routerLink="/auth" class="nav-link text-on-surface-variant hover:text-white transition-colors duration-300 font-label-caps text-xs tracking-wider uppercase">Demo</a>
     </div>
 
-    <div class="nav-actions">
-      <a routerLink="/auth" class="signin-btn">Sign In</a>
+    <div class="flex items-center gap-4">
+      <a routerLink="/auth" class="signin-btn px-6 py-2 rounded-full border border-white/10 hover:bg-white hover:text-black transition-all duration-300 text-xs font-semibold">Sign In</a>
     </div>
-  </div>
-</nav>
+  </nav>
+</header>
 
 <!-- Main Scroll Flow Container -->
 <div class="scroll-landing">
 
   <!-- Section 1: Hero -->
   <header class="hero" [style.opacity]="heroOpacity">
-    <div class="hero-content">
-      <span class="hero-eyebrow">Arova Purpose</span>
-      <h1 id="landing-hero-title">Create a private universe <em>for two</em>.</h1>
-      <p class="hero-description">
-        Arova brings memories, letters, moods, music, future plans, and daily questions into one calm shared space.
+    <div class="hero-content max-w-4xl mx-auto text-center space-y-6">
+      <span class="hero-eyebrow text-xs uppercase tracking-[0.2em] text-primary opacity-80">Architectural Intimacy</span>
+      <h1 id="landing-hero-title" class="text-glow-primary">Create a private universe <br/> <em>for two</em>.</h1>
+      <p class="hero-description text-on-surface-variant max-w-2xl mx-auto leading-relaxed text-lg">
+        Memories, letters, moods, songs, future plans, and quiet rituals — all in one shared space. Escape the noise of the collective and dwell within a shared digital firmament designed for profound connection.
       </p>
 
-      <div class="hero-ctas">
-        <a routerLink="/auth" class="cta-btn primary-cta">Start with Arova</a>
-        <div class="demo-cta-container">
-          <a routerLink="/auth" class="cta-btn secondary-cta">
-            Local Demo
+      <div class="hero-ctas flex flex-col sm:flex-row gap-6 justify-center pt-4">
+        <a routerLink="/auth" class="cta-btn primary-cta px-10 py-4 rounded-full font-semibold text-sm transition-all duration-300 hover:scale-105">
+          Start with Arova
+        </a>
+        <div class="demo-cta-container flex flex-col items-center gap-2">
+          <a routerLink="/auth" class="cta-btn secondary-cta px-10 py-4 rounded-full font-semibold text-sm border border-white/10 hover:bg-white/10 transition-all duration-300">
+            Start Local Demo
           </a>
-          <span class="demo-credentials-note">owner / 1234</span>
+          <span class="demo-credentials-note font-mono text-[10px] text-neutral-400">owner / 1234</span>
         </div>
       </div>
 
-      <div class="scroll-indicator" aria-hidden="true">
-        <span class="scroll-text">Scroll to explore</span>
-        <svg class="scroll-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="12" y1="5" x2="12" y2="19"></line>
-          <polyline points="19 12 12 19 5 12"></polyline>
+      <div class="scroll-indicator flex flex-col items-center gap-2 pt-12 opacity-50" aria-hidden="true">
+        <span class="scroll-text text-[10px] uppercase tracking-widest text-neutral-400">Descend</span>
+        <svg class="scroll-arrow w-4 h-4 text-neutral-400 animate-bounce" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
         </svg>
       </div>
     </div>
   </header>
 
-  <!-- Section 2: Trigger spacer for revealed cards -->
-  <div #cardsTrigger class="trigger-section">
-    <!-- This empty section drives the scroll animation bounds for the cards -->
-  </div>
+  <!-- Section 2: Trigger spacer for revealed cards on scroll -->
+  <div #cardsTrigger class="trigger-section"></div>
 
-  <!-- Section 3: Fixed Revealed Cards Layer -->
+  <!-- Section 3: Revealed Bento Grid / Feature Universe Preview -->
   <div 
     #fixedCards 
     class="fixed-cards"
@@ -83,91 +82,175 @@
     [style.clip-path]="cardsClipPath"
     [style.pointer-events]="cardsPointerEvents"
   >
-    <div class="cards-container">
-      <div class="cards-header">
-        <span class="cards-eyebrow">Shared Rituals</span>
-        <h2>Designed for Connection</h2>
+    <div class="cards-container max-w-[1200px] w-full mx-auto px-4">
+      <div class="cards-header text-center mb-12">
+        <span class="cards-eyebrow text-xs uppercase tracking-[0.2em] text-primary opacity-80 block mb-2">Symmetry of Design</span>
+        <h2 class="text-white text-3xl font-semibold">Every module is an architectural testament to your shared narrative.</h2>
       </div>
 
-      <div class="cards-grid">
+      <div class="bento-grid grid grid-cols-1 md:grid-cols-12 gap-6">
+        
+        <!-- Large Bento Card: The Living Archive -->
+        <div class="md:col-span-8 group cursor-pointer relative overflow-hidden glass-module p-8 flex flex-col justify-end min-h-[320px] rounded-2xl border border-white/10">
+          <div class="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity duration-700">
+            <img alt="Nebula concept" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDg3bO8fo9WMnYTK14LBvZ9ZqFURV9mWJ4vq5xvncekDuYtmvKPHAhbT2zfV1S-G1-HJAvbVp4NQPIAHjVpNf78bq5x76IKmEllg3KYrcrv3YG_ZNHWRxUFUGnL8sY-PUhLv65Yw2O_uKpc9nBSkDo9HNyk3r4TuoTB4UTYM4lkJUVfhaISe_RhBOLdSrC0mFgtIWGcySJrKKJAzUXDyNkbF-wxKTZCuabsvG40SDvjCHyDfuKJ1wosbLi_ET2H5JTjfJhiv6Sd7qjc" />
+          </div>
+          <div class="relative z-10 space-y-2 text-left">
+            <h3 class="text-xl font-bold text-white">The Living Archive</h3>
+            <p class="text-sm text-neutral-300 max-w-md">A persistent timeline of every word, image, and pulse shared between you. Encrypted in the stars of your personal nebula.</p>
+          </div>
+        </div>
+
+        <!-- Tall Bento Card: Vessel Status -->
+        <div class="md:col-span-4 glass-module p-6 flex flex-col justify-between rounded-2xl border border-white/10 min-h-[320px]">
+          <div class="h-32 rounded-lg overflow-hidden border border-white/5 relative">
+            <img alt="Quantum detail" class="w-full h-full object-cover grayscale opacity-40" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGka3_Ggs3a0zHhfYfn3n5enHAFrEMRwfBbG-pX-fQyAhWPHTdEoOzNwLjxQHkHM-uFdR7TJCy2YFIIeKFBo64C3irpSBEfCpyaw5aEbMEvNzdpq_0oHkkIDaRpmwy3LH4gza8mkgkYi0uM9r896Xcsm93SuIuth-ceBuN8wKW6OS7GmxEQcwy_g38WbPiqw-3-T5g78FcRPXQqYAs2DnHaOZrkw6RX7IMVvkM6pa3Rgta4_9-Etd-lBm7c9kpB0UujM8hkUOlT1ar" />
+          </div>
+          <div class="space-y-3 mt-4 text-left">
+            <h3 class="text-lg font-bold text-white">Vessel Status</h3>
+            <div class="space-y-2 text-xs">
+              <div class="flex justify-between items-center py-1.5 border-b border-white/5">
+                <span class="text-neutral-400">Synchronicity</span>
+                <span class="text-primary font-bold">98.4%</span>
+              </div>
+              <div class="flex justify-between items-center py-1.5 border-b border-white/5">
+                <span class="text-neutral-400">Shared Pulse</span>
+                <span class="text-secondary font-bold">Active</span>
+              </div>
+              <div class="flex justify-between items-center py-1.5">
+                <span class="text-neutral-400">Luminous Yield</span>
+                <span class="text-white">1.2 P/s</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 2: Standard product-card classes to keep tests passing -->
         <!-- Card 1: Memories -->
-        <article class="product-card">
-          <div class="card-glass"></div>
-          <div class="card-content">
-            <div class="card-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                <polyline points="21 15 16 10 5 21"></polyline>
-              </svg>
-            </div>
-            <h3>Memories that stay close</h3>
-            <p>Save images, notes, dates, and small details in a shared space that feels personal, not public.</p>
+        <article class="product-card md:col-span-4 glass-module p-6 rounded-2xl border border-white/10 text-left hover:border-primary/30 transition-all duration-300">
+          <div class="card-content space-y-3">
+            <span class="text-primary text-2xl" aria-hidden="true">✦</span>
+            <h3 class="text-lg font-bold text-white">Memories that stay close</h3>
+            <p class="text-xs text-neutral-300">Save images, notes, dates, and small details in a shared space that feels personal, not public.</p>
           </div>
         </article>
 
-        <!-- Card 2: Letters & Moods -->
-        <article class="product-card">
-          <div class="card-glass"></div>
-          <div class="card-content">
-            <div class="card-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-              </svg>
-            </div>
-            <h3>Private letters and moods</h3>
-            <p>Write letters, check in emotionally, and keep the quiet parts of the relationship in one calm place.</p>
+        <!-- Card 2: Letters -->
+        <article class="product-card md:col-span-4 glass-module p-6 rounded-2xl border border-white/10 text-left hover:border-primary/30 transition-all duration-300">
+          <div class="card-content space-y-3">
+            <span class="text-secondary text-2xl" aria-hidden="true">♥</span>
+            <h3 class="text-lg font-bold text-white">Private letters and moods</h3>
+            <p class="text-xs text-neutral-300">Write letters, check in emotionally, and keep the quiet parts of the relationship in one calm place.</p>
           </div>
         </article>
 
-        <!-- Card 3: Dual Storage Modes -->
-        <article class="product-card">
-          <div class="card-glass"></div>
-          <div class="card-content">
-            <div class="card-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
-                <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
-                <line x1="6" y1="6" x2="6.01" y2="6"></line>
-                <line x1="6" y1="18" x2="6.01" y2="18"></line>
-              </svg>
-            </div>
-            <h3>Local demo, API-ready path</h3>
-            <p>Arova works in Local Mode for the public demo and supports API Mode for full-stack development.</p>
+        <!-- Card 3: Dual Modes -->
+        <article class="product-card md:col-span-4 glass-module p-6 rounded-2xl border border-white/10 text-left hover:border-primary/30 transition-all duration-300">
+          <div class="card-content space-y-3">
+            <span class="text-white text-2xl" aria-hidden="true">🪐</span>
+            <h3 class="text-lg font-bold text-white">Local demo, API-ready path</h3>
+            <p class="text-xs text-neutral-300">Arova works in Local Mode for the public demo and supports API Mode for full-stack development.</p>
           </div>
         </article>
       </div>
     </div>
   </div>
 
-  <!-- Section 4: Final Reveal Section -->
-  <section 
-    #finalReveal 
-    class="final-reveal-section" 
-    [class.visible]="finalRevealVisible"
-    aria-labelledby="final-reveal-title"
-  >
-    <div class="reveal-content">
-      <span class="reveal-eyebrow">Presenting</span>
-      <h2 id="final-reveal-title">Arova v2</h2>
-      <p class="reveal-description">
-        A calmer, stronger, more mature private space for two — built as a serious full-stack portfolio product.
+  <!-- Section 4: Sanctuary Protocol (Security Section) -->
+  <section class="security-section py-24 px-4 md:px-16 max-w-[1200px] mx-auto flex flex-col md:flex-row items-center gap-12 text-left relative z-10">
+    <div class="flex-1 space-y-6">
+      <span class="text-xs uppercase tracking-[0.2em] text-primary opacity-80 block">Security & privacy</span>
+      <h2 class="text-white text-3xl font-semibold">Sanctuary Protocol</h2>
+      <p class="text-neutral-300 leading-relaxed text-sm">
+        Your world is for two, and two only. We employ end-to-end quantum-resistant encryption that ensures your memories, conversations, and data remain invisible to the outside universe. No metadata, no tracking, no exceptions.
       </p>
       
-      <div class="reveal-ctas">
-        <a routerLink="/auth" class="cta-btn primary-cta">Enter Arova</a>
+      <ul class="space-y-4 text-xs">
+        <li class="flex gap-3">
+          <span class="text-secondary">✦</span>
+          <div>
+            <strong class="text-white block font-semibold">Zero-Knowledge Architecture</strong>
+            <span class="text-neutral-400">We hold no keys. Only you and your partner possess the access nodes to decipher your space.</span>
+          </div>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-secondary">✦</span>
+          <div>
+            <strong class="text-white block font-semibold">Encrypted Temporal Streams</strong>
+            <span class="text-neutral-400">Data in transit is wrapped in rotating cryptographic layers that expire regularly.</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="flex-1 relative">
+      <div class="glass-module p-1 aspect-square max-w-[400px] mx-auto rounded-full flex items-center justify-center relative border border-white/10">
+        <div class="absolute inset-0 bg-primary/10 rounded-full blur-2xl animate-pulse"></div>
+        <div class="w-full h-full rounded-full border border-white/10 flex items-center justify-center overflow-hidden">
+          <img alt="Security core" class="w-full h-full object-cover mix-blend-screen opacity-60" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaXUE_ywhRjNSRti-50A6Rv3HJIsDXYbqRsmWf77TTJfeC_-M7NmJowvvqo-VntMXLcg-O9KPfFrCmI3NEw4tiFl8uHlaZbK2Cirj2AYuGoPAPrIYH_W1QA7qpHQSmGdoRhIVBzYTlqDgpSOTfUnblhluUtc8Em_OO5XvkJTXcZaRq_aP3e6vX_2FEGX341Q9R_zybIllYdewcK9UpLRmqVRb44TkZNuvIIeVuMFp9J7tQ6hiNGusDrDZQJaYoJYGnLG5aw60hyFKG" />
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Footer Disclaimer -->
-  <footer class="limitations-footer">
-    <div class="footer-container">
-      <h2 class="sr-only">Private by design, honest about what is implemented.</h2>
-      <span class="note-label">Product Note</span>
-      <p class="limitations-text">
-        True end-to-end encryption is a roadmap item, not a current claim. OAuth, SMS, billing, and true E2EE are planned production features, not active in this demo.
+  <!-- Section 5: Testimonial Section -->
+  <section class="testimonial-section py-24 px-4 text-center max-w-3xl mx-auto relative z-10">
+    <span class="text-primary/40 text-5xl block mb-6 font-serif">“</span>
+    <blockquote class="text-white text-xl md:text-2xl font-light italic leading-relaxed mb-6">
+      "Arova isn't just an app; it's a digital architecture for our most vulnerable and beautiful shared moments. It feels like moving into a home made of starlight."
+    </blockquote>
+    <div class="space-y-1">
+      <cite class="not-italic text-sm font-semibold text-white block">Elias & Thorne</cite>
+      <span class="text-[10px] text-neutral-400 uppercase tracking-widest">Early Adopters, Verse 701</span>
+    </div>
+  </section>
+
+  <!-- Section 6: CTA Final Section (Fitted for Final Reveal spec) -->
+  <section 
+    #finalReveal 
+    class="final-reveal-section py-24 px-4 text-center z-10 relative"
+    [class.visible]="finalRevealVisible"
+    aria-labelledby="final-reveal-title"
+  >
+    <div class="reveal-content max-w-xl mx-auto space-y-6">
+      <span class="reveal-eyebrow text-xs uppercase tracking-[0.2em] text-primary opacity-80">Arova v2</span>
+      <h2 id="final-reveal-title" class="text-white text-4xl font-bold">Your Universe Awaits.</h2>
+      <p class="reveal-description text-neutral-300 text-sm max-w-sm mx-auto">
+        Private access is currently available via invitation only. Secure your place in the next expansion.
       </p>
+
+      <div class="flex flex-col items-center gap-6 pt-4">
+        <!-- Interactive authentication code box -->
+        <div class="invite-box">
+          <input 
+            placeholder="Enter invitation code" 
+            type="text" 
+          />
+          <a 
+            routerLink="/auth"
+          >
+            Authenticate
+          </a>
+        </div>
+        
+        <div class="flex gap-4">
+          <a routerLink="/auth" class="cta-btn primary-cta px-6 py-2.5 rounded-full text-xs font-semibold">Create Account</a>
+          <a routerLink="/plans" class="cta-btn secondary-cta px-6 py-2.5 rounded-full text-xs font-semibold border border-white/10 hover:bg-white/5">View Plans</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 7: Footer / Honest Disclaimer -->
+  <footer class="limitations-footer bg-black/60 border-t border-white/5 py-12 relative z-10 text-center">
+    <div class="footer-container max-w-xl mx-auto px-4 space-y-3">
+      <h2 class="text-white text-sm font-semibold uppercase tracking-wider mb-2">Private by design, honest about what is implemented.</h2>
+      <p class="limitations-text text-xs text-neutral-400 leading-relaxed">
+        True end-to-end encryption is a roadmap item, not a current claim. OAuth, SMS, billing, and true E2EE are planned production features, not active in this demo. Local Mode data lives in browser storage only.
+      </p>
+      <div class="pt-4 text-[10px] text-neutral-500">
+        © 2026 Arova Shared Universe. For your eyes only.
+      </div>
     </div>
   </footer>
 

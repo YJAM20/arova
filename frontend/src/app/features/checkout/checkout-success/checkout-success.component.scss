@@ -1,0 +1,151 @@
+@use '../../../../styles/variables' as *;
+
+.success-page {
+  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 120px);
+}
+
+.success-card {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--theme-card, rgba(5, 20, 36, 0.45));
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  max-width: 480px;
+  width: 100%;
+}
+
+.success-icon-wrapper {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  background: rgba(74, 222, 128, 0.08);
+  border: 1.5px solid #4ade80;
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(74, 222, 128, 0.2);
+
+  .check {
+    color: #4ade80;
+    font-size: 2.2rem;
+    font-weight: bold;
+  }
+
+  .sparkle {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    color: $gold;
+    font-size: 1rem;
+    animation: rotateSparkle 8s linear infinite;
+  }
+}
+
+.success-header {
+  .page-eyebrow {
+    color: $gold;
+    font-size: 0.76rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  h1 {
+    color: $cream;
+    font-size: 2rem;
+    font-family: $font-display;
+    margin-bottom: 8px;
+    font-weight: 300;
+  }
+
+  .page-sub {
+    color: $text-muted;
+    font-size: 0.9rem;
+    font-weight: 300;
+    line-height: 1.45;
+  }
+}
+
+.plan-details-box {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.provisioning-warning {
+  background: rgba(248, 113, 113, 0.04);
+  border: 1px solid rgba(248, 113, 113, 0.2);
+}
+
+/* ─────────────────────────────────────────
+   Action Buttons
+───────────────────────────────────────── */
+.cta-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $radius-sm;
+  transition: all $transition-base;
+  cursor: pointer;
+  width: 100%;
+  font-size: 0.88rem;
+
+  &--settings {
+    background: linear-gradient(135deg, rgba($gold, 0.15) 0%, rgba($gold, 0.05) 100%);
+    border: 1px solid rgba($gold, 0.45);
+    color: $cream;
+
+    &:hover {
+      background: linear-gradient(135deg, rgba($gold, 0.25) 0%, rgba($gold, 0.12) 100%);
+      border-color: $gold;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 15px rgba($gold, 0.18);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $gold;
+      box-shadow: 0 0 8px rgba($gold, 0.25);
+    }
+  }
+
+  &--universe {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: white;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: rgba(255, 255, 255, 0.35);
+    }
+  }
+}
+
+@keyframes rotateSparkle {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─────────────────────────────────────────
+   Responsive Media Queries
+───────────────────────────────────────── */
+@media (max-width: 480px) {
+  .success-page {
+    padding: 16px;
+  }
+
+  .success-card {
+    padding: 24px 20px;
+  }
+}

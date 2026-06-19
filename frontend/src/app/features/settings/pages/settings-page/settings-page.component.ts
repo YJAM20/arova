@@ -15,6 +15,7 @@ import { ArovaStatusPillComponent } from '../../../../shared/components/arova-st
 import { toast } from 'ngx-sonner';
 
 import { ArovaTooltipDirective } from '../../../../shared/components/arova-tooltip/arova-tooltip.directive';
+import { CustomSectionsService } from '../../../../core/services/custom-sections.service';
 
 @Component({
   selector: 'app-settings-page',
@@ -91,8 +92,13 @@ export class SettingsPageComponent implements OnInit {
     private translation: TranslationService,
     private auth: AuthService,
     private onboarding: OnboardingService,
-    private router: Router
+    private router: Router,
+    private customSectionsService: CustomSectionsService
   ) {}
+
+  get activePlan(): string {
+    return this.customSectionsService.getTier();
+  }
 
   ngOnInit(): void {
     this.currentUser = this.auth.getCurrentUser();

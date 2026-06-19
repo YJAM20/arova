@@ -1,0 +1,40 @@
+<div class="arova-page arova-page--compact success-page animate-fade-in">
+  <section class="success-card glass p-8 rounded-2xl text-center flex flex-col items-center gap-6" aria-labelledby="success-heading">
+    <div class="success-icon-wrapper flex items-center justify-center" aria-hidden="true">
+      <span class="sparkle">✦</span>
+      <span class="check">✓</span>
+    </div>
+
+    <header class="success-header">
+      <p class="page-eyebrow">✦ Upgrade completed</p>
+      <h1 id="success-heading">Demo checkout complete</h1>
+      <p class="page-sub">Thank you for selecting Arova. Your space features have been adjusted.</p>
+    </header>
+
+    <div class="plan-details-box p-4 rounded-xl w-full">
+      <span class="text-3xs text-neutral-400 font-semibold uppercase tracking-wider block mb-1">Active Demo Plan</span>
+      <strong class="text-accent-2 text-xl block">{{ planName }} Plan</strong>
+    </div>
+
+    <!-- Integrity Limitation Warning -->
+    <div class="provisioning-warning p-4 rounded-xl flex items-start gap-3 w-full">
+      <span class="warning-icon text-xl" aria-hidden="true">⚠️</span>
+      <div class="warning-details text-left">
+        <strong class="text-accent block mb-1">Demo provisioning limit:</strong>
+        <p class="text-3xs text-neutral-300 leading-relaxed">
+          Your Arova demo plan has been updated locally. Real subscription provisioning requires backend webhooks. Subscription capabilities are enabled only in your local browser sandbox context.
+        </p>
+      </div>
+    </div>
+
+    <!-- Navigation links -->
+    <div class="success-actions flex flex-col gap-3 w-full pt-4 border-t border-neutral-800">
+      <a routerLink="/settings" class="cta-btn cta-btn--settings py-3 rounded-xl font-bold">
+        Back to Settings
+      </a>
+      <a routerLink="/universe" class="cta-btn cta-btn--universe py-3 rounded-xl font-semibold">
+        Go to Universe Dashboard
+      </a>
+    </div>
+  </section>
+</div>

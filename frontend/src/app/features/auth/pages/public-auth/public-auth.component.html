@@ -1,252 +1,327 @@
-<main class="auth-page stars-bg">
+<main class="auth-page stars-bg min-h-screen flex flex-col relative overflow-hidden">
   
-  <!-- Subtle decorative cosmic background orbits -->
-  <div class="cosmos-decor" aria-hidden="true">
-    <div class="orbit-ring orbit-ring-1"></div>
-    <div class="orbit-ring orbit-ring-2"></div>
-    <div class="orbital-star star-1"></div>
-    <div class="orbital-star star-2"></div>
-  </div>
+  <!-- Star Field Background Effect -->
+  <div class="star-field" id="starField" aria-hidden="true"></div>
+  <div class="cosmic-glow top-[-10%] right-[-10%] animate-pulse" style="animation-duration: 8s;" aria-hidden="true"></div>
+  <div class="cosmic-glow bottom-[-20%] left-[-10%] animate-pulse" style="animation-duration: 12s;" aria-hidden="true"></div>
 
-  <div class="auth-container">
+  <!-- Header -->
+  <header class="flex justify-between items-center w-full px-4 md:px-16 py-4 max-w-[1200px] mx-auto z-50 fixed top-0 left-0 right-0 nav-blur border-b border-white/5">
+    <div class="flex items-center gap-3">
+      <a routerLink="/" class="flex items-center gap-3">
+        <svg class="h-8 w-8 text-primary" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M12 2L15 9H22L16.5 13.5L18.5 20.5L12 16L5.5 20.5L7.5 13.5L2 9H9L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+        </svg>
+        <span class="font-headline-md text-xl text-primary tracking-tight font-semibold">Arova</span>
+      </a>
+    </div>
     
-    <!-- Left Cinematic Product Panel -->
-    <section class="auth-intro animate-fade-in">
-      <div class="intro-content">
-        <a routerLink="/" class="brand">Arova</a>
-        <h1>A private space for two.</h1>
-        <p class="intro-copy">
-          A calm private place for memories, letters, moods, plans, and the quiet details only two people share.
-        </p>
-        
-        <ul class="value-points">
-          <li>
-            <span class="icon" aria-hidden="true">✦</span>
-            <div>
-              <strong>Private shared space</strong>
-              <span>Dedicated digital room built strictly for one couple.</span>
-            </div>
-          </li>
-          <li>
-            <span class="icon" aria-hidden="true">✦</span>
-            <div>
-              <strong>Local demo available</strong>
-              <span>Explore client features instantly in your browser.</span>
-            </div>
-          </li>
-          <li>
-            <span class="icon" aria-hidden="true">✦</span>
-            <div>
-              <strong>API mode ready for development</strong>
-              <span>Synchronize and broadcast data using live server databases.</span>
-            </div>
-          </li>
-        </ul>
-
-        <div class="honest-note">
-          <span class="note-tag">Product Note</span>
-          <p>OAuth, SMS, billing, and true E2EE are planned production features, not active in this demo.</p>
-        </div>
+    <!-- Clean Global Language Selector -->
+    <div class="flex items-center gap-6">
+      <div class="lang-selector-header flex gap-2 text-xs font-semibold">
+        <button type="button" (click)="setLang('en')" [class.active]="currentLanguage === 'en'" class="lang-btn">EN</button>
+        <button type="button" (click)="setLang('es')" [class.active]="currentLanguage === 'es'" class="lang-btn">ES</button>
+        <button type="button" (click)="setLang('ar')" [class.active]="currentLanguage === 'ar'" class="lang-btn">AR</button>
       </div>
-    </section>
+      <a class="text-neutral-400 hover:text-primary transition-colors duration-300 text-xs uppercase tracking-wider font-semibold" href="#">Need help?</a>
+    </div>
+  </header>
 
-    <!-- Right Glass Auth Card -->
-    <section class="auth-card-wrapper animate-fade-in" style="animation-delay: 0.08s;">
-      <div class="auth-card glass" [attr.aria-busy]="isBusy">
-        
-        <!-- Tab Selector List -->
-        <div class="tabs" role="tablist">
-          <button 
-            type="button" 
-            role="tab" 
-            [attr.aria-selected]="mode === 'login'" 
-            [class.active]="mode === 'login'" 
-            (click)="setMode('login')"
-            [disabled]="isBusy"
-          >
-            Sign In
-          </button>
-          <button 
-            type="button" 
-            role="tab" 
-            [attr.aria-selected]="mode === 'register'" 
-            [class.active]="mode === 'register'" 
-            (click)="setMode('register')"
-            [disabled]="isBusy"
-          >
-            Create Account
-          </button>
+  <!-- Auth Content Grid -->
+  <main class="flex-grow flex items-center justify-center px-4 pt-28 pb-16 relative z-10">
+    <div class="auth-container grid grid-cols-1 md:grid-cols-12 gap-12 max-w-[1120px] w-full mx-auto items-center">
+      
+      <!-- Left Cinematic Product Panel (Expected by E2E test) -->
+      <section class="auth-intro md:col-span-6 text-left space-y-6 animate-fade-in">
+        <div class="intro-content space-y-6">
+          <a routerLink="/" class="brand font-serif text-3xl text-primary tracking-tight font-semibold">Arova</a>
+          <h1 class="text-white text-4xl md:text-5xl font-bold leading-tight font-serif">A private space for two.</h1>
+          <p class="intro-copy text-neutral-300 text-sm leading-relaxed">
+            A calm private place for memories, letters, moods, plans, and the quiet details only two people share.
+          </p>
+          
+          <ul class="value-points space-y-4 text-xs">
+            <li class="flex gap-3">
+              <span class="text-secondary">✦</span>
+              <div>
+                <strong class="text-white font-semibold block">Private shared space</strong>
+                <span class="text-neutral-400">Dedicated digital room built strictly for one couple.</span>
+              </div>
+            </li>
+            <li class="flex gap-3">
+              <span class="text-secondary">✦</span>
+              <div>
+                <strong class="text-white font-semibold block">Local demo available</strong>
+                <span class="text-neutral-400">Explore client features instantly in your browser sandbox.</span>
+              </div>
+            </li>
+            <li class="flex gap-3">
+              <span class="text-secondary">✦</span>
+              <div>
+                <strong class="text-white font-semibold block">API mode ready for development</strong>
+                <span class="text-neutral-400">Synchronize and broadcast data using live server databases.</span>
+              </div>
+            </li>
+          </ul>
+
+          <div class="honest-note p-4 rounded-xl bg-white/5 border border-white/5 space-y-2">
+            <span class="note-tag text-[10px] uppercase font-bold text-neutral-400 tracking-wider">Product Note</span>
+            <p class="text-xs text-neutral-400 leading-relaxed m-0">
+              OAuth, SMS, billing, and true E2EE are planned production features, not active in this demo.
+            </p>
+          </div>
         </div>
+      </section>
 
-        <!-- Tasteful CSS-only orbital loading overlay -->
-        <div class="loading-overlay" *ngIf="isBusy" aria-live="polite">
-          <div class="orbital-ring-spinner">
-            <div class="dot"></div>
-          </div>
-          <p class="loading-text">Connecting space link...</p>
-        </div>
-
-        <!-- Sign In Form -->
-        <form *ngIf="mode === 'login'" (ngSubmit)="login()" [class.is-busy]="isBusy">
-          <div class="input-group">
-            <label for="login-username">Username or email</label>
-            <input 
-              id="login-username"
-              name="usernameOrEmail" 
-              [(ngModel)]="loginRequest.usernameOrEmail" 
-              autocomplete="username" 
-              [disabled]="isBusy" 
-              placeholder="Enter username or email"
-              required
-            />
-          </div>
-          <div class="input-group">
-            <label for="login-password">Password</label>
-            <input 
-              id="login-password"
-              name="loginPassword" 
-              type="password" 
-              [(ngModel)]="loginRequest.password" 
-              autocomplete="current-password" 
-              [disabled]="isBusy" 
-              placeholder="••••••••"
-              required
-            />
-          </div>
-          <button 
-            type="submit" 
-            class="submit-btn"
-            [disabled]="isBusy || !loginRequest.usernameOrEmail || !loginRequest.password"
-          >
-            {{ isBusy ? 'Signing in...' : 'Sign In' }}
-          </button>
-        </form>
-
-        <!-- Register Form -->
-        <form *ngIf="mode === 'register'" (ngSubmit)="register()" [class.is-busy]="isBusy">
-          <div class="input-group">
-            <label for="reg-display-name">Display name</label>
-            <input 
-              id="reg-display-name"
-              name="displayName" 
-              [(ngModel)]="registerRequest.displayName" 
-              autocomplete="name"
-              [disabled]="isBusy" 
-              placeholder="e.g. Alex"
-              required
-            />
-          </div>
-          <div class="input-group">
-            <label for="reg-username">Username</label>
-            <input 
-              id="reg-username"
-              name="username" 
-              [(ngModel)]="registerRequest.username" 
-              autocomplete="username" 
-              [disabled]="isBusy" 
-              placeholder="e.g. alex22"
-              required
-            />
-          </div>
-          <div class="input-group">
-            <label for="reg-email">Email</label>
-            <input 
-              id="reg-email"
-              name="email" 
-              type="email" 
-              [(ngModel)]="registerRequest.email" 
-              autocomplete="email" 
-              [disabled]="isBusy" 
-              placeholder="alex@example.com"
-              required
-            />
-          </div>
-          <div class="input-group">
-            <label for="reg-tel">Phone number (optional)</label>
-            <input 
-              id="reg-tel"
-              name="phoneNumber" 
-              type="tel"
-              [(ngModel)]="registerRequest.phoneNumber" 
-              autocomplete="tel"
-              [disabled]="isBusy" 
-              placeholder="e.g. +1234567890"
-            />
-            <small class="field-hint">Phone verification is not active yet (optional placeholder).</small>
-          </div>
-          <div class="input-group">
-            <label for="reg-lang">Preferred language</label>
-            <select id="reg-lang" name="preferredLanguage" [(ngModel)]="registerRequest.preferredLanguage" [disabled]="isBusy">
-              <option value="en">English</option>
-              <option value="ar">Arabic</option>
-              <option value="es">Spanish</option>
-            </select>
-          </div>
-          <div class="input-group">
-            <label for="reg-dob">Date of birth</label>
-            <input 
-              id="reg-dob"
-              name="dateOfBirth" 
-              type="date" 
-              [(ngModel)]="registerRequest.dateOfBirth" 
-              [disabled]="isBusy" 
-              required
-            />
-          </div>
-          <div class="input-group">
-            <label for="reg-password">Password</label>
-            <input
-              id="reg-password"
-              name="password"
-              type="password"
-              [(ngModel)]="registerRequest.password"
-              (input)="checkPasswordStrength()"
-              autocomplete="new-password"
+      <!-- Right Glass Auth Card -->
+      <section class="auth-card-wrapper md:col-span-6 animate-fade-in" style="animation-delay: 0.08s;">
+        <div class="glass-card rounded-2xl p-8 md:p-12 transition-all duration-500 relative" [attr.aria-busy]="isBusy">
+          
+          <!-- Tab Selector List -->
+          <div class="tabs flex border-b border-white/5 mb-8" role="tablist">
+            <button 
+              type="button" 
+              role="tab" 
+              [attr.aria-selected]="mode === 'login'" 
+              [class.active]="mode === 'login'" 
+              (click)="setMode('login')"
               [disabled]="isBusy"
-              placeholder="Minimum 8 characters"
-              required
-            />
-          </div>
-          
-          <!-- Upgraded Password Strength bar -->
-          <div class="strength-container" *ngIf="registerRequest.password">
-            <div class="strength-header">
-              <span>Password strength: <strong>{{ strength.label }}</strong></span>
-            </div>
-            <div class="strength-meter-bar" [class]="'score-' + (strength.score || 0)">
-              <div class="fill" [style.width.%]="(strength.score || 0) * 25"></div>
-            </div>
+              class="flex-1 pb-3 text-center text-xs uppercase tracking-widest font-semibold transition-all"
+            >
+              Sign In
+            </button>
+            <button 
+              type="button" 
+              role="tab" 
+              [attr.aria-selected]="mode === 'register'" 
+              [class.active]="mode === 'register'" 
+              (click)="setMode('register')"
+              [disabled]="isBusy"
+              class="flex-1 pb-3 text-center text-xs uppercase tracking-widest font-semibold transition-all"
+            >
+              Create Account
+            </button>
           </div>
 
-          <div class="input-group">
-            <label for="reg-confirm">Confirm password</label>
-            <input 
-              id="reg-confirm"
-              name="confirmPassword" 
-              type="password" 
-              [(ngModel)]="confirmPassword" 
-              autocomplete="new-password" 
-              [disabled]="isBusy" 
-              placeholder="Re-enter password"
-              required
-            />
+          <!-- CSS-only orbital loading overlay -->
+          <div class="loading-overlay absolute inset-0 flex flex-col items-center justify-center bg-black/85 rounded-2xl z-30 transition-opacity" *ngIf="isBusy" aria-live="polite">
+            <div class="orbital-ring-spinner mb-4">
+              <div class="dot w-3 h-3 bg-primary rounded-full"></div>
+            </div>
+            <p class="loading-text text-sm text-neutral-300">Connecting space link...</p>
           </div>
-          
-          <button 
-            type="submit" 
-            class="submit-btn"
-            [disabled]="isBusy || !registerRequest.displayName || !registerRequest.username || !registerRequest.email || !registerRequest.password || !confirmPassword || (strength.score ?? 0) < 3"
-          >
-            {{ isBusy ? 'Creating...' : 'Create Account' }}
-          </button>
-        </form>
 
-        <!-- Social login planned placeholder buttons -->
-        <div class="providers">
+          <!-- Sign In Form -->
+          <form *ngIf="mode === 'login'" (ngSubmit)="login()" [class.is-busy]="isBusy" class="space-y-6">
+            <div class="text-center mb-6">
+              <h2 class="text-white text-xl font-bold">Return to your Sanctuary</h2>
+              <p class="text-neutral-400 text-xs mt-1">Re-enter the shared orbit of your connection.</p>
+            </div>
+
+            <div class="input-group flex flex-col gap-2">
+              <label class="text-xs uppercase tracking-wider text-primary font-semibold" for="login-username">Identity</label>
+              <input 
+                id="login-username"
+                name="usernameOrEmail" 
+                [(ngModel)]="loginRequest.usernameOrEmail" 
+                autocomplete="username" 
+                [disabled]="isBusy" 
+                placeholder="Username or email"
+                required
+                class="w-full bg-slate-950/40 border border-white/10 rounded-lg px-4 py-3.5 text-sm text-white placeholder:text-neutral-600 focus:ring-2 focus:ring-primary/50 outline-none"
+              />
+            </div>
+
+            <div class="input-group flex flex-col gap-2">
+              <div class="flex justify-between items-center">
+                <label class="text-xs uppercase tracking-wider text-primary font-semibold" for="login-password">Key</label>
+                <a class="text-[10px] uppercase tracking-wider text-neutral-400 hover:text-primary transition-colors" href="#">Forgot key?</a>
+              </div>
+              <input 
+                id="login-password"
+                name="loginPassword" 
+                type="password" 
+                [(ngModel)]="loginRequest.password" 
+                autocomplete="current-password" 
+                [disabled]="isBusy" 
+                placeholder="••••••••"
+                required
+                class="w-full bg-slate-950/40 border border-white/10 rounded-lg px-4 py-3.5 text-sm text-white placeholder:text-neutral-600 focus:ring-2 focus:ring-primary/50 outline-none"
+              />
+            </div>
+
+            <button 
+              type="submit" 
+              class="submit-btn w-full py-4 bg-primary text-black font-bold rounded-lg transition-all hover:scale-[1.01] flex items-center justify-center gap-2 text-sm"
+              [disabled]="isBusy || !loginRequest.usernameOrEmail || !loginRequest.password"
+            >
+              Enter Orbit ✦
+            </button>
+          </form>
+
+          <!-- Register Form -->
+          <form *ngIf="mode === 'register'" (ngSubmit)="register()" [class.is-busy]="isBusy" class="space-y-5">
+            <div class="text-center mb-4">
+              <h2 class="text-white text-xl font-bold">Initiate Connection</h2>
+              <p class="text-neutral-400 text-xs mt-1">Create a new private space for both of you.</p>
+            </div>
+
+            <div class="input-group flex flex-col gap-2">
+              <label class="text-xs uppercase tracking-wider text-primary font-semibold" for="reg-display-name">Display name</label>
+              <input 
+                id="reg-display-name"
+                name="displayName" 
+                [(ngModel)]="registerRequest.displayName" 
+                autocomplete="name"
+                [disabled]="isBusy" 
+                placeholder="e.g. Alex"
+                required
+                class="w-full bg-slate-950/40 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder:text-neutral-600 focus:ring-2 focus:ring-primary/50 outline-none"
+              />
+            </div>
+
+            <div class="input-group flex flex-col gap-2">
+              <label class="text-xs uppercase tracking-wider text-primary font-semibold" for="reg-username">Username or email</label>
+              <input 
+                id="reg-username"
+                name="username" 
+                [(ngModel)]="registerRequest.username" 
+                autocomplete="username" 
+                [disabled]="isBusy" 
+                placeholder="e.g. alex22"
+                required
+                class="w-full bg-slate-950/40 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder:text-neutral-600 focus:ring-2 focus:ring-primary/50 outline-none"
+              />
+            </div>
+
+            <div class="input-group flex flex-col gap-2">
+              <label class="text-xs uppercase tracking-wider text-primary font-semibold" for="reg-email">Email</label>
+              <input 
+                id="reg-email"
+                name="email" 
+                type="email" 
+                [(ngModel)]="registerRequest.email" 
+                autocomplete="email" 
+                [disabled]="isBusy" 
+                placeholder="alex@example.com"
+                required
+                class="w-full bg-slate-950/40 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder:text-neutral-600 focus:ring-2 focus:ring-primary/50 outline-none"
+              />
+            </div>
+
+            <!-- Jordanian default country code tel validation fields -->
+            <div class="input-group flex flex-col gap-2">
+              <label class="text-xs uppercase tracking-wider text-primary font-semibold" for="reg-tel">Phone number (optional)</label>
+              <div class="phone-input-row flex gap-2">
+                <select name="phoneCountryCode" [(ngModel)]="phoneCountryCode" [disabled]="isBusy" class="country-code-select w-28 bg-slate-950/40 border border-white/10 rounded-lg px-2 text-xs text-white focus:ring-1 focus:ring-primary outline-none">
+                  <option value="+962">Jordan (+962)</option>
+                  <option value="+1">USA (+1)</option>
+                  <option value="+44">UK (+44)</option>
+                  <option value="+971">UAE (+971)</option>
+                </select>
+                <input 
+                  id="reg-tel"
+                  name="phoneNumber" 
+                  type="tel"
+                  [(ngModel)]="phoneNationalNumber" 
+                  autocomplete="tel"
+                  [disabled]="isBusy" 
+                  placeholder="e.g. 791234567"
+                  class="flex-1 bg-slate-950/40 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder:text-neutral-600 focus:ring-2 focus:ring-primary/50 outline-none"
+                />
+              </div>
+              <small class="field-hint text-[10px] text-neutral-400 mt-1 block">Phone verification is not active in this demo.</small>
+            </div>
+
+            <!-- Language dropdown -->
+            <div class="input-group flex flex-col gap-2">
+              <label class="text-xs uppercase tracking-wider text-primary font-semibold" for="reg-lang">Preferred language</label>
+              <select id="reg-lang" name="preferredLanguage" [(ngModel)]="registerRequest.preferredLanguage" (change)="setLang(registerRequest.preferredLanguage)" [disabled]="isBusy" class="w-full bg-slate-950/40 border border-white/10 rounded-lg px-4 py-3 text-sm text-white focus:ring-2 focus:ring-primary outline-none">
+                <option value="en">English</option>
+                <option value="ar">Arabic</option>
+                <option value="es">Spanish</option>
+              </select>
+            </div>
+
+            <div class="input-group flex flex-col gap-2">
+              <label class="text-xs uppercase tracking-wider text-primary font-semibold" for="reg-dob">Date of birth</label>
+              <input 
+                id="reg-dob"
+                name="dateOfBirth" 
+                type="date" 
+                [(ngModel)]="registerRequest.dateOfBirth" 
+                [disabled]="isBusy" 
+                required
+                class="w-full bg-slate-950/40 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder:text-neutral-600 focus:ring-2 focus:ring-primary/50 outline-none"
+              />
+            </div>
+
+            <div class="input-group flex flex-col gap-2">
+              <label class="text-xs uppercase tracking-wider text-primary font-semibold" for="reg-password">Password</label>
+              <input
+                id="reg-password"
+                name="password"
+                type="password"
+                [(ngModel)]="registerRequest.password"
+                (input)="checkPasswordStrength()"
+                autocomplete="new-password"
+                [disabled]="isBusy"
+                placeholder="Minimum 8 characters"
+                required
+                class="w-full bg-slate-950/40 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder:text-neutral-600 focus:ring-2 focus:ring-primary/50 outline-none"
+              />
+            </div>
+            
+            <div class="strength-container" *ngIf="registerRequest.password">
+              <div class="strength-header text-[10px] text-neutral-400 mb-1">
+                <span>Password strength: <strong class="text-white">{{ strength.label }}</strong></span>
+              </div>
+              <div class="strength-meter-bar h-1 bg-white/10 rounded-full overflow-hidden" [class]="'score-' + (strength.score || 0)">
+                <div class="fill h-full bg-primary transition-all duration-300" [style.width.%]="(strength.score || 0) * 25"></div>
+              </div>
+            </div>
+
+            <div class="input-group flex flex-col gap-2">
+              <label class="text-xs uppercase tracking-wider text-primary font-semibold" for="reg-confirm">Confirm password</label>
+              <input 
+                id="reg-confirm"
+                name="confirmPassword" 
+                type="password" 
+                [(ngModel)]="confirmPassword" 
+                autocomplete="new-password" 
+                [disabled]="isBusy" 
+                placeholder="Re-enter password"
+                required
+                class="w-full bg-slate-950/40 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder:text-neutral-600 focus:ring-2 focus:ring-primary/50 outline-none"
+              />
+            </div>
+            
+            <button 
+              type="submit" 
+              class="submit-btn w-full py-4 bg-primary text-black font-bold rounded-lg transition-all hover:scale-[1.01] flex items-center justify-center gap-2 text-sm"
+              [disabled]="isBusy || !registerRequest.displayName || !registerRequest.username || !registerRequest.email || !registerRequest.password || !confirmPassword || (strength.score ?? 0) < 3"
+            >
+              Create Account ✦
+            </button>
+          </form>
+
+          <!-- Divider -->
+          <div class="relative my-6">
+            <div class="absolute inset-0 flex items-center">
+              <div class="w-full h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+          </div>
+          <div class="relative flex justify-center text-xs">
+            <span class="bg-[#051424] px-4 text-neutral-500 uppercase tracking-widest text-[10px]">or</span>
+          </div>
+        </div>
+
+        <!-- Social logins warnings -->
+        <div class="providers flex flex-col gap-3">
           <button 
             type="button" 
             (click)="providerPlaceholder('Google')"
             [disabled]="isBusy"
+            class="w-full py-3 bg-transparent border border-white/10 hover:bg-white/5 text-neutral-300 font-semibold rounded-lg text-xs transition-colors"
           >
             Continue with Google
           </button>
@@ -254,44 +329,60 @@
             type="button" 
             (click)="providerPlaceholder('Apple')"
             [disabled]="isBusy"
+            class="w-full py-3 bg-transparent border border-white/10 hover:bg-white/5 text-neutral-300 font-semibold rounded-lg text-xs transition-colors"
           >
             Continue with Apple
           </button>
         </div>
 
-        <!-- Local demo link -->
-        <div class="demo-wrapper">
-          <a routerLink="/auth/login" class="local-demo">Continue with local demo</a>
-          <span class="demo-hint">Use owner / 1234 or partner / 1234 in Local Mode.</span>
+        <!-- Local demo CTA link -->
+        <div class="demo-wrapper mt-8 text-center space-y-1">
+          <a routerLink="/auth/login" class="local-demo text-primary font-bold text-sm hover:underline">Continue with local demo</a>
+          <span class="demo-hint text-[10px] text-neutral-400 block">Use owner / 1234 or partner / 1234 in Local Mode.</span>
         </div>
 
-        <!-- Sanctuary setup fallbacks -->
-        <div class="fallback-actions" *ngIf="message">
-          <p class="status-msg" aria-live="polite">✦ {{ message }}</p>
-          <div class="fallback-links">
+        <!-- Status Fallbacks -->
+        <div class="fallback-actions mt-6 p-4 rounded-xl bg-white/5 border border-white/5 text-center" *ngIf="message">
+          <p class="status-msg text-xs text-primary font-medium" aria-live="polite">✦ {{ message }}</p>
+          <div class="fallback-links flex justify-center gap-6 mt-3 text-xs text-secondary underline">
             <a routerLink="/couple-setup">Couple setup</a>
             <a routerLink="/universe">Enter Arova</a>
           </div>
         </div>
 
         <!-- Alert messages -->
-        <div class="alert-area">
-          <p class="message" *ngIf="providerMessage" aria-live="polite">
+        <div class="alert-area mt-6">
+          <p class="message text-center text-xs text-yellow-500 bg-yellow-500/10 border border-yellow-500/20 p-3 rounded-lg" *ngIf="providerMessage" aria-live="polite">
             {{ providerMessage }}
           </p>
-          <p class="error" *ngIf="errorMessage" role="alert">
+          <p class="error text-center text-xs text-red-400 bg-red-400/10 border border-red-400/20 p-3 rounded-lg mt-3" *ngIf="errorMessage" role="alert">
             {{ errorMessage }}
           </p>
         </div>
 
-        <!-- Plans & Landing redirects -->
-        <div class="utility-links">
+        <!-- Footer Plans and Back Links -->
+        <div class="utility-links flex justify-center gap-4 text-xs text-neutral-500 mt-8 pt-6 border-t border-white/5">
           <a routerLink="/plans">View pricing plans</a>
-          <span class="dot-separator">·</span>
-          <a routerLink="/">Back to landing page</a>
+          <span>·</span>
+          <a routerLink="/" class="hover:text-primary transition-colors">Back to landing page</a>
         </div>
       </div>
     </section>
 
   </div>
+</main>
+
+  <!-- Footer Component -->
+  <footer class="bg-black/60 border-t border-white/5 py-8 w-full mt-auto text-center relative z-10">
+    <div class="flex flex-col items-center gap-3 max-w-[1200px] mx-auto px-4 text-xs text-neutral-500">
+      <div class="flex items-center gap-8">
+        <a class="hover:text-primary transition-colors" href="#">Privacy Protocol</a>
+        <a class="hover:text-primary transition-colors" href="#">Quantum Encryption</a>
+        <a class="hover:text-primary transition-colors" href="#">Security Vault</a>
+      </div>
+      <p class="text-[10px] mt-2">
+        © 2026 Arova Shared Universe. For your eyes only.
+      </p>
+    </div>
+  </footer>
 </main>

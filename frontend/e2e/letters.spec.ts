@@ -179,7 +179,10 @@ test.describe('Arova Letters Flow', () => {
   test('automatically unlocks locked letter if unlock date has passed', async ({ page }) => {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayStr = yesterday.toISOString().slice(0, 10);
+    const yYear = yesterday.getFullYear();
+    const yMonth = String(yesterday.getMonth() + 1).padStart(2, '0');
+    const yDay = String(yesterday.getDate()).padStart(2, '0');
+    const yesterdayStr = `${yYear}-${yMonth}-${yDay}`;
 
     const letters = [
       {
@@ -216,7 +219,10 @@ test.describe('Arova Letters Flow', () => {
   test('displays sealed screen if unlock date is in the future', async ({ page }) => {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
-    const tomorrowStr = tomorrow.toISOString().slice(0, 10);
+    const tYear = tomorrow.getFullYear();
+    const tMonth = String(tomorrow.getMonth() + 1).padStart(2, '0');
+    const tDay = String(tomorrow.getDate()).padStart(2, '0');
+    const tomorrowStr = `${tYear}-${tMonth}-${tDay}`;
 
     const letters = [
       {

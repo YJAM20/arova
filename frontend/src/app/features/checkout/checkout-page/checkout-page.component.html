@@ -1,0 +1,84 @@
+<div class="arova-page arova-page--compact checkout-page animate-fade-in">
+  <!-- Top header -->
+  <header class="checkout-header mb-8">
+    <p class="page-eyebrow">✦ Sandbox checkout</p>
+    <h1>Paddle Sandbox Checkout</h1>
+    <p class="page-sub">Finalize your demo plan upgrade in the simulated billing sandbox.</p>
+  </header>
+
+  <!-- Error state banner -->
+  <div *ngIf="errorMessage" class="alert alert-danger mb-6 p-4 rounded-xl flex items-center justify-between" role="alert">
+    <span>⚠️ {{ errorMessage }}</span>
+    <button type="button" (click)="errorMessage = ''" class="close-btn text-lg" aria-label="Dismiss error alert">&times;</button>
+  </div>
+
+  <!-- Loading indicator -->
+  <div *ngIf="isLoading" class="loading-overlay" aria-live="polite">
+    <div class="spinner"></div>
+    <p>Opening checkout window...</p>
+  </div>
+
+  <!-- Checkout Workspace Container -->
+  <section class="checkout-card glass p-6 rounded-2xl mb-8 flex flex-col gap-6" aria-labelledby="summary-heading">
+    <h2 id="summary-heading" class="section-title text-sm font-bold text-neutral-300 uppercase tracking-wider">Plan Summary</h2>
+    
+    <div class="plan-summary-box p-4 rounded-xl" *ngIf="isValidSelection">
+      <div class="summary-row flex justify-between items-center pb-3 border-b">
+        <span class="label text-xs text-neutral-400 font-semibold uppercase tracking-wider">Plan Selected</span>
+        <strong class="value text-white text-lg">{{ planName }} Plan</strong>
+      </div>
+      <div class="summary-row flex justify-between items-center py-3 border-b">
+        <span class="label text-xs text-neutral-400 font-semibold uppercase tracking-wider">Billing Frequency</span>
+        <span class="value text-neutral-200">{{ periodName }}</span>
+      </div>
+      <div class="summary-row flex justify-between items-center pt-3">
+        <span class="label text-xs text-neutral-400 font-semibold uppercase tracking-wider">Demo Cost</span>
+        <strong class="value text-accent text-xl">{{ priceDisplay }}</strong>
+      </div>
+    </div>
+
+    <!-- Fallback if query params are wrong -->
+    <div class="invalid-summary py-8 text-center" *ngIf="!isValidSelection">
+      <span class="text-3xl" aria-hidden="true">❌</span>
+      <p class="text-neutral-400 text-xs mt-2">{{ errorMessage }}</p>
+    </div>
+
+    <!-- Honesty & Sandbox Warning Panel -->
+    <div class="sandbox-disclaimer p-4 rounded-xl flex items-start gap-3">
+      <span class="warning-icon text-xl" aria-hidden="true">💡</span>
+      <div class="warning-details text-left">
+        <strong class="text-accent-2 block mb-1">Paddle Sandbox checkout warnings:</strong>
+        <ul class="text-3xs text-neutral-300 space-y-1">
+          <li>This checkout runs in Paddle Sandbox. No real money is charged.</li>
+          <li>Billing is in test mode. Subscription provisioning is not production-active yet.</li>
+          <li>Simulate successful checkout directly configures local settings without loading CDN scripts.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="checkout-actions flex flex-col gap-3 pt-4 border-t border-neutral-800">
+      <button 
+        type="button"
+        (click)="openPaddleCheckout()" 
+        [disabled]="!isValidSelection || isLoading" 
+        class="checkout-btn checkout-btn--paddle py-3 rounded-xl font-bold flex items-center justify-center gap-2"
+      >
+        <span>💳</span> Open Paddle Sandbox Checkout
+      </button>
+
+      <button 
+        type="button"
+        (click)="simulateSuccessfulCheckout()" 
+        [disabled]="!isValidSelection" 
+        class="checkout-btn checkout-btn--simulate py-3 rounded-xl font-semibold"
+      >
+        Simulate successful checkout
+      </button>
+
+      <a routerLink="/plans" class="checkout-btn checkout-btn--cancel py-3 rounded-xl font-semibold text-center">
+        Back to plans
+      </a>
+    </div>
+  </section>
+</div>

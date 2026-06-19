@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { timeout } from 'rxjs/operators';
 import {
   AuthApiService,
   LoginRequest,
@@ -9,6 +10,7 @@ import {
   RegisterRequest,
 } from '../../../../core/services/auth-api.service';
 import { SetupStatusApiService } from '../../../../core/services/setup-status-api.service';
+import { TranslationService } from '../../../../core/services/translation.service';
 
 type AuthMode = 'login' | 'register';
 
@@ -19,7 +21,7 @@ type AuthMode = 'login' | 'register';
   templateUrl: './public-auth.component.html',
   styleUrls: ['./public-auth.component.scss'],
 })
-export class PublicAuthComponent {
+export class PublicAuthComponent implements OnInit {
   mode: AuthMode = 'login';
   message = '';
   errorMessage = '';
@@ -27,6 +29,10 @@ export class PublicAuthComponent {
   isBusy = false;
   confirmPassword = '';
   strength: PasswordStrengthResponse = { score: 0, label: 'Weak', feedback: [] };
+
+  phoneCountryCode = '+962';
+  phoneNationalNumber = '';
+  currentLanguage: 'en' | 'ar' | 'es' = 'en';
 
   loginRequest: LoginRequest = {
     usernameOrEmail: '',
@@ -46,8 +52,21 @@ export class PublicAuthComponent {
   constructor(
     private authApi: AuthApiService,
     private setupStatus: SetupStatusApiService,
-    private router: Router
+    private router: Router,
+    private translation: TranslationService
   ) {}
+
+  ngOnInit(): void {
+    this.currentLanguage = this.translation.getLanguageMode();
+    this.registerRequest.preferredLanguage = this.currentLanguage;
+  }
+
+  setLang(lang?: 'en' | 'ar' | 'es'): void {
+    if (!lang) return;
+    this.currentLanguage = lang;
+    this.registerRequest.preferredLanguage = lang;
+    this.translation.setLanguageMode(lang);
+  }
 
   setMode(mode: AuthMode): void {
     this.mode = mode;
@@ -72,16 +91,14 @@ export class PublicAuthComponent {
     this.loginRequest.usernameOrEmail = userOrEmail;
 
     this.start();
-    this.authApi.loginAndStoreToken(this.loginRequest).subscribe({
-      next: () => this.routeAfterAuth(),
-      error: (err) => {
-        if (err && err.status === 0) {
-          this.fail('Backend appears offline. Make sure the API is running at ' + this.authApi.apiBaseUrl);
-        } else {
-          this.fail('We could not sign you in with those details. Please check and try again.');
-        }
-      },
-    });
+    this.authApi.loginAndStoreToken(this.loginRequest)
+      .pipe(timeout(10000))
+      .subscribe({
+        next: () => this.routeAfterAuth(),
+        error: (err) => {
+          this.fail(this.getReadableErrorMessage(err, 'login'));
+        },
+      });
   }
 
   register(): void {
@@ -112,6 +129,19 @@ export class PublicAuthComponent {
       return;
     }
 
+    // Phone validation if provided
+    const phone = this.phoneNationalNumber.trim();
+    if (phone) {
+      const phoneRegex = /^\d{7,15}$/;
+      if (!phoneRegex.test(phone)) {
+        this.errorMessage = 'Please enter a valid phone number (7-15 digits, numbers only).';
+        return;
+      }
+      this.registerRequest.phoneNumber = this.phoneCountryCode + phone;
+    } else {
+      this.registerRequest.phoneNumber = '';
+    }
+
     if (!password) {
       this.errorMessage = 'Password is required.';
       return;
@@ -137,16 +167,14 @@ export class PublicAuthComponent {
     this.registerRequest.email = email;
 
     this.start();
-    this.authApi.registerAndStoreToken(this.registerRequest).subscribe({
-      next: () => this.routeAfterAuth(),
-      error: (err) => {
-        if (err && err.status === 0) {
-          this.fail('Backend appears offline. Make sure the API is running.');
-        } else {
-          this.fail(err.error?.message || 'We could not create this account. Check the details and try again.');
-        }
-      },
-    });
+    this.authApi.registerAndStoreToken(this.registerRequest)
+      .pipe(timeout(10000))
+      .subscribe({
+        next: () => this.routeAfterAuth(),
+        error: (err) => {
+          this.fail(this.getReadableErrorMessage(err, 'register'));
+        },
+      });
   }
 
   checkPasswordStrength(): void {
@@ -179,27 +207,55 @@ export class PublicAuthComponent {
   }
 
   private routeAfterAuth(): void {
-    this.setupStatus.getStatus().subscribe({
-      next: status => {
-        this.isBusy = false;
-        this.router.navigate([this.setupStatus.getNextRoute(status)]);
-      },
-      error: () => {
-        this.isBusy = false;
-        this.message = 'Setup status is unavailable. You can continue to couple setup or enter Arova if already configured.';
-      },
-    });
+    this.setupStatus.getStatus()
+      .pipe(timeout(10000))
+      .subscribe({
+        next: status => {
+          this.isBusy = false;
+          this.router.navigate([this.setupStatus.getNextRoute(status)]);
+        },
+        error: (err) => {
+          this.isBusy = false;
+          this.errorMessage = this.getReadableErrorMessage(err, 'login');
+          this.message = 'Setup status is unavailable. You can continue to couple setup or enter Arova if already configured.';
+        },
+      });
   }
 
   private start(): void {
     this.isBusy = true;
     this.errorMessage = '';
     this.message = '';
+    this.providerMessage = '';
   }
 
   private fail(message: string): void {
     this.isBusy = false;
     this.errorMessage = message;
+  }
+
+  private getReadableErrorMessage(err: any, context: 'login' | 'register'): string {
+    if (err && (err.status === 0 || err.name === 'TimeoutError')) {
+      return 'Backend is not reachable. Start Local Demo instead. (This demo can run in Local Mode without the backend.)';
+    }
+    
+    const statusCode = err?.status;
+    const backendMessage = err?.error?.message || err?.error || '';
+    
+    if (context === 'login') {
+      if (statusCode === 404 || (typeof backendMessage === 'string' && backendMessage.toLowerCase().includes('not found'))) {
+        return 'Account not found.';
+      }
+      if (statusCode === 401 || statusCode === 403 || (typeof backendMessage === 'string' && backendMessage.toLowerCase().includes('password'))) {
+        return 'Incorrect password.';
+      }
+      return backendMessage || 'We could not sign you in with those details. Please check and try again.';
+    } else {
+      if (statusCode === 409 || (typeof backendMessage === 'string' && backendMessage.toLowerCase().includes('already exists'))) {
+        return 'Username or email already exists.';
+      }
+      return backendMessage || 'Could not create account right now. (This demo can run in Local Mode without the backend.)';
+    }
   }
 
   private fallbackScore(password: string): number {

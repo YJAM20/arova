@@ -1,0 +1,204 @@
+@use '../../../../styles/variables' as *;
+
+.checkout-page {
+  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.checkout-header {
+  text-align: center;
+  margin-top: 40px;
+
+  .page-eyebrow {
+    color: $gold;
+    font-size: 0.76rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+
+  h1 {
+    color: $cream;
+    font-size: 2.2rem;
+    font-family: $font-display;
+    margin-bottom: 10px;
+    font-weight: 300;
+  }
+
+  .page-sub {
+    color: $text-muted;
+    font-size: 0.95rem;
+    font-weight: 300;
+    max-w: 480px;
+    margin: 0 auto;
+  }
+}
+
+.checkout-card {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--theme-card, rgba(5, 20, 36, 0.45));
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  max-width: 480px;
+  margin: 0 auto 40px;
+}
+
+.plan-summary-box {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.summary-row {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.sandbox-disclaimer {
+  background: rgba($gold, 0.04);
+  border: 1px solid rgba($gold, 0.2);
+  
+  .warning-icon {
+    filter: drop-shadow(0 0 4px rgba($gold, 0.2));
+  }
+}
+
+/* ─────────────────────────────────────────
+   Action Buttons
+───────────────────────────────────────── */
+.checkout-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $radius-sm;
+  transition: all $transition-base;
+  cursor: pointer;
+  width: 100%;
+  font-size: 0.88rem;
+
+  &--paddle {
+    background: linear-gradient(135deg, rgba($gold, 0.15) 0%, rgba($gold, 0.05) 100%);
+    border: 1px solid rgba($gold, 0.45);
+    color: $cream;
+
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, rgba($gold, 0.25) 0%, rgba($gold, 0.12) 100%);
+      border-color: $gold;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 15px rgba($gold, 0.18);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $gold;
+      box-shadow: 0 0 8px rgba($gold, 0.25);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+
+  &--simulate {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: white;
+
+    &:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: rgba(255, 255, 255, 0.35);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+
+  &--cancel {
+    background: transparent;
+    border: 1px solid transparent;
+    color: $text-muted;
+
+    &:hover {
+      color: white;
+      text-decoration: underline;
+    }
+  }
+}
+
+/* ─────────────────────────────────────────
+   Alert & Loading Overlay
+───────────────────────────────────────── */
+.alert {
+  max-width: 480px;
+  margin: 0 auto;
+  border-left: 4px solid #f87171;
+  background: rgba(248, 113, 113, 0.08);
+  color: #fca5a5;
+
+  .close-btn {
+    color: inherit;
+    opacity: 0.6;
+    background: none;
+    border: none;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+.loading-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+  color: $text-muted;
+  font-size: 0.86rem;
+
+  .spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-top-color: $gold;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─────────────────────────────────────────
+   Responsive Media Queries
+───────────────────────────────────────── */
+@media (max-width: 768px) {
+  .checkout-page {
+    padding: 20px 16px;
+  }
+
+  .checkout-header h1 {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .checkout-card {
+    padding: 20px 16px;
+  }
+}

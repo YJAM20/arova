@@ -235,6 +235,27 @@
 
       <div class="section-divider"></div>
 
+      <!-- Billing Plan (Demo) -->
+      <section class="settings-section" aria-labelledby="plan-heading">
+        <h2 id="plan-heading" class="section-heading">Billing Plan (Demo)</h2>
+        <div class="user-profile-summary">
+          <p class="profile-name">Current Plan: <strong class="text-white">{{ activePlan | uppercase }}</strong></p>
+          <div class="profile-badge-row">
+            <arova-status-pill type="accent" [showDot]="true">
+              Local Mode Demo Status
+            </arova-status-pill>
+          </div>
+          <p class="section-text mt-2" style="font-size: 0.82rem; color: #B8B8B8; margin-top: 8px;">
+            Subscription features run in sandbox test mode. Real billing and remote subscription provisioning is not connected.
+          </p>
+          <a routerLink="/plans" class="settings-link-btn" style="display: inline-block; margin-top: 12px; font-size: 0.84rem; color: #D6B76A; text-decoration: underline;">
+            Change Billing Plan
+          </a>
+        </div>
+      </section>
+
+      <div class="section-divider"></div>
+
       <!-- Privacy & Data Section -->
       <section class="settings-section" aria-labelledby="privacy-heading" id="settings-privacy-section">
         <h2 id="privacy-heading" class="section-heading">{{ t('localPrivacy') }}</h2>

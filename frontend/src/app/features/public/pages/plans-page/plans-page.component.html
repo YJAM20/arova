@@ -1,101 +1,204 @@
-<main class="plans-page">
-  <nav class="public-nav">
-    <a routerLink="/" class="brand">{{ brand.name }}</a>
-    <a routerLink="/auth">Sign In</a>
+<main class="plans-page stars-bg animate-fade-in">
+  <nav class="public-nav flex justify-between items-center px-4 md:px-16 h-20 border-b border-white/5 bg-black/20 nav-blur sticky top-0 z-50">
+    <a routerLink="/" class="brand font-semibold text-xl tracking-tight text-white flex items-center gap-3">
+      <svg class="w-8 h-8 text-primary" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M12 2L15 9H22L16.5 13.5L18.5 20.5L12 16L5.5 20.5L7.5 13.5L2 9H9L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+      </svg>
+      Arova
+    </a>
+    <a routerLink="/auth" class="signin-btn px-6 py-2 rounded-full border border-white/10 hover:bg-white hover:text-black transition-all duration-300 text-xs font-semibold">Sign In</a>
   </nav>
 
-  <header class="page-hero">
-    <p>{{ brand.brandLine }}</p>
-    <h1>Plans for a shared space.</h1>
-    <span>One plan covers both partners.</span>
+  <header class="page-hero text-center max-w-2xl mx-auto py-16 px-4 space-y-4">
+    <p class="text-xs uppercase tracking-[0.2em] text-primary opacity-80">✦ Pricing & Plans</p>
+    <h1 class="text-white text-4xl font-bold">Plans for a shared space.</h1>
+    <span class="text-neutral-400 text-sm">One subscription plan covers both partners in your private universe.</span>
   </header>
 
-  <p class="message" *ngIf="message">{{ message }}</p>
+  <p class="message text-center text-xs text-yellow-500 max-w-md mx-auto mb-8" *ngIf="message">{{ message }}</p>
 
-  <section class="plans-grid">
-    <article class="plan-card glass" *ngFor="let plan of plans">
-      <span>{{ plan.name }}</span>
-      <h2>{{ plan.description }}</h2>
-      <ul>
-        <li *ngFor="let feature of plan.features">{{ feature }}</li>
-      </ul>
-      <a
-        [routerLink]="plan.name.toLowerCase() === 'free' ? '/auth' : '/plans/gifted'"
-        [queryParams]="{ plan: plan.name }"
-      >
-        {{ plan.name.toLowerCase() === 'free' ? 'Start Free' : 'Continue with ' + plan.name }}
-      </a>
+  <!-- Pricing Cards Grid -->
+  <section class="plans-grid grid grid-cols-1 md:grid-cols-3 gap-8 max-w-[1200px] mx-auto px-4 pb-20">
+    
+    <!-- FREE TIER -->
+    <article class="plan-card glass p-8 rounded-2xl flex flex-col justify-between border border-white/10 text-left relative overflow-hidden">
+      <div class="space-y-6">
+        <div class="tier-header flex justify-between items-start">
+          <div>
+            <span class="font-label-caps text-xs uppercase tracking-wider text-primary font-bold">Free</span>
+            <p class="text-neutral-400 text-xs mt-1">A simple shared space for two.</p>
+          </div>
+          <div class="price text-right">
+            <strong class="text-white text-3xl font-bold block">$0</strong>
+            <span class="text-neutral-500 text-[10px]">Forever</span>
+          </div>
+        </div>
+        
+        <div class="luminous-separator h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+
+        <ul class="features-list space-y-3 text-xs text-neutral-300">
+          <li class="flex items-center gap-2">✔ Local demo sandbox</li>
+          <li class="flex items-center gap-2">✔ Basic memories timeline</li>
+          <li class="flex items-center gap-2">✔ Basic letters vault</li>
+          <li class="flex items-center gap-2">✔ Basic mood room logging</li>
+          <li class="flex items-center gap-2">✔ Basic music room player</li>
+          <li class="flex items-center gap-2">✔ Basic future plans listing</li>
+          <li class="flex items-center gap-2">✔ Limited custom space (1 limit)</li>
+        </ul>
+      </div>
+
+      <div class="pt-8">
+        <a routerLink="/auth" class="cta-btn cta-btn--free w-full py-3.5 bg-white/5 border border-white/10 text-white rounded-xl font-bold text-center block text-xs hover:bg-white/10 transition-all duration-300">
+          Start Free (Local Demo)
+        </a>
+      </div>
     </article>
+
+    <!-- PRO TIER -->
+    <article class="plan-card glass p-8 rounded-2xl flex flex-col justify-between border border-white/10 text-left relative overflow-hidden highlighted-card">
+      <div class="absolute -top-32 -right-32 w-64 h-64 bg-primary/10 blur-3xl rounded-full"></div>
+      <div class="space-y-6 relative z-10">
+        <div class="tier-header flex justify-between items-start">
+          <div>
+            <span class="font-label-caps text-xs uppercase tracking-wider text-primary font-bold">Pro</span>
+            <p class="text-neutral-400 text-xs mt-1">More personalization and rituals.</p>
+          </div>
+          <div class="price text-right">
+            <strong class="text-white text-3xl font-bold block">$6</strong>
+            <span class="text-neutral-400 text-[10px]">$49/year (Save 30%)</span>
+          </div>
+        </div>
+        
+        <div class="luminous-separator h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+
+        <ul class="features-list space-y-3 text-xs text-neutral-300">
+          <li class="flex items-center gap-2">✦ Everything in Free</li>
+          <li class="flex items-center gap-2">✦ More aesthetic themes</li>
+          <li class="flex items-center gap-2">✦ Deeper room personalization</li>
+          <li class="flex items-center gap-2">✦ Expanded custom spaces (5 limit)</li>
+          <li class="flex items-center gap-2">✦ Stronger memories & letters</li>
+          <li class="flex items-center gap-2">✦ Richer mood, music & future rooms</li>
+        </ul>
+      </div>
+
+      <div class="pt-8 space-y-3 relative z-10">
+        <a [routerLink]="['/checkout']" [queryParams]="{ plan: 'pro', period: 'monthly' }" class="cta-btn cta-btn--monthly w-full py-3.5 bg-primary text-black rounded-xl font-bold text-center block text-xs hover:scale-[1.02] transition-transform duration-300">
+          Get Pro Monthly ($6)
+        </a>
+        <a [routerLink]="['/checkout']" [queryParams]="{ plan: 'pro', period: 'yearly' }" class="cta-btn cta-btn--yearly w-full py-3.5 bg-white/5 border border-white/10 text-white rounded-xl font-semibold text-center block text-xs hover:bg-white/10 transition-all duration-300">
+          Get Pro Yearly (Demo)
+        </a>
+        <small class="plan-disclaimer text-[10px] text-neutral-500 text-center block">Paddle Sandbox · No real charge</small>
+      </div>
+    </article>
+
+    <!-- PLATINUM TIER -->
+    <article class="plan-card glass p-8 rounded-2xl flex flex-col justify-between border border-white/10 text-left relative overflow-hidden">
+      <div class="space-y-6">
+        <div class="tier-header flex justify-between items-start">
+          <div>
+            <span class="font-label-caps text-xs uppercase tracking-wider text-primary font-bold">Platinum</span>
+            <p class="text-neutral-400 text-xs mt-1">Advanced controls and premium spaces.</p>
+          </div>
+          <div class="price text-right">
+            <strong class="text-white text-3xl font-bold block">$12</strong>
+            <span class="text-neutral-400 text-[10px]">$99/year (Save 31%)</span>
+          </div>
+        </div>
+        
+        <div class="luminous-separator h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+
+        <ul class="features-list space-y-3 text-xs text-neutral-300">
+          <li class="flex items-center gap-2">✦ Everything in Pro</li>
+          <li class="flex items-center gap-2">✦ Unlimited custom spaces (20 limit)</li>
+          <li class="flex items-center gap-2">✦ Admin showcase access</li>
+          <li class="flex items-center gap-2">✦ Premium/Advanced space themes</li>
+          <li class="flex items-center gap-2">✦ Early access features</li>
+          <li class="flex items-center gap-2">✦ Premium insights & analytics</li>
+        </ul>
+      </div>
+
+      <div class="pt-8 space-y-3">
+        <a [routerLink]="['/checkout']" [queryParams]="{ plan: 'platinum', period: 'monthly' }" class="cta-btn cta-btn--monthly w-full py-3.5 bg-primary text-black rounded-xl font-bold text-center block text-xs hover:scale-[1.02] transition-transform duration-300">
+          Get Platinum Monthly ($12)
+        </a>
+        <a [routerLink]="['/checkout']" [queryParams]="{ plan: 'platinum', period: 'yearly' }" class="cta-btn cta-btn--yearly w-full py-3.5 bg-white/5 border border-white/10 text-white rounded-xl font-semibold text-center block text-xs hover:bg-white/10 transition-all duration-300">
+          Get Platinum Yearly (Demo)
+        </a>
+        <small class="plan-disclaimer text-[10px] text-neutral-500 text-center block">Paddle Sandbox · No real charge</small>
+      </div>
+    </article>
+
   </section>
 
   <!-- Comparison Section -->
-  <section class="comparison-section" aria-labelledby="comparison-title">
-    <div class="comparison-container">
-      <h2 id="comparison-title" class="comparison-title">Compare Features</h2>
+  <section class="comparison-section py-20 px-4 border-t border-white/5 bg-black/25" aria-labelledby="comparison-title">
+    <div class="comparison-container max-w-[900px] mx-auto">
+      <h2 id="comparison-title" class="comparison-title text-center text-white text-2xl font-bold mb-12">Compare Features</h2>
       
-      <div class="table-scroll-wrapper glass-container">
-        <table class="comparison-table">
+      <div class="table-scroll-wrapper glass p-1 rounded-2xl border border-white/10 overflow-hidden">
+        <table class="comparison-table w-full text-left text-xs border-collapse">
           <caption class="sr-only">Detailed plan comparison across Starter, Pro, and Enterprise tiers</caption>
           <thead>
-            <tr>
-              <th scope="col" class="feature-col">Feature</th>
-              <th scope="col" class="starter-col">Starter</th>
-              <th scope="col" class="pro-col highlighted-col">Pro</th>
-              <th scope="col" class="enterprise-col">Enterprise</th>
+            <tr class="border-b border-white/10">
+              <th scope="col" class="feature-col p-4 font-semibold text-neutral-300">Feature</th>
+              <th scope="col" class="starter-col p-4 font-semibold text-neutral-300 text-center">Starter</th>
+              <th scope="col" class="pro-col highlighted-col p-4 font-semibold text-neutral-300 text-center">Pro</th>
+              <th scope="col" class="enterprise-col p-4 font-semibold text-neutral-300 text-center">Enterprise</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let row of comparisonRows">
-              <th scope="row" class="feature-name">{{ row.name }}</th>
+            <tr *ngFor="let row of comparisonRows" class="border-b border-white/5 last:border-0 hover:bg-white/5 transition-colors">
+              <th scope="row" class="feature-name p-4 font-normal text-neutral-200">{{ row.name }}</th>
               
               <!-- Starter Cell -->
-              <td class="starter-cell">
+              <td class="starter-cell p-4 text-center">
                 <ng-container *ngIf="row.starter === true || row.starter === false; else starterText">
                   <span class="sr-only">{{ row.starter ? 'Yes' : 'No' }}</span>
-                  <svg *ngIf="row.starter" class="table-icon check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <svg *ngIf="row.starter" class="table-icon check-icon w-4 h-4 mx-auto text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <polyline points="20 6 9 17 4 12"></polyline>
                   </svg>
-                  <svg *ngIf="!row.starter" class="table-icon x-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <svg *ngIf="!row.starter" class="table-icon x-icon w-4 h-4 mx-auto text-neutral-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
                     <line x1="6" y1="6" x2="18" y2="18"></line>
                   </svg>
                 </ng-container>
                 <ng-template #starterText>
-                  <span class="cell-text">{{ row.starter }}</span>
+                  <span class="cell-text text-neutral-400 font-medium">{{ row.starter }}</span>
                 </ng-template>
               </td>
 
               <!-- Pro Cell -->
-              <td class="pro-cell highlighted-col">
+              <td class="pro-cell highlighted-col p-4 text-center">
                 <ng-container *ngIf="row.pro === true || row.pro === false; else proText">
                   <span class="sr-only">{{ row.pro ? 'Yes' : 'No' }}</span>
-                  <svg *ngIf="row.pro" class="table-icon check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <svg *ngIf="row.pro" class="table-icon check-icon w-4 h-4 mx-auto text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <polyline points="20 6 9 17 4 12"></polyline>
                   </svg>
-                  <svg *ngIf="!row.pro" class="table-icon x-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <svg *ngIf="!row.pro" class="table-icon x-icon w-4 h-4 mx-auto text-neutral-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
                     <line x1="6" y1="6" x2="18" y2="18"></line>
                   </svg>
                 </ng-container>
                 <ng-template #proText>
-                  <span class="cell-text">{{ row.pro }}</span>
+                  <span class="cell-text text-neutral-200 font-bold">{{ row.pro }}</span>
                 </ng-template>
               </td>
 
               <!-- Enterprise Cell -->
-              <td class="enterprise-cell">
+              <td class="enterprise-cell p-4 text-center">
                 <ng-container *ngIf="row.enterprise === true || row.enterprise === false; else enterpriseText">
                   <span class="sr-only">{{ row.enterprise ? 'Yes' : 'No' }}</span>
-                  <svg *ngIf="row.enterprise" class="table-icon check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <svg *ngIf="row.enterprise" class="table-icon check-icon w-4 h-4 mx-auto text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <polyline points="20 6 9 17 4 12"></polyline>
                   </svg>
-                  <svg *ngIf="!row.enterprise" class="table-icon x-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <svg *ngIf="!row.enterprise" class="table-icon x-icon w-4 h-4 mx-auto text-neutral-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
                     <line x1="6" y1="6" x2="18" y2="18"></line>
                   </svg>
                 </ng-container>
                 <ng-template #enterpriseText>
-                  <span class="cell-text">{{ row.enterprise }}</span>
+                  <span class="cell-text text-neutral-400 font-medium">{{ row.enterprise }}</span>
                 </ng-template>
               </td>
             </tr>
@@ -104,12 +207,37 @@
       </div>
 
       <!-- Billing Disclaimer -->
-      <footer class="table-disclaimer">
-        <span class="disclaimer-label">Billing Note</span>
-        <p class="disclaimer-text">
-          Pricing and subscription features are local demonstrations. No actual payments or billing integrations exist in this application. All options can be unlocked via local configuration or pairing.
+      <footer class="table-disclaimer p-4 rounded-xl mt-6 bg-white/5 border border-white/5 flex gap-3 items-start">
+        <span class="disclaimer-label text-[10px] uppercase font-bold text-neutral-400 tracking-wider pt-0.5">Billing Note</span>
+        <p class="disclaimer-text text-xs text-neutral-400 leading-relaxed m-0">
+          Billing is currently connected to demo/sandbox flows only. No production payment is active unless explicitly configured. Pricing and subscription features are local demonstrations. No actual payments or billing integrations exist in this application. All options can be unlocked via local configuration or pairing.
         </p>
       </footer>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="faq-section py-20 px-4 max-w-[800px] mx-auto text-left">
+    <h2 class="text-white text-2xl font-bold text-center mb-12">Frequently Asked Questions</h2>
+    <div class="space-y-6">
+      <div class="faq-item p-6 rounded-xl bg-white/5 border border-white/5">
+        <h3 class="text-white font-semibold text-sm mb-2">How do subscription plans work?</h3>
+        <p class="text-neutral-300 text-xs leading-relaxed">
+          Arova plans cover both partners in a shared space. Only one partner needs to upgrade to Pro or Platinum for the upgrade to apply to both profiles.
+        </p>
+      </div>
+      <div class="faq-item p-6 rounded-xl bg-white/5 border border-white/5">
+        <h3 class="text-white font-semibold text-sm mb-2">Is my data secure in the Sandbox?</h3>
+        <p class="text-neutral-300 text-xs leading-relaxed">
+          Yes, your data is stored securely in your local browser sandbox context. The simulated checkout processes pricing configurations locally, and no real billing info is stored or processed.
+        </p>
+      </div>
+      <div class="faq-item p-6 rounded-xl bg-white/5 border border-white/5">
+        <h3 class="text-white font-semibold text-sm mb-2">Can I switch plans later?</h3>
+        <p class="text-neutral-300 text-xs leading-relaxed">
+          Absolutely. You can change your active tier in local mode settings at any time or upgrade your sandbox demo package using the checkout links.
+        </p>
+      </div>
     </div>
   </section>
 </main>

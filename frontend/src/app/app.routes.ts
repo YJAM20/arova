@@ -28,6 +28,30 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'checkout',
+    title: 'Arova — Paddle Sandbox Checkout',
+    loadComponent: () =>
+      import('./features/checkout/checkout-page/checkout-page.component').then(
+        m => m.CheckoutPageComponent
+      ),
+  },
+  {
+    path: 'checkout/success',
+    title: 'Arova — Checkout Success',
+    loadComponent: () =>
+      import('./features/checkout/checkout-success/checkout-success.component').then(
+        m => m.CheckoutSuccessComponent
+      ),
+  },
+  {
+    path: 'checkout/cancel',
+    title: 'Arova — Checkout Canceled',
+    loadComponent: () =>
+      import('./features/checkout/checkout-cancel/checkout-cancel.component').then(
+        m => m.CheckoutCancelComponent
+      ),
+  },
+  {
     path: 'admin-showcase',
     title: 'Arova Control Center — Admin Showcase',
     loadComponent: () =>
