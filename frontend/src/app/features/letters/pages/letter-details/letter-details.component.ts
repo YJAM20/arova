@@ -1,5 +1,6 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
 import { LetterDataService } from '../../../../core/services/letter-data.service';
@@ -18,7 +19,7 @@ const CATEGORY_LABELS: Record<LetterCategory, string> = {
 @Component({
   selector: 'app-letter-details',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './letter-details.component.html',
   styleUrls: ['./letter-details.component.scss'],
 })
@@ -29,6 +30,10 @@ export class LetterDetailsComponent implements OnInit {
   notFound = false;
   isLoading = false;
   errorMessage = '';
+
+  enteredPasscode = '';
+  passcodeError = '';
+  passcodeUnlocked = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -67,8 +72,57 @@ export class LetterDetailsComponent implements OnInit {
     });
   }
 
+  isLockedByDate(): boolean {
+    if (!this.letter?.unlockDate) return false;
+    const unlock = new Date(this.letter.unlockDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    unlock.setHours(0, 0, 0, 0);
+    return today < unlock;
+  }
+
+  getFormattedUnlockDate(): string {
+    if (!this.letter?.unlockDate) return '';
+    return this.formatDate(this.letter.unlockDate);
+  }
+
   canReadBody(): boolean {
-    return !!this.letter && !!this.letter.body.trim() && (this.isAdmin || !this.letter.isLocked);
+    if (!this.letter) return false;
+    if (!this.letter.body.trim()) return false;
+    if (this.isAdmin) return true;
+
+    if (this.letter.isLocked) {
+      if (this.passcodeUnlocked) return true;
+      if (this.letter.unlockDate && !this.isLockedByDate()) return true;
+      return false;
+    }
+
+    return true;
+  }
+
+  checkPasscode(): void {
+    this.passcodeError = '';
+    if (!this.letter) return;
+    
+    if (this.enteredPasscode.trim() === this.letter.passcode) {
+      this.passcodeUnlocked = true;
+    } else {
+      this.passcodeError = 'The key does not fit. Try again.';
+    }
+  }
+
+  toggleFavorite(): void {
+    if (!this.letter) return;
+    this.letterService.toggleFavorite(this.letter.id).subscribe({
+      next: updated => {
+        if (updated) {
+          this.letter = updated;
+        }
+      },
+      error: error => {
+        this.errorMessage = this.messageFromError(error);
+      },
+    });
   }
 
   goBack(): void {

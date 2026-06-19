@@ -88,7 +88,7 @@ test.describe('Arova E2E API & Feature Placeholder Tests', () => {
     await expect(page).toHaveURL(/\/verify-account$/);
 
     // Switch to Phone tab
-    const phoneTabBtn = page.getByRole('button', { name: 'Phone' });
+    const phoneTabBtn = page.getByRole('tab', { name: 'Phone' });
     await expect(phoneTabBtn).toBeVisible();
     await phoneTabBtn.click();
 

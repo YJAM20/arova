@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { LetterDataService } from '../../../../core/services/letter-data.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { Letter, LetterCategory } from '../../../../shared/models/letter.model';
@@ -37,12 +37,29 @@ const CATEGORY_LABELS: Record<LetterCategory, string> = {
 })
 export class LettersVaultComponent implements OnInit {
   letters: Letter[] = [];
+  filteredLetters: Letter[] = [];
+  activeCategory: LetterCategory | 'all' = 'all';
   isAdmin = false;
   isApiMode = false;
   isLoading = false;
   errorMessage = '';
 
-  constructor(private letterService: LetterDataService, private auth: AuthService) {}
+  categories: Array<{ key: LetterCategory | 'all'; label: string }> = [
+    { key: 'all', label: 'All' },
+    { key: 'miss-me', label: 'Miss Me' },
+    { key: 'sad', label: 'Sad' },
+    { key: 'argument', label: 'After an Argument' },
+    { key: 'overthinking', label: 'Overthinking' },
+    { key: 'birthday', label: 'Birthday' },
+    { key: 'reassurance', label: 'Reassurance' },
+    { key: 'future', label: 'Future' },
+  ];
+
+  constructor(
+    private letterService: LetterDataService, 
+    private auth: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.isAdmin = this.auth.isAdmin();
@@ -57,14 +74,28 @@ export class LettersVaultComponent implements OnInit {
     this.letterService.getLetters().subscribe({
       next: letters => {
         this.letters = letters;
+        this.applyFilter();
         this.isLoading = false;
       },
       error: error => {
         this.letters = [];
+        this.filteredLetters = [];
         this.errorMessage = this.messageFromError(error);
         this.isLoading = false;
       },
     });
+  }
+
+  setCategory(cat: LetterCategory | 'all'): void {
+    this.activeCategory = cat;
+    this.applyFilter();
+  }
+
+  private applyFilter(): void {
+    this.filteredLetters = 
+      this.activeCategory === 'all'
+        ? this.letters
+        : this.letters.filter(letter => letter.category === this.activeCategory);
   }
 
   getCategoryLabel(cat: LetterCategory): string {
@@ -77,6 +108,13 @@ export class LettersVaultComponent implements OnInit {
       month: 'long',
       day: 'numeric',
     });
+  }
+
+  openLetterFromKeyboard(event: KeyboardEvent, letterId: string): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.router.navigate(['/letters', letterId]);
+    }
   }
 
   private messageFromError(error: unknown): string {

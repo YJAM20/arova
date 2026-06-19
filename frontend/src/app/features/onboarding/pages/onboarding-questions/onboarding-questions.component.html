@@ -1,17 +1,193 @@
-<main class="questions-page">
-  <section class="question-card glass" *ngIf="current">
-    <a routerLink="/" class="brand">Arova</a>
-    <p class="eyebrow">Quick start {{ index + 1 }} of {{ questions.length }}</p>
-    <div class="progress"><i [style.width.%]="progress"></i></div>
-    <h1>{{ current.prompt }}</h1>
-    <textarea rows="5" [(ngModel)]="answers[current.id]" placeholder="A short answer is enough."></textarea>
-    <div class="actions">
-      <button type="button" (click)="back()" [disabled]="index === 0">Back</button>
-      <button type="button" (click)="next()" *ngIf="index < questions.length - 1">Next</button>
-      <button type="button" (click)="save()" *ngIf="index === questions.length - 1" [disabled]="isBusy">Save answers</button>
-    </div>
-    <button type="button" class="skip" (click)="skip()">Skip for now — use the default experience.</button>
-    <p class="message" *ngIf="message">{{ message }}</p>
-    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
-  </section>
+<main class="questions-page stars-bg">
+  <div class="nebula-detail" aria-hidden="true">
+    <div class="orbit-ring ring-one"></div>
+    <div class="orbit-ring ring-two"></div>
+    <div class="orbit-node node-one"></div>
+    <div class="orbit-node node-two"></div>
+  </div>
+
+  <div class="questions-shell">
+    <section class="intro-panel animate-in" aria-labelledby="onboarding-title">
+      <a routerLink="/" class="brand">Arova</a>
+      <p class="kicker">Onboarding</p>
+      <h1 id="onboarding-title">Shape your private space</h1>
+      <p class="subtitle">
+        A few quiet questions help Arova personalize memories, moods, letters, and future plans for two people.
+      </p>
+
+      <div class="journey-note glass">
+        <span class="note-label">Private setup</span>
+        <p>
+          These answers help tune the first experience. They are not public, and you can refine the details later where Arova supports editing.
+        </p>
+      </div>
+
+      <ul class="setup-points" aria-label="What onboarding shapes">
+        <li>
+          <span aria-hidden="true"></span>
+          <p><strong>Memories</strong> get calmer prompts for what you want to preserve first.</p>
+        </li>
+        <li>
+          <span aria-hidden="true"></span>
+          <p><strong>Letters and moods</strong> can match the tone you prefer.</p>
+        </li>
+        <li>
+          <span aria-hidden="true"></span>
+          <p><strong>Plans and daily prompts</strong> start with a rhythm that feels natural.</p>
+        </li>
+      </ul>
+    </section>
+
+    <section class="question-panel glass animate-in" [attr.aria-busy]="isLoading" style="animation-delay: 0.08s;">
+      <ng-container *ngIf="isLoading">
+        <div class="state-card" aria-live="polite">
+          <div class="orbital-loader" aria-hidden="true">
+            <span></span>
+          </div>
+          <h2>Preparing your onboarding questions...</h2>
+          <p>Setting up a calm first pass for your private space.</p>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="!isLoading && isComplete">
+        <div class="state-card completion-state" aria-live="polite">
+          <span class="state-mark" aria-hidden="true"></span>
+          <h2>Your space is ready to begin</h2>
+          <p>You can start with memories, letters, moods, or plans, and refine the details later.</p>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="!isLoading && !isComplete && hasLoadError">
+        <div class="state-card error-state" role="alert">
+          <h2>We could not load onboarding right now. Please try again.</h2>
+          <p>API Mode still uses the backend at http://localhost:5036. If it is offline, start the API and retry.</p>
+          <div class="state-actions">
+            <button type="button" class="secondary-btn" (click)="loadQuestions()">Retry</button>
+            <a routerLink="/auth" class="text-link">Back to auth</a>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="!isLoading && !isComplete && !hasLoadError && !hasQuestions">
+        <div class="state-card empty-state" aria-live="polite">
+          <h2>No onboarding questions are available right now.</h2>
+          <p>You can continue to profile setup and return later when questions are available.</p>
+          <a routerLink="/profile-setup" class="primary-link">Continue to profile setup</a>
+        </div>
+      </ng-container>
+
+      <form
+        *ngIf="!isLoading && !isComplete && !hasLoadError && current as question"
+        class="question-form"
+        (ngSubmit)="isLastQuestion ? save() : next()"
+        novalidate
+      >
+        <div class="progress-block">
+          <div class="progress-header">
+            <span class="progress-label">Question {{ currentNumber }} of {{ totalQuestions }}</span>
+            <span class="progress-percent">{{ progress | number:'1.0-0' }}% complete</span>
+          </div>
+          <div
+            class="progress-track"
+            role="progressbar"
+            [attr.aria-valuenow]="currentNumber"
+            aria-valuemin="1"
+            [attr.aria-valuemax]="totalQuestions"
+            [attr.aria-label]="'Question ' + currentNumber + ' of ' + totalQuestions"
+          >
+            <span [style.width.%]="progress"></span>
+          </div>
+          <ol class="step-dots" aria-label="Onboarding question steps">
+            <li
+              *ngFor="let step of questions; let stepIndex = index; trackBy: trackByQuestionId"
+              [class.active]="stepIndex === index"
+              [class.complete]="stepIndex < index"
+            >
+              <span class="sr-only">
+                Question {{ stepIndex + 1 }}{{ stepIndex === index ? ', current' : stepIndex < index ? ', completed' : '' }}
+              </span>
+            </li>
+          </ol>
+        </div>
+
+        <article class="active-question-card" [attr.aria-labelledby]="questionTitleId(question)">
+          <div class="question-meta">
+            <span class="category-pill">{{ categoryLabel(question) }}</span>
+            <span class="required-pill">{{ question.required ? 'Required' : 'Optional' }}</span>
+          </div>
+
+          <h2 [id]="questionTitleId(question)">{{ question.prompt }}</h2>
+          <p class="question-helper" [id]="questionHelpId(question)">
+            {{ helperText(question) }}
+          </p>
+
+          <fieldset
+            *ngIf="question.options?.length; else freeTextAnswer"
+            class="answer-options"
+            [attr.aria-describedby]="questionHelpId(question)"
+          >
+            <legend>Choose one answer</legend>
+            <label
+              *ngFor="let option of question.options; trackBy: trackByOption"
+              class="option-card"
+              [class.selected]="answers[question.id] === option"
+            >
+              <input
+                type="radio"
+                [name]="'answer-' + question.id"
+                [value]="option"
+                [(ngModel)]="answers[question.id]"
+                [required]="!!question.required"
+              />
+              <span>{{ option }}</span>
+            </label>
+          </fieldset>
+
+          <ng-template #freeTextAnswer>
+            <div class="answer-field">
+              <label [for]="answerControlId(question)">Your answer</label>
+              <textarea
+                [id]="answerControlId(question)"
+                [name]="'answer-' + question.id"
+                rows="5"
+                [(ngModel)]="answers[question.id]"
+                [required]="!!question.required"
+                [attr.aria-describedby]="questionHelpId(question)"
+                placeholder="A short answer is enough."
+              ></textarea>
+            </div>
+          </ng-template>
+
+          <p class="validation-message" *ngIf="errorMessage" role="alert">
+            {{ errorMessage }}
+          </p>
+        </article>
+
+        <div class="form-actions">
+          <button type="button" class="secondary-btn" (click)="back()" [disabled]="index === 0 || isBusy">
+            Back
+          </button>
+          <button
+            type="submit"
+            class="primary-btn"
+            [disabled]="isBusy"
+          >
+            {{ isLastQuestion ? (isBusy ? 'Finishing...' : 'Finish setup') : 'Continue' }}
+          </button>
+        </div>
+
+        <div class="skip-row">
+          <button type="button" class="skip-link" (click)="skip()" [disabled]="isBusy">
+            Skip for now
+          </button>
+          <span aria-hidden="true"></span>
+          <p>Optional answers can wait until the space starts to feel like yours.</p>
+        </div>
+
+        <p class="status-message" *ngIf="message" aria-live="polite">
+          {{ message }}
+        </p>
+      </form>
+    </section>
+  </div>
 </main>

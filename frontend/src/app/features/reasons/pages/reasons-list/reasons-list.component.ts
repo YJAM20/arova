@@ -68,7 +68,7 @@ export class ReasonsListComponent implements OnInit {
     this.loadReasons();
   }
 
-  private loadReasons(): void {
+  loadReasons(): void {
     this.isLoading = true;
     this.errorMessage = '';
     this.dailyErrorMessage = '';

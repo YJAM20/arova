@@ -5,6 +5,7 @@ import { adminGuard } from './core/guards/admin.guard';
 export const routes: Routes = [
   {
     path: '',
+    title: 'Arova — A private space for two',
     loadComponent: () =>
       import('./features/public/pages/landing-page/landing-page.component').then(
         m => m.LandingPageComponent
@@ -12,6 +13,7 @@ export const routes: Routes = [
   },
   {
     path: 'plans',
+    title: 'Arova — Pricing Plans',
     loadComponent: () =>
       import('./features/public/pages/plans-page/plans-page.component').then(
         m => m.PlansPageComponent
@@ -19,13 +21,23 @@ export const routes: Routes = [
   },
   {
     path: 'plans/gifted',
+    title: 'Arova — Gifted Upgrade',
     loadComponent: () =>
       import('./features/public/pages/gifted-plan-page/gifted-plan-page.component').then(
         m => m.GiftedPlanPageComponent
       ),
   },
   {
+    path: 'admin-showcase',
+    title: 'Arova Control Center — Admin Showcase',
+    loadComponent: () =>
+      import('./features/admin-showcase/admin-showcase.component').then(
+        m => m.AdminShowcaseComponent
+      ),
+  },
+  {
     path: 'auth',
+    title: 'Arova — Authentication',
     loadComponent: () =>
       import('./features/auth/pages/public-auth/public-auth.component').then(
         m => m.PublicAuthComponent
@@ -39,6 +51,7 @@ export const routes: Routes = [
   {
     path: 'verify-account',
     canActivate: [authGuard],
+    title: 'Arova — Verify Account',
     loadComponent: () =>
       import('./features/auth/pages/verify-account/verify-account.component').then(
         m => m.VerifyAccountComponent
@@ -47,6 +60,7 @@ export const routes: Routes = [
   {
     path: 'onboarding/questions',
     canActivate: [authGuard],
+    title: 'Arova — Onboarding Questions',
     loadComponent: () =>
       import('./features/onboarding/pages/onboarding-questions/onboarding-questions.component').then(
         m => m.OnboardingQuestionsComponent
@@ -55,6 +69,7 @@ export const routes: Routes = [
   {
     path: 'profile-setup',
     canActivate: [authGuard],
+    title: 'Arova - Profile Setup',
     loadComponent: () =>
       import('./features/profile/pages/profile-setup/profile-setup.component').then(
         m => m.ProfileSetupComponent
@@ -95,6 +110,7 @@ export const routes: Routes = [
     children: [
       {
         path: 'universe',
+        title: 'Arova — Universe Dashboard',
         loadComponent: () =>
           import('./features/universe/pages/universe-home/universe-home.component').then(
             m => m.UniverseHomeComponent
@@ -130,6 +146,7 @@ export const routes: Routes = [
       },
       {
         path: 'chat',
+        title: 'Arova — Private Chat',
         loadComponent: () =>
           import('./features/chat/pages/chat-room/chat-room.component').then(
             m => m.ChatRoomComponent
@@ -277,6 +294,7 @@ export const routes: Routes = [
       },
       {
         path: 'settings',
+        title: 'Arova — Settings',
         loadComponent: () =>
           import('./features/settings/pages/settings-page/settings-page.component').then(
             m => m.SettingsPageComponent

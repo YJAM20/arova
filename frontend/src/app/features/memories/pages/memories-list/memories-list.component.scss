@@ -1,72 +1,185 @@
 @use '../../../../../styles/variables' as *;
 
 .memories-page {
-  padding: 40px 0;
-  max-width: 900px;
+  padding: 40px 18px;
+  max-width: 1040px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
 }
 
+// ── Header Actions ─────────────────────────────────────
 .add-content-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 9px 18px;
-  border: 1px solid var(--arova-border);
-  border-radius: var(--arova-radius-sm);
-  color: var(--arova-accent) !important;
+  min-height: 40px;
+  padding: 8px 18px;
+  border: 1px solid color-mix(in srgb, var(--theme-accent, $soft-pink) 38%, transparent);
+  border-radius: $radius-sm;
+  color: var(--theme-text, $cream) !important;
   font-size: 0.88rem;
-  font-weight: 500;
+  font-weight: 700;
   letter-spacing: 0.04em;
-  background: rgba(255, 255, 255, 0.02);
-  transition: all var(--arova-transition-fast);
+  background: color-mix(in srgb, var(--theme-accent, $soft-pink) 10%, transparent);
+  transition: all $transition-fast;
 
-  &:hover {
-    background: rgba(231, 166, 182, 0.08);
-    border-color: var(--arova-accent);
-    box-shadow: 0 0 10px rgba(231, 166, 182, 0.1);
+  &:hover,
+  &:focus-visible {
+    background: color-mix(in srgb, var(--theme-accent, $soft-pink) 18%, transparent);
+    border-color: var(--theme-accent, $soft-pink);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--theme-accent, $soft-pink) 20%, transparent);
+    outline: none;
   }
 }
 
+// ── Stats Summary Row ──────────────────────────────────
+.stats-summary-row {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 10px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-size: 0.84rem;
+  color: var(--theme-muted, $text-muted);
+  border: 1px solid color-mix(in srgb, var(--theme-border, $glass-border) 60%, transparent);
+  background: rgba(255, 255, 255, 0.02);
+
+  .stats-icon {
+    color: var(--theme-accent-2, $gold);
+    font-size: 0.8rem;
+  }
+
+  .dot-separator {
+    color: var(--theme-muted, $text-muted);
+    opacity: 0.5;
+  }
+}
+
+// ── Filter Tabs ────────────────────────────────────────
 .filter-tabs {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 32px;
+  gap: 10px;
+  margin-bottom: 8px;
 }
 
 .filter-tab {
   padding: 7px 18px;
   border-radius: 20px;
   font-size: 0.82rem;
-  color: var(--arova-text-secondary);
-  border: 1px solid var(--arova-border);
+  color: var(--theme-muted, $text-muted);
+  border: 1px solid color-mix(in srgb, var(--theme-border, $glass-border) 80%, transparent);
   background: transparent;
-  transition: all var(--arova-transition-fast);
+  transition: all $transition-fast;
   letter-spacing: 0.03em;
   cursor: pointer;
 
-  &:hover {
-    color: var(--arova-text-primary);
-    border-color: var(--arova-accent-soft);
+  &:hover,
+  &:focus-visible {
+    color: var(--theme-text, $cream);
+    border-color: color-mix(in srgb, var(--theme-accent, $soft-pink) 40%, transparent);
+    outline: none;
   }
 
   &.active {
-    background: rgba(115, 140, 118, 0.12);
-    border-color: var(--arova-accent-soft);
-    color: var(--arova-text-primary);
+    background: color-mix(in srgb, var(--theme-accent-2, $gold) 8%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent-2, $gold) 58%, transparent);
+    color: var(--theme-text, $cream);
+    box-shadow: 0 0 10px color-mix(in srgb, var(--theme-accent-2, $gold) 10%, transparent);
   }
 }
 
+// ── Memories Grid ──────────────────────────────────────
 .memories-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 24px;
 }
 
 .memory-card-wrapper {
-  display: block;
+  display: flex;
+  flex-direction: column;
   text-decoration: none;
   color: inherit;
+  border-radius: $radius-md;
+  overflow: hidden;
+  height: 100%;
+  padding: 0 !important; // Clean card container borders
+  transition: transform $transition-base, border-color $transition-base, background $transition-base;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--theme-accent, $soft-pink);
+    outline-offset: 3px;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--theme-accent, $soft-pink) 48%, transparent) !important;
+    background: rgba(255, 255, 255, 0.045) !important;
+  }
+}
+
+// ── Media & Placeholders ──────────────────────────────
+.memory-media {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  position: relative;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid color-mix(in srgb, var(--theme-border, $glass-border) 60%, transparent);
+
+  .memory-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform $transition-slow;
+  }
+
+  .memory-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), transparent);
+    position: relative;
+
+    .placeholder-icon {
+      font-size: 2.2rem;
+      opacity: 0.28;
+    }
+
+    .placeholder-shine {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+      transform: translateX(-100%);
+      animation: shine 4s infinite linear;
+    }
+  }
+}
+
+@keyframes shine {
+  to { transform: translateX(100%); }
+}
+
+.memory-card-wrapper:hover {
+  .memory-image {
+    transform: scale(1.03);
+  }
+}
+
+// ── Card Content Body ──────────────────────────────────
+.memory-card-body {
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: 12px;
 }
 
 .memory-card-header {
@@ -74,7 +187,6 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 16px;
 }
 
 .memory-meta {
@@ -86,7 +198,7 @@
 
 .memory-date {
   font-size: 0.78rem;
-  color: var(--arova-muted);
+  color: var(--theme-muted, $text-muted);
 }
 
 .memory-indicators {
@@ -97,68 +209,211 @@
 
   .mood-indicator {
     font-size: 0.8rem;
-    color: var(--arova-accent-soft);
+    color: var(--theme-accent, $soft-pink);
     opacity: 0.8;
   }
 
   .favorite-star {
-    color: var(--theme-accent-2);
+    color: var(--theme-accent-2, $gold);
     font-size: 0.95rem;
+    text-shadow: 0 0 8px color-mix(in srgb, var(--theme-accent-2, $gold) 50%, transparent);
   }
 }
 
 .memory-title {
-  font-family: var(--font-display, 'Cormorant Garamond', serif);
-  font-size: 1.4rem;
-  color: var(--arova-text-primary);
-  margin-bottom: 10px;
+  font-family: $font-display;
+  font-size: 1.38rem;
+  color: var(--theme-text, $cream);
   font-weight: 400;
   letter-spacing: 0.01em;
+  margin: 0;
+  line-height: 1.25;
 }
 
 .memory-desc {
-  font-size: 0.9rem;
-  color: var(--arova-text-secondary);
+  font-size: 0.88rem;
+  color: var(--theme-muted, $text-muted);
   line-height: 1.6;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .private-note {
-  margin-top: 16px;
-  padding: 12px 14px;
-  background: rgba(115, 140, 118, 0.06);
-  border-left: 2px solid var(--arova-accent-soft);
-  border-radius: 0 var(--arova-radius-sm) var(--arova-radius-sm) 0;
+  padding: 12px;
+  background: color-mix(in srgb, var(--theme-accent, $soft-pink) 4%, transparent);
+  border-left: 2px solid var(--theme-accent, $soft-pink);
+  border-radius: 0 $radius-sm $radius-sm 0;
+  margin-top: 4px;
 
   .private-note-label {
     display: block;
     font-size: 0.7rem;
-    color: var(--arova-accent-soft);
+    color: var(--theme-accent, $soft-pink);
     letter-spacing: 0.06em;
     text-transform: uppercase;
     margin-bottom: 4px;
-    font-weight: 600;
+    font-weight: 700;
   }
 
   p {
-    font-size: 0.84rem;
-    color: var(--arova-text-secondary);
+    font-size: 0.82rem;
+    color: var(--theme-muted, $text-muted);
     font-style: italic;
     line-height: 1.5;
+    margin: 0;
   }
 }
 
-.visibility-tag {
-  margin-top: 16px;
+.memory-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid color-mix(in srgb, var(--theme-border, $glass-border) 40%, transparent);
+
+  .visibility-tag {
+    font-size: 0.76rem;
+  }
+
+  .memory-owner {
+    font-size: 0.74rem;
+    color: var(--theme-muted, $text-muted);
+    opacity: 0.85;
+  }
 }
 
-@media (max-width: 768px) {
+// ── Error State Card ────────────────────────────────────
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  text-align: center;
+  border-radius: $radius-md;
+  border-color: rgba(239, 68, 68, 0.22) !important;
+
+  .empty-icon {
+    font-size: 2.2rem;
+    margin-bottom: 12px;
+  }
+
+  h3 {
+    font-family: $font-display;
+    font-size: 1.45rem;
+    color: var(--theme-text, $cream);
+    margin-bottom: 8px;
+  }
+
+  .error-detail {
+    font-size: 0.9rem;
+    color: var(--theme-muted, $text-muted);
+    max-width: 520px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+
+  .error-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    .retry-btn {
+      min-height: 38px;
+      padding: 8px 20px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      border-radius: $radius-sm;
+      background: var(--theme-accent, $soft-pink);
+      color: #07130F;
+      cursor: pointer;
+      transition: background $transition-fast;
+
+      &:hover {
+        background: color-mix(in srgb, var(--theme-accent, $soft-pink) 85%, #fff);
+      }
+    }
+
+    .action-link {
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--theme-accent, $soft-pink);
+      padding: 8px 14px;
+      border: 1px solid color-mix(in srgb, var(--theme-accent, $soft-pink) 38%, transparent);
+      border-radius: $radius-sm;
+      transition: background $transition-fast;
+
+      &:hover {
+        background: color-mix(in srgb, var(--theme-accent, $soft-pink) 8%, transparent);
+      }
+    }
+  }
+}
+
+// ── Responsive Media Queries ────────────────────────────
+@media (max-width: 960px) {
+  .memories-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
   .memories-page {
-    padding: 16px 0 32px;
+    padding: 24px 12px;
+    gap: 20px;
+  }
+
+  .memories-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .stats-summary-row {
+    width: 100%;
+    align-self: stretch;
+    justify-content: center;
+  }
+
+  .filter-tabs {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 360px) {
+  .memories-page {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .stats-summary-row {
+    padding: 8px 12px;
+    font-size: 0.78rem;
+  }
+
+  .memory-card-body {
+    padding: 16px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .filter-tab {
+  .memory-card-wrapper:hover .memory-image {
+    transform: none !important;
+  }
+  .placeholder-shine {
+    animation: none !important;
+  }
+  .filter-tab,
+  .add-content-link,
+  .memory-card-wrapper,
+  .retry-btn,
+  .action-link {
     transition: none !important;
   }
 }

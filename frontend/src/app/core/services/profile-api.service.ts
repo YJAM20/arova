@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { map, Observable, of, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AppModeService } from './app-mode.service';
 import { AuthService } from './auth.service';
@@ -40,26 +40,12 @@ export class ProfileApiService {
       const stored = localStorage.getItem(this.LOCAL_PROFILE_KEY);
       if (stored) {
         try {
-          return of(JSON.parse(stored));
+          return of({ ...this.defaultLocalProfile(), ...JSON.parse(stored) });
         } catch {
           // Fallback to default
         }
       }
-      const currentUser = this.auth.getCurrentUser();
-      const defaultProfile: ProfileResponse = {
-        displayName: currentUser?.displayName || 'Adventurer',
-        avatarUrl: currentUser?.avatarUrl || 'assets/images/default-avatar.png',
-        bio: 'Just another soul in this shared universe.',
-        dateOfBirth: '',
-        ageRange: '',
-        relationshipStatus: 'Paired',
-        relationshipType: 'Monogamous',
-        preferredLanguage: 'en',
-        preferredTheme: 'dark-romantic',
-        loveLanguage: 'Quality Time',
-        personalityStyle: 'Dreamer',
-        matureContentEnabled: false,
-      };
+      const defaultProfile = this.defaultLocalProfile();
       localStorage.setItem(this.LOCAL_PROFILE_KEY, JSON.stringify(defaultProfile));
       return of(defaultProfile);
     }
@@ -68,31 +54,18 @@ export class ProfileApiService {
 
   updateProfile(request: UpdateProfileRequest): Observable<ProfileResponse> {
     if (this.appMode.isLocalMode()) {
-      localStorage.setItem(this.LOCAL_PROFILE_KEY, JSON.stringify(request));
-      
-      const currentUser = this.auth.getCurrentUser();
-      if (currentUser) {
-        this.storage.updateUser(currentUser.id, {
-          displayName: request.displayName || undefined,
-          avatarUrl: request.avatarUrl || undefined
-        });
-      }
-
-      const sessionRaw = localStorage.getItem('love-universe-session-v1');
-      if (sessionRaw) {
-        try {
-          const user = JSON.parse(sessionRaw);
-          if (request.displayName) user.displayName = request.displayName;
-          if (request.avatarUrl) user.avatarUrl = request.avatarUrl;
-          localStorage.setItem('love-universe-session-v1', JSON.stringify(user));
-          this.auth.refreshCurrentUser();
-        } catch (e) {
-          console.error('Error syncing profile with session:', e);
-        }
-      }
-      return of(request);
+      const updated = { ...this.defaultLocalProfile(), ...request };
+      localStorage.setItem(this.LOCAL_PROFILE_KEY, JSON.stringify(updated));
+      this.syncCurrentUserIdentity(updated);
+      return of(updated);
     }
-    return this.http.put<ProfileResponse>(`${this.apiBaseUrl}/api/profile/me`, request);
+
+    return this.http.put<ProfileResponse>(`${this.apiBaseUrl}/api/profile/me`, request).pipe(
+      map(updated => ({ ...request, ...updated })),
+      tap(updated => {
+        this.syncCurrentUserIdentity(updated);
+      })
+    );
   }
 
   getContentSafety(): Observable<unknown> {
@@ -117,5 +90,38 @@ export class ProfileApiService {
       return of({ success: true, matureContentEnabled: enabled });
     }
     return this.http.put<unknown>(`${this.apiBaseUrl}/api/profile/mature-content`, { enabled });
+  }
+
+  private defaultLocalProfile(): ProfileResponse {
+    const currentUser = this.auth.getCurrentUser();
+    return {
+      displayName: currentUser?.displayName || 'Adventurer',
+      avatarUrl: currentUser?.avatarUrl || '',
+      bio: 'Just another soul in this shared universe.',
+      dateOfBirth: '',
+      ageRange: '',
+      relationshipStatus: 'Paired',
+      relationshipType: 'Monogamous',
+      preferredLanguage: 'en',
+      preferredTheme: 'dark-romantic',
+      loveLanguage: 'Quality Time',
+      personalityStyle: 'Dreamer',
+      matureContentEnabled: false,
+    };
+  }
+
+  private syncCurrentUserIdentity(profile: ProfileResponse): void {
+    const currentUser = this.auth.getCurrentUser();
+    if (!currentUser) return;
+
+    const userChanges: { displayName?: string; avatarUrl?: string } = {};
+    if (profile.displayName !== undefined) userChanges.displayName = profile.displayName;
+    if (profile.avatarUrl !== undefined) userChanges.avatarUrl = profile.avatarUrl || undefined;
+
+    this.storage.updateUser(currentUser.id, userChanges);
+    this.auth.updateCurrentUserProfile({
+      displayName: profile.displayName,
+      avatarUrl: profile.avatarUrl,
+    });
   }
 }

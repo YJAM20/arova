@@ -1,74 +1,264 @@
-<main class="profile-page">
-  <form class="profile-card glass" (ngSubmit)="save()">
-    <a routerLink="/" class="brand">Arova</a>
-    <h1>Set up your profile</h1>
-    <p>These details help Arova feel calm, useful, and personal without exposing private data publicly.</p>
+<main class="profile-setup-page stars-bg">
+  <div class="nebula-detail" aria-hidden="true">
+    <span class="orbit-ring ring-one"></span>
+    <span class="orbit-ring ring-two"></span>
+    <span class="orbit-node node-one"></span>
+    <span class="orbit-node node-two"></span>
+  </div>
 
-    <div class="grid">
-      <label>
-        <span>Display name</span>
-        <input name="displayName" [(ngModel)]="profile.displayName" />
-      </label>
-      <label>
-        <span>Avatar URL</span>
-        <input name="avatarUrl" [(ngModel)]="profile.avatarUrl" />
-      </label>
-      <label>
-        <span>Date of birth</span>
-        <input name="dateOfBirth" type="date" [(ngModel)]="profile.dateOfBirth" />
-      </label>
-      <label>
-        <span>Relationship status</span>
-        <input name="relationshipStatus" [(ngModel)]="profile.relationshipStatus" />
-      </label>
-      <label>
-        <span>Relationship type</span>
-        <input name="relationshipType" [(ngModel)]="profile.relationshipType" />
-      </label>
-      <label>
-        <span>Preferred language</span>
-        <select name="preferredLanguage" [(ngModel)]="profile.preferredLanguage">
-          <option value="en">English</option>
-          <option value="ar">Arabic</option>
-          <option value="es">Spanish</option>
-        </select>
-      </label>
-      <label>
-        <span>Preferred theme</span>
-        <select name="preferredTheme" [(ngModel)]="profile.preferredTheme">
-          <option value="dark-romantic">Dark Romantic</option>
-          <option value="soft-pink">Soft Pink</option>
-          <option value="midnight-stars">Midnight Stars</option>
-        </select>
-      </label>
-      <label>
-        <span>Love language optional</span>
-        <input name="loveLanguage" [(ngModel)]="profile.loveLanguage" />
-      </label>
-      <label>
-        <span>Personality style optional</span>
-        <input name="personalityStyle" [(ngModel)]="profile.personalityStyle" />
-      </label>
-    </div>
+  <div class="profile-shell">
+    <section class="context-panel animate-in" aria-labelledby="profile-setup-title">
+      <a routerLink="/" class="brand">Arova</a>
+      <p class="kicker">Profile setup</p>
+      <h1 id="profile-setup-title">Make this space feel like you</h1>
+      <p class="subtitle">
+        Add the details Arova will use across memories, letters, moods, and your shared space.
+      </p>
 
-    <label>
-      <span>Bio</span>
-      <textarea name="bio" rows="3" [(ngModel)]="profile.bio"></textarea>
-    </label>
+      <article class="identity-preview glass" aria-labelledby="identity-preview-title">
+        <div class="preview-header">
+          <span class="preview-label">Identity preview</span>
+          <span class="mode-chip">{{ modeLabel }}</span>
+        </div>
 
-    <section class="mature-note" *ngIf="isAdult; else underAge">
-      <label class="toggle">
-        <input type="checkbox" name="matureContentEnabled" [(ngModel)]="profile.matureContentEnabled" />
-        <span>Mature mode</span>
-      </label>
-      <p>Available only when both partners are 18+.</p>
+        <div class="avatar-preview" aria-hidden="true">
+          <img *ngIf="profile.avatarUrl" [src]="profile.avatarUrl" alt="" />
+          <span *ngIf="!profile.avatarUrl">{{ profileInitials }}</span>
+        </div>
+
+        <div class="preview-copy">
+          <h2 id="identity-preview-title">Your Arova identity</h2>
+          <p class="preview-name">{{ previewName }}</p>
+          <p class="preview-username">{{ previewUsername }}</p>
+          <span class="role-chip">{{ roleLabel }}</span>
+        </div>
+
+        <p class="preview-helper">
+          This is how your name appears across the app. You can refine it later.
+        </p>
+      </article>
+
+      <ul class="setup-notes" aria-label="Profile setup notes">
+        <li>
+          <span aria-hidden="true"></span>
+          <p><strong>Private by default.</strong> Profile details stay inside your Arova experience.</p>
+        </li>
+        <li>
+          <span aria-hidden="true"></span>
+          <p><strong>Shared context.</strong> Names, language, and tone help pages feel consistent.</p>
+        </li>
+        <li>
+          <span aria-hidden="true"></span>
+          <p><strong>Editable later.</strong> The profile page can refine these choices after setup.</p>
+        </li>
+      </ul>
     </section>
-    <ng-template #underAge>
-      <p class="mature-note">Mature mode is unavailable unless both partners are 18+.</p>
-    </ng-template>
 
-    <button type="submit" [disabled]="isBusy">{{ isBusy ? 'Saving...' : 'Save profile' }}</button>
-    <p class="message" *ngIf="message">{{ message }}</p>
-    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
-  </form>
+    <section class="setup-panel glass animate-in" [attr.aria-busy]="isLoading || isBusy" style="animation-delay: 0.08s;">
+      <ng-container *ngIf="isLoading">
+        <div class="state-card" aria-live="polite">
+          <div class="orbital-loader" aria-hidden="true"><span></span></div>
+          <h2>Loading your profile...</h2>
+          <p>Gathering your current identity and preferences.</p>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="!isLoading && hasLoadError">
+        <div class="state-card error-state" role="alert">
+          <h2>We couldn't load your profile right now.</h2>
+          <p>{{ errorMessage }}</p>
+          <button type="button" class="secondary-btn" (click)="loadProfile()">Retry</button>
+        </div>
+      </ng-container>
+
+      <form
+        *ngIf="!isLoading && !hasLoadError"
+        class="setup-form"
+        (ngSubmit)="save()"
+        novalidate
+      >
+        <div class="form-header">
+          <span class="section-kicker">Profile form</span>
+          <h2>Core details</h2>
+          <p>Keep this simple. Arova only needs enough context to address you clearly.</p>
+        </div>
+
+        <fieldset class="field-group">
+          <legend>Identity</legend>
+
+          <label class="form-field" for="profile-display-name">
+            <span>Display name</span>
+            <input
+              id="profile-display-name"
+              name="displayName"
+              type="text"
+              [(ngModel)]="profile.displayName"
+              autocomplete="name"
+              [disabled]="isBusy"
+              [attr.aria-invalid]="!!displayNameError"
+              aria-describedby="display-name-helper display-name-error"
+              required
+            />
+            <small id="display-name-helper">Used in the sidebar, profile page, and shared activity.</small>
+          </label>
+          <p id="display-name-error" class="validation-message" *ngIf="displayNameError" role="alert">
+            {{ displayNameError }}
+          </p>
+
+          <label class="form-field" for="profile-avatar-url">
+            <span>Avatar URL</span>
+            <input
+              id="profile-avatar-url"
+              name="avatarUrl"
+              type="url"
+              [(ngModel)]="profile.avatarUrl"
+              autocomplete="url"
+              [disabled]="isBusy"
+              placeholder="https://..."
+            />
+            <small>Optional image URL. Initials appear when this is empty.</small>
+          </label>
+
+          <label class="form-field form-field--full" for="profile-bio">
+            <span>Bio</span>
+            <textarea
+              id="profile-bio"
+              name="bio"
+              rows="4"
+              [(ngModel)]="profile.bio"
+              [disabled]="isBusy"
+              placeholder="A short note for your profile."
+            ></textarea>
+            <small>A short private note that can make the profile page feel less blank.</small>
+          </label>
+        </fieldset>
+
+        <fieldset class="field-group">
+          <legend>Preferences</legend>
+
+          <label class="form-field" for="profile-language">
+            <span>Preferred language</span>
+            <select
+              id="profile-language"
+              name="preferredLanguage"
+              [(ngModel)]="profile.preferredLanguage"
+              [disabled]="isBusy"
+            >
+              <option *ngFor="let option of languageOptions" [value]="option.value">{{ option.label }}</option>
+            </select>
+          </label>
+
+          <label class="form-field" for="profile-theme">
+            <span>Preferred theme</span>
+            <select
+              id="profile-theme"
+              name="preferredTheme"
+              [(ngModel)]="profile.preferredTheme"
+              [disabled]="isBusy"
+            >
+              <option *ngFor="let option of themeOptions" [value]="option.value">{{ option.label }}</option>
+            </select>
+          </label>
+
+          <label class="form-field" for="profile-love-language">
+            <span>Love language</span>
+            <select
+              id="profile-love-language"
+              name="loveLanguage"
+              [(ngModel)]="profile.loveLanguage"
+              [disabled]="isBusy"
+            >
+              <option value="">Not set yet</option>
+              <option *ngFor="let option of loveLanguageOptions" [value]="option">{{ option }}</option>
+            </select>
+          </label>
+
+          <label class="form-field" for="profile-personality-style">
+            <span>Personality style</span>
+            <input
+              id="profile-personality-style"
+              name="personalityStyle"
+              type="text"
+              [(ngModel)]="profile.personalityStyle"
+              [disabled]="isBusy"
+              placeholder="Reflective, playful, practical..."
+            />
+          </label>
+        </fieldset>
+
+        <fieldset class="field-group">
+          <legend>Relationship context</legend>
+
+          <label class="form-field" for="profile-date-of-birth">
+            <span>Date of birth</span>
+            <input
+              id="profile-date-of-birth"
+              name="dateOfBirth"
+              type="date"
+              [(ngModel)]="profile.dateOfBirth"
+              [disabled]="isBusy"
+            />
+            <small>Used only for age-gated preferences where supported.</small>
+          </label>
+
+          <label class="form-field" for="profile-relationship-status">
+            <span>Relationship status</span>
+            <input
+              id="profile-relationship-status"
+              name="relationshipStatus"
+              type="text"
+              [(ngModel)]="profile.relationshipStatus"
+              [disabled]="isBusy"
+              placeholder="Paired"
+            />
+          </label>
+
+          <label class="form-field" for="profile-relationship-type">
+            <span>Relationship type</span>
+            <input
+              id="profile-relationship-type"
+              name="relationshipType"
+              type="text"
+              [(ngModel)]="profile.relationshipType"
+              [disabled]="isBusy"
+              placeholder="Monogamous"
+            />
+          </label>
+
+          <div class="mature-box" [class.disabled]="!isAdult">
+            <label class="toggle-field" for="profile-mature-content">
+              <input
+                id="profile-mature-content"
+                type="checkbox"
+                name="matureContentEnabled"
+                [(ngModel)]="profile.matureContentEnabled"
+                [disabled]="isBusy || !isAdult"
+              />
+              <span>Mature mode</span>
+            </label>
+            <p>
+              {{ isAdult ? 'Available for age-gated preferences.' : 'Mature mode is unavailable unless both partners are 18+.' }}
+            </p>
+          </div>
+        </fieldset>
+
+        <p class="status-message" *ngIf="message" aria-live="polite">
+          {{ message }}
+        </p>
+        <p class="error-message" *ngIf="errorMessage && !hasLoadError" role="alert">
+          {{ errorMessage }}
+        </p>
+        <p class="success-message" *ngIf="isComplete" aria-live="polite">
+          Profile saved. Your space is ready for the next step.
+        </p>
+
+        <div class="form-actions">
+          <a routerLink="/onboarding/questions" class="text-link" [class.disabled]="isBusy">Back</a>
+          <button type="submit" class="primary-btn" [disabled]="!canSave">
+            {{ isBusy ? 'Saving your profile...' : 'Save and continue' }}
+          </button>
+        </div>
+      </form>
+    </section>
+  </div>
 </main>

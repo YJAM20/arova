@@ -53,6 +53,27 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
+  updateCurrentUserProfile(changes: { displayName?: string; avatarUrl?: string | null }): void {
+    const current = this.currentUserSubject.value;
+    if (!current) return;
+
+    const updatedUser: AppUser = { ...current };
+    if (changes.displayName !== undefined) {
+      updatedUser.displayName = changes.displayName;
+    }
+
+    if (changes.avatarUrl !== undefined) {
+      if (changes.avatarUrl) {
+        updatedUser.avatarUrl = changes.avatarUrl;
+      } else {
+        delete updatedUser.avatarUrl;
+      }
+    }
+
+    localStorage.setItem(SESSION_KEY, JSON.stringify(updatedUser));
+    this.currentUserSubject.next(updatedUser);
+  }
+
   isLoggedIn(): boolean {
     return !!this.currentUserSubject.value;
   }

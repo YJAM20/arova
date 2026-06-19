@@ -4,7 +4,7 @@
     [subtitle]="letters.length + ' letters waiting in the vault' + (isApiMode ? ' / API Mode' : '')"
     eyebrow="✦ The Letters Vault"
   >
-    <a actions class="add-content-link" routerLink="/letters/new">Add Letter</a>
+    <a actions class="add-content-link" routerLink="/letters/new" id="add-letter-btn">Add Letter</a>
   </arova-page-header>
 
   <arova-loading-state 
@@ -19,20 +19,38 @@
     [description]="errorMessage"
   ></arova-empty-state>
 
+  <div class="filter-bar animate-fade-in" *ngIf="letters.length > 0 && !isLoading && !errorMessage">
+    <button
+      *ngFor="let cat of categories"
+      type="button"
+      class="filter-btn"
+      [class.filter-btn--active]="activeCategory === cat.key"
+      (click)="setCategory(cat.key)"
+    >
+      {{ cat.label }}
+    </button>
+  </div>
+
   <div
     class="letters-grid animate-fade-in"
     style="animation-delay: 0.1s;"
-    *ngIf="letters.length > 0 && !isLoading && !errorMessage"
+    *ngIf="filteredLetters.length > 0 && !isLoading && !errorMessage"
+    role="list"
+    aria-label="Letters from the vault"
   >
     <arova-card
       class="letter-envelope"
-      *ngFor="let letter of letters; let i = index"
+      *ngFor="let letter of filteredLetters; let i = index"
       [class.letter-envelope--locked]="letter.isLocked"
       [class.letter-envelope--favorite]="letter.isFavorite"
       [class.letter-envelope--private]="isAdmin && !letter.visibleToPartner"
       [routerLink]="['/letters', letter.id]"
       [style.animation-delay]="(i * 0.05) + 's'"
       [hoverable]="true"
+      role="listitem"
+      [tabindex]="0"
+      (keydown)="openLetterFromKeyboard($event, letter.id)"
+      [aria-label]="letter.title + ' - ' + getCategoryLabel(letter.category) + (letter.isLocked ? ' (Sealed)' : '')"
     >
       <div class="envelope-flap">
         <div class="flap-triangle"></div>
@@ -43,7 +61,7 @@
           <arova-status-pill type="info" [showDot]="false">
             {{ getCategoryLabel(letter.category) }}
           </arova-status-pill>
-          <span class="fav-star" *ngIf="letter.isFavorite">✦</span>
+          <span class="fav-star" *ngIf="letter.isFavorite" aria-label="Favorite letter">✦</span>
         </div>
 
         <h3 class="letter-title">{{ letter.title }}</h3>
@@ -64,6 +82,13 @@
       <div class="wax-seal wax-seal--locked" *ngIf="letter.isLocked">🔒</div>
     </arova-card>
   </div>
+
+  <arova-empty-state
+    *ngIf="letters.length > 0 && filteredLetters.length === 0 && !isLoading && !errorMessage"
+    icon="✧"
+    title="No letters match this feeling"
+    description="There are no letters saved under this specific category right now."
+  ></arova-empty-state>
 
   <arova-empty-state
     *ngIf="letters.length === 0 && !isLoading && !errorMessage"

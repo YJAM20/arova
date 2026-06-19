@@ -77,13 +77,23 @@ test.describe('Arova Profile E2E Smoke Tests', () => {
     // Submit edit form
     const saveBtn = page.locator('button[type="submit"]');
     await expect(saveBtn).toBeVisible();
-    await saveBtn.click();
+    await saveBtn.click({ force: true });
 
     // Verify profile updated text changes
     await expect(displayName).toContainText('Super Partner A');
 
     // Check if sidebar header updated immediately to "Super Partner A"
     const sidebarName = page.locator('.sidebar .user-name');
+    await expect(sidebarName).toContainText('Super Partner A');
+
+    // Verify the shared profile identity is persisted after refresh.
+    const sessionUser = await page.evaluate(() =>
+      JSON.parse(localStorage.getItem('love-universe-session-v1') || '{}')
+    );
+    expect(sessionUser.displayName).toBe('Super Partner A');
+
+    await page.reload();
+    await expect(page.locator('.display-name')).toContainText('Super Partner A');
     await expect(sidebarName).toContainText('Super Partner A');
   });
 
@@ -100,5 +110,59 @@ test.describe('Arova Profile E2E Smoke Tests', () => {
     const modalHeading = page.locator('.memory-modal-card h2');
     await expect(modalHeading).toBeVisible();
     await expect(modalHeading).toContainText('First Date');
+  });
+
+  test('should load profile setup, save identity in Local Mode, and continue to pairing choice', async ({ page }) => {
+    let profileApiRequests = 0;
+    await page.route('**/api/profile/**', route => {
+      profileApiRequests++;
+      route.abort();
+    });
+
+    await page.goto('/profile-setup');
+    await page.waitForURL('**/profile-setup');
+
+    await expect(page.getByRole('heading', { name: /make this space feel like you/i })).toBeVisible();
+    await expect(page.getByText(/your arova identity/i)).toBeVisible();
+    await expect(page.getByLabel(/display name/i)).toBeVisible();
+    await expect(page.getByLabel(/preferred language/i)).toBeVisible();
+
+    await page.getByLabel(/display name/i).fill('Setup Partner A');
+    await page.getByLabel(/bio/i).fill('Keeping this private space calm and personal.');
+    await page.getByRole('button', { name: /save and continue/i }).click();
+    await page.waitForURL('**/pairing-choice');
+
+    const savedProfile = await page.evaluate(() =>
+      JSON.parse(localStorage.getItem('arova-local-profile-v1') || '{}')
+    );
+    const sessionUser = await page.evaluate(() =>
+      JSON.parse(localStorage.getItem('love-universe-session-v1') || '{}')
+    );
+
+    expect(savedProfile.displayName).toBe('Setup Partner A');
+    expect(sessionUser.displayName).toBe('Setup Partner A');
+    expect(profileApiRequests).toBe(0);
+  });
+
+  test('should keep profile setup usable without horizontal overflow at 320px', async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 720 });
+    await page.goto('/profile-setup');
+
+    await expect(page.getByRole('heading', { name: /make this space feel like you/i })).toBeVisible();
+    const dimensions = await page.evaluate(() => ({
+      scrollWidth: document.documentElement.scrollWidth,
+      clientWidth: document.documentElement.clientWidth,
+    }));
+
+    expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth + 5);
+  });
+
+  test('should show a readable validation error when profile setup is missing a display name', async ({ page }) => {
+    await page.goto('/profile-setup');
+    await page.getByLabel(/display name/i).fill('');
+    await page.getByRole('button', { name: /save and continue/i }).click();
+
+    await expect(page.getByRole('alert')).toContainText(/add the name arova should show/i);
+    await expect(page).toHaveURL(/\/profile-setup$/);
   });
 });

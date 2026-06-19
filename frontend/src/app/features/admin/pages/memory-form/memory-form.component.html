@@ -1,10 +1,10 @@
-﻿<div class="form-page">
+<div class="form-page">
   <ng-container *ngIf="!notFound; else missing">
     <header class="form-header animate-fade-in">
       <p class="eyebrow">{{ contextLabel }}</p>
       <h1>{{ pageTitle }}</h1>
       <p>{{ pageSubtitle }}</p>
-      <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+      <p class="error" *ngIf="errorMessage" role="alert">{{ errorMessage }}</p>
     </header>
 
     <section class="missing-state glass" *ngIf="isLoading">
@@ -14,37 +14,66 @@
 
     <form class="editor-form glass animate-fade-in" style="animation-delay: 0.1s;" [formGroup]="form" (ngSubmit)="save()" *ngIf="!isLoading">
       <div class="field">
-        <label for="title">Title</label>
-        <input id="title" type="text" formControlName="title" />
-        <p class="error" *ngIf="hasError('title')">Title is required.</p>
+        <label for="title">Memory title</label>
+        <input 
+          id="title" 
+          type="text" 
+          formControlName="title" 
+          [attr.aria-invalid]="hasError('title')" 
+          [attr.aria-describedby]="hasError('title') ? 'title-error' : null" 
+        />
+        <p class="error" *ngIf="hasError('title')" id="title-error" role="alert">Memory title is required.</p>
       </div>
 
       <div class="field">
-        <label for="description">Description</label>
-        <textarea id="description" rows="6" formControlName="description"></textarea>
-        <p class="error" *ngIf="hasError('description')">Description is required.</p>
+        <label for="description">Memory note</label>
+        <textarea 
+          id="description" 
+          rows="6" 
+          formControlName="description"
+          [attr.aria-invalid]="hasError('description')" 
+          [attr.aria-describedby]="hasError('description') ? 'description-error' : null"
+        ></textarea>
+        <p class="error" *ngIf="hasError('description')" id="description-error" role="alert">Memory note is required.</p>
       </div>
 
       <div class="form-grid">
         <div class="field">
-          <label for="date">Date</label>
-          <input id="date" type="date" formControlName="date" />
-          <p class="error" *ngIf="hasError('date')">Date is required.</p>
+          <label for="date">Memory date</label>
+          <input 
+            id="date" 
+            type="date" 
+            formControlName="date"
+            [attr.aria-invalid]="hasError('date')" 
+            [attr.aria-describedby]="hasError('date') ? 'date-error' : null" 
+          />
+          <p class="error" *ngIf="hasError('date')" id="date-error" role="alert">Memory date is required.</p>
         </div>
 
         <div class="field">
           <label for="category">Category</label>
-          <select id="category" formControlName="category">
+          <select 
+            id="category" 
+            formControlName="category"
+            [attr.aria-invalid]="hasError('category')" 
+            [attr.aria-describedby]="hasError('category') ? 'category-error' : null"
+          >
             <option *ngFor="let category of categories" [value]="category.value">{{ category.label }}</option>
           </select>
-          <p class="error" *ngIf="hasError('category')">Category is required.</p>
+          <p class="error" *ngIf="hasError('category')" id="category-error" role="alert">Category is required.</p>
         </div>
       </div>
 
       <div class="form-grid">
         <div class="field">
           <label for="imageUrl">Image URL</label>
-          <input id="imageUrl" type="url" formControlName="imageUrl" />
+          <input 
+            id="imageUrl" 
+            type="url" 
+            formControlName="imageUrl" 
+            aria-describedby="imageUrl-hint" 
+          />
+          <p id="imageUrl-hint" class="field-hint">Paste an image URL for now. File upload is not connected to production storage yet.</p>
         </div>
 
         <div class="field">
@@ -55,23 +84,28 @@
 
       <div class="field">
         <label for="privateNote">Private note</label>
-        <textarea id="privateNote" rows="4" formControlName="privateNote"></textarea>
-        <small>Private notes are never shown to Partner B.</small>
+        <textarea 
+          id="privateNote" 
+          rows="4" 
+          formControlName="privateNote" 
+          aria-describedby="privateNote-hint"
+        ></textarea>
+        <p id="privateNote-hint" class="field-hint">Private notes are never shown to partner.</p>
       </div>
 
       <div class="toggle-row">
-        <label>
+        <label class="toggle-card">
           <input type="checkbox" formControlName="visibleToPartner" />
           <span class="toggle-copy">
-            <span>{{ isAdminRoute ? 'Visible to partner' : 'Share with your partner' }}</span>
-            <small>Turn this off to keep the memory private.</small>
+            <span class="toggle-title">{{ isAdminRoute ? 'Visible to partner' : 'Share with your partner' }}</span>
+            <small class="toggle-desc">Turn this off to keep the memory private.</small>
           </span>
         </label>
-        <label>
+        <label class="toggle-card">
           <input type="checkbox" formControlName="isFavorite" />
           <span class="toggle-copy">
-            <span>Favorite</span>
-            <small>Mark it as something you want to find quickly.</small>
+            <span class="toggle-title">Mark as favorite</span>
+            <small class="toggle-desc">Mark it as something you want to find quickly.</small>
           </span>
         </label>
       </div>
@@ -86,7 +120,7 @@
   </ng-container>
 
   <ng-template #missing>
-    <section class="missing-state glass">
+    <section class="missing-state glass animate-fade-in" role="alert">
       <h1>Memory not found</h1>
       <p>{{ errorMessage || 'This memory may have already been deleted.' }}</p>
       <a [routerLink]="isAdminRoute ? '/admin/memories' : '/memories'" class="primary-action">Back to memories</a>

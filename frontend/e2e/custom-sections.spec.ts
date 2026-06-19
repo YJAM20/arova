@@ -100,4 +100,25 @@ test.describe('Arova Custom Sections E2E Smoke Tests', () => {
     const contentText = entry.locator('.item-content');
     await expect(contentText).toHaveClass(/completed/);
   });
+
+  test('Local Mode does not make any backend API calls on custom-sections load', async ({ page }) => {
+    let backendCalled = false;
+    await page.route('**/api/**', () => {
+      backendCalled = true;
+    });
+
+    await page.goto('/custom-sections');
+    await expect(page.locator('#custom-spaces-title')).toContainText('Build your own private universe');
+    expect(backendCalled).toBe(false);
+  });
+
+  test('has no horizontal overflow at 320px viewport', async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 720 });
+    await page.goto('/custom-sections');
+
+    const hasHorizontalOverflow = await page.evaluate(
+      () => document.documentElement.scrollWidth > document.documentElement.clientWidth
+    );
+    expect(hasHorizontalOverflow).toBe(false);
+  });
 });

@@ -1,13 +1,20 @@
-<div class="arova-page arova-page--full animate-fade-in">
+<div class="arova-page arova-page--full custom-sections-page animate-fade-in">
   <!-- Alerts -->
-  <div *ngIf="successMessage" class="alert alert-success mb-6 p-4 rounded-xl flex items-center justify-between">
+  <div *ngIf="successMessage" class="alert alert-success mb-6 p-4 rounded-xl flex items-center justify-between" role="alert">
     <span>✨ {{ successMessage }}</span>
-    <button (click)="successMessage = ''" class="close-btn text-lg">&times;</button>
+    <button (click)="successMessage = ''" class="close-btn text-lg" aria-label="Close success alert">&times;</button>
   </div>
-  <div *ngIf="errorMessage" class="alert alert-danger mb-6 p-4 rounded-xl flex items-center justify-between">
+  <div *ngIf="errorMessage" class="alert alert-danger mb-6 p-4 rounded-xl flex items-center justify-between" role="alert">
     <span>⚠️ {{ errorMessage }}</span>
-    <button (click)="errorMessage = ''" class="close-btn text-lg">&times;</button>
+    <button (click)="errorMessage = ''" class="close-btn text-lg" aria-label="Close error alert">&times;</button>
   </div>
+
+  <!-- Page Hero -->
+  <header class="page-header mb-8">
+    <p class="page-eyebrow" id="custom-spaces-eyebrow">✦ Custom spaces</p>
+    <h1 id="custom-spaces-title">Build your own private universe</h1>
+    <p class="page-sub">Create small spaces for the rituals, ideas, lists, and moments that do not fit anywhere else.</p>
+  </header>
 
   <!-- Plan & Tier Pricing Selector -->
   <div class="tier-card glassmorphism p-6 rounded-2xl mb-8 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
@@ -15,20 +22,21 @@
       <span class="section-label uppercase tracking-widest text-2xs text-accent font-bold block mb-1">Pricing Tiers (Simulated)</span>
       <h2 class="text-2xl font-extrabold text-white mb-2">Space Customization Limits</h2>
       <p class="text-xs text-neutral-300 max-w-lg">
-        Organize anything from shared travel goals to inside joke lists. Toggle tiers to unlock extra slots.
+        Organize anything from shared travel goals to inside joke lists. Toggle tiers to unlock extra slots. <br>
+        <span class="text-accent font-semibold block mt-2">Plan limits are part of the local demo. Billing is not connected.</span>
       </p>
     </div>
 
     <!-- Tier Buttons -->
     <div class="tier-selectors flex gap-2 z-10">
-      <button (click)="changeTier('free')" class="tier-btn px-4 py-2 rounded-xl text-xs font-bold transition-all border" [class.active]="currentTier === 'free'">
-        🌱 Free (1 sec)
+      <button type="button" (click)="changeTier('free')" class="tier-btn px-4 py-2 rounded-xl text-xs font-bold transition-all border" [class.active]="currentTier === 'free'" [attr.aria-selected]="currentTier === 'free'">
+        🌱 Free (1 slot)
       </button>
-      <button (click)="changeTier('pro')" class="tier-btn px-4 py-2 rounded-xl text-xs font-bold transition-all border" [class.active]="currentTier === 'pro'">
-        🚀 Pro (5 sec)
+      <button type="button" (click)="changeTier('pro')" class="tier-btn px-4 py-2 rounded-xl text-xs font-bold transition-all border" [class.active]="currentTier === 'pro'" [attr.aria-selected]="currentTier === 'pro'">
+        🚀 Pro (5 slots)
       </button>
-      <button (click)="changeTier('platinum')" class="tier-btn px-4 py-2 rounded-xl text-xs font-bold transition-all border" [class.active]="currentTier === 'platinum'">
-        💎 Platinum (20 sec)
+      <button type="button" (click)="changeTier('platinum')" class="tier-btn px-4 py-2 rounded-xl text-xs font-bold transition-all border" [class.active]="currentTier === 'platinum'" [attr.aria-selected]="currentTier === 'platinum'">
+        💎 Platinum (20 slots)
       </button>
     </div>
   </div>
@@ -37,15 +45,15 @@
   <div class="usage-meter-card glassmorphism p-4 rounded-xl mb-8 flex items-center justify-between">
     <div class="flex items-center gap-4 flex-1">
       <span class="text-xs text-neutral-300 font-semibold">Active Slots Used:</span>
-      <div class="progress-bar flex-1 max-w-md h-2 bg-neutral-800 rounded-full overflow-hidden">
+      <div class="progress-bar flex-1 max-w-md h-2 bg-neutral-800 rounded-full overflow-hidden" aria-hidden="true">
         <div class="progress-fill h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-300" 
              [style.width.%]="(sections.length / tierLimit) * 100"></div>
       </div>
       <span class="text-xs text-neutral-400 font-mono">{{ sections.length }} / {{ tierLimit }}</span>
     </div>
     
-    <button (click)="openAddModal()" [disabled]="sections.length >= tierLimit" class="btn-add-section px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 ml-4">
-      ➕ Add Section
+    <button type="button" (click)="openAddModal()" [disabled]="sections.length >= tierLimit" class="btn-add-section px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 ml-4">
+      ➕ Create custom space
     </button>
   </div>
 
@@ -55,37 +63,40 @@
     <!-- Left Panel: Custom Sections Index List -->
     <div class="lg:col-span-1 space-y-4">
       <div class="index-card glassmorphism p-5 rounded-2xl">
-        <h3 class="section-title text-sm font-bold text-neutral-300 mb-4 uppercase tracking-wider">📁 Your Custom Spaces</h3>
+        <h3 class="section-title text-sm font-bold text-neutral-300 mb-4 uppercase tracking-wider">📁 Custom spaces</h3>
         
         <div class="space-list space-y-2 max-h-[480px] overflow-y-auto pr-1 scrollbar-thin">
           <div *ngFor="let sec of sections" 
                (click)="selectSection(sec)" 
-               class="section-item p-4 rounded-xl flex items-center justify-between gap-3 cursor-pointer transition-all border border-transparent"
-               [class.active]="activeSection?.id === sec.id">
+               class="section-item p-4 rounded-xl flex items-center justify-between gap-3 cursor-pointer transition-all border border-transparent group"
+               [class.active]="activeSection?.id === sec.id"
+               tabindex="0"
+               (keydown.enter)="selectSection(sec)">
             
             <div class="flex items-center gap-3">
-              <span class="section-icon text-2xl">{{ sec.icon }}</span>
+              <span class="section-icon text-2xl" aria-hidden="true">{{ sec.icon }}</span>
               <div class="text-left">
                 <span class="section-title font-bold text-sm block text-white">{{ sec.title }}</span>
                 <span class="section-items-count text-3xs text-neutral-400 font-semibold uppercase">
-                  {{ sec.items.length }} lists item(s)
+                  {{ sec.items.length }} list item(s)
                 </span>
               </div>
             </div>
 
             <!-- Actions -->
             <div class="item-actions flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-              <button (click)="$event.stopPropagation(); openEditModal(sec)" class="action-icon-btn p-1.5 rounded-lg hover:bg-white/10" title="Edit Section">
+              <button type="button" (click)="$event.stopPropagation(); openEditModal(sec)" class="action-icon-btn p-1.5 rounded-lg hover:bg-white/10" title="Edit Space">
                 ✏️
               </button>
-              <button (click)="$event.stopPropagation(); deleteSection(sec.id)" class="action-icon-btn p-1.5 rounded-lg hover:bg-red-500/20 text-red-400" title="Delete Section">
+              <button type="button" (click)="$event.stopPropagation(); deleteSection(sec.id)" class="action-icon-btn p-1.5 rounded-lg hover:bg-red-500/20 text-red-400" title="Delete Space">
                 🗑️
               </button>
             </div>
           </div>
 
           <div *ngIf="sections.length === 0" class="text-center py-12 text-xs text-neutral-400">
-            No custom spaces created. Add one above!
+            <h3 class="font-bold text-white mb-2">No custom spaces yet</h3>
+            <p class="max-w-xs mx-auto">Start with one small space — a list, a ritual, a plan, or anything you want to keep between you two.</p>
           </div>
         </div>
       </div>
@@ -99,18 +110,18 @@
         <!-- Workspace Header -->
         <div *ngIf="activeSection" class="workspace-header pb-4 border-b border-neutral-800/60 mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div class="flex items-center gap-3">
-            <span class="text-4xl">{{ activeSection.icon }}</span>
+            <span class="text-4xl" aria-hidden="true">{{ activeSection.icon }}</span>
             <div>
               <h2 class="text-2xl font-extrabold text-white">{{ activeSection.title }}</h2>
-              <p class="text-xs text-neutral-300 mt-1">{{ activeSection.description || 'Custom space notes.' }}</p>
+              <p class="text-xs text-neutral-300 mt-1">{{ activeSection.description || 'No description added yet.' }}</p>
             </div>
           </div>
 
           <div class="flex gap-2">
-            <button (click)="openEditModal(activeSection)" class="btn-sec-action px-3 py-1.5 rounded-lg text-xs font-semibold">
+            <button type="button" (click)="openEditModal(activeSection)" class="btn-sec-action px-3 py-1.5 rounded-lg text-xs font-semibold">
               ✏️ Settings
             </button>
-            <button (click)="deleteSection(activeSection.id)" class="btn-sec-action px-3 py-1.5 rounded-lg text-xs font-semibold text-red-400 hover:bg-red-500/10">
+            <button type="button" (click)="deleteSection(activeSection.id)" class="btn-sec-action px-3 py-1.5 rounded-lg text-xs font-semibold text-red-400 hover:bg-red-500/10">
               🗑️ Delete
             </button>
           </div>
@@ -126,27 +137,30 @@
               <input type="checkbox" 
                      [checked]="item.completed" 
                      (change)="toggleItem(item.id, $event)" 
-                     class="checkbox-input cursor-pointer" />
+                     class="checkbox-input cursor-pointer"
+                     [aria-label]="item.content" />
               <span class="item-content text-sm text-neutral-200" [class.completed]="item.completed">
                 {{ item.content }}
               </span>
             </div>
 
-            <button (click)="deleteItem(item.id)" class="item-delete opacity-0 group-hover:opacity-100 text-xs text-neutral-400 hover:text-red-400 transition-opacity p-1">
+            <button type="button" (click)="deleteItem(item.id)" class="item-delete opacity-0 group-hover:opacity-100 text-xs text-neutral-400 hover:text-red-400 transition-opacity p-1">
               &times;
             </button>
           </div>
 
           <div *ngIf="activeSection.items.length === 0" class="py-16 text-center text-xs text-neutral-400 flex flex-col items-center gap-2">
             <span>📝</span>
-            <span>This custom space list is currently empty. Add your first item below!</span>
+            <span>No items yet. Add your first item below!</span>
           </div>
         </div>
 
         <!-- Workspace Footer (Add Item Input) -->
         <div *ngIf="activeSection" class="workspace-footer pt-4 border-t border-neutral-800/60 mt-6">
           <form (submit)="$event.preventDefault(); addItem()" class="flex gap-2">
+            <label for="new-item-content" class="sr-only">Add checklist item</label>
             <input type="text" 
+                   id="new-item-content"
                    [(ngModel)]="newItemContent" 
                    name="newItemContent" 
                    class="input-field flex-1 px-4 py-2.5 rounded-xl text-sm" 
@@ -156,17 +170,18 @@
               Add Item
             </button>
           </form>
+          <p class="text-3xs text-neutral-500 mt-2">Custom spaces may be limited by the selected demo plan. This only affects data stored in this browser.</p>
         </div>
 
         <!-- Empty State (No active section / No sections) -->
         <div *ngIf="!activeSection" class="flex-1 flex flex-col items-center justify-center text-center py-20 gap-4">
-          <span class="text-5xl">📂</span>
-          <h3 class="text-lg font-bold text-white">Select or Create a Space</h3>
+          <span class="text-5xl" aria-hidden="true">📂</span>
+          <h3 class="text-lg font-bold text-white">No custom spaces yet</h3>
           <p class="text-xs text-neutral-400 max-w-xs">
-            Create customized directories for bucket lists, travel spots, inside jokes, or promise cards.
+            Start with one small space — a list, a ritual, a plan, or anything you want to keep between you two.
           </p>
-          <button (click)="openAddModal()" [disabled]="sections.length >= tierLimit" class="btn-add-section px-4 py-2 rounded-xl text-xs font-semibold">
-            ➕ Create Custom Section
+          <button type="button" (click)="openAddModal()" [disabled]="sections.length >= tierLimit" class="btn-add-section px-4 py-2 rounded-xl text-xs font-semibold">
+            ➕ Create custom space
           </button>
         </div>
 
@@ -177,37 +192,38 @@
   <!-- Create Section Modal -->
   <div *ngIf="showAddModal" class="modal-backdrop fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
     <div class="modal-card glassmorphism max-w-md w-full p-6 rounded-2xl relative overflow-y-auto" (click)="$event.stopPropagation()">
-      <div class="flex justify-between items-center mb-6">
-        <h2 class="text-xl font-extrabold text-white">Create Custom Space</h2>
-        <button (click)="closeAddModal()" class="text-neutral-400 hover:text-white text-2xl">&times;</button>
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-extrabold text-white">Create a custom space</h2>
+        <button type="button" (click)="closeAddModal()" class="text-neutral-400 hover:text-white text-2xl" aria-label="Close modal">&times;</button>
       </div>
+      <p class="text-xs text-neutral-300 mb-6">Give this space a name, a purpose, and a few items you may want to revisit together.</p>
 
       <form (submit)="$event.preventDefault(); createSection()" class="space-y-4">
         <!-- Title -->
         <div>
-          <label class="block text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-1">Space Name</label>
-          <input type="text" [(ngModel)]="newTitle" name="newTitle" class="input-field w-full px-4 py-2.5 rounded-xl" placeholder="e.g. Inside Jokes, Bucket List" required />
+          <label for="new-title" class="block text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-1">Space name</label>
+          <input type="text" id="new-title" [(ngModel)]="newTitle" name="newTitle" class="input-field w-full px-4 py-2.5 rounded-xl" placeholder="e.g. Inside Jokes, Bucket List" required />
         </div>
 
         <!-- Icon selection -->
         <div>
           <label class="block text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-2">Space Icon (Preset Emojis)</label>
           <div class="icon-preset-grid grid grid-cols-8 gap-2 p-3 bg-neutral-900/60 rounded-xl max-h-32 overflow-y-auto mb-2 scrollbar-thin">
-            <button type="button" *ngFor="let emoji of emojiPresets" (click)="selectEmoji(emoji)" class="emoji-btn text-xl p-1.5 rounded-lg hover:bg-white/10" [class.active]="newIcon === emoji">
+            <button type="button" *ngFor="let emoji of emojiPresets" (click)="selectEmoji(emoji)" class="emoji-btn text-xl p-1.5 rounded-lg hover:bg-white/10" [class.active]="newIcon === emoji" [aria-label]="'Select emoji ' + emoji">
               {{ emoji }}
             </button>
           </div>
           <div class="flex items-center gap-3">
-            <span class="text-xs text-neutral-400">Selected Icon:</span>
-            <span class="text-2xl p-1 bg-neutral-800 rounded-lg">{{ newIcon }}</span>
-            <input type="text" [(ngModel)]="newIcon" name="newIcon" class="input-field w-12 text-center py-1 px-2 rounded-lg text-sm" maxlength="2" />
+            <label for="new-icon" class="text-xs text-neutral-400">Selected Icon:</label>
+            <span class="text-2xl p-1 bg-neutral-800 rounded-lg" aria-hidden="true">{{ newIcon }}</span>
+            <input type="text" id="new-icon" [(ngModel)]="newIcon" name="newIcon" class="input-field w-12 text-center py-1 px-2 rounded-lg text-sm" maxlength="2" />
           </div>
         </div>
 
         <!-- Description -->
         <div>
-          <label class="block text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-1">Description (Optional)</label>
-          <textarea [(ngModel)]="newDescription" name="newDescription" class="input-field w-full px-4 py-2.5 rounded-xl h-20 resize-none" placeholder="Describe the purpose of this custom space list..."></textarea>
+          <label for="new-description" class="block text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-1">Description (Optional)</label>
+          <textarea id="new-description" [(ngModel)]="newDescription" name="newDescription" class="input-field w-full px-4 py-2.5 rounded-xl h-20 resize-none" placeholder="Describe the purpose of this custom space list..."></textarea>
         </div>
 
         <div class="flex gap-3 justify-end pt-4">
@@ -215,7 +231,7 @@
             Cancel
           </button>
           <button type="submit" class="btn-create px-5 py-2.5 rounded-xl text-sm font-semibold">
-            Create Space
+            Save space
           </button>
         </div>
       </form>
@@ -225,37 +241,38 @@
   <!-- Edit Section Modal -->
   <div *ngIf="showEditModal" class="modal-backdrop fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
     <div class="modal-card glassmorphism max-w-md w-full p-6 rounded-2xl relative overflow-y-auto" (click)="$event.stopPropagation()">
-      <div class="flex justify-between items-center mb-6">
-        <h2 class="text-xl font-extrabold text-white">Edit Space Details</h2>
-        <button (click)="closeEditModal()" class="text-neutral-400 hover:text-white text-2xl">&times;</button>
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-extrabold text-white">Refine this space</h2>
+        <button type="button" (click)="closeEditModal()" class="text-neutral-400 hover:text-white text-2xl" aria-label="Close modal">&times;</button>
       </div>
+      <p class="text-xs text-neutral-300 mb-6">Give this space a name, a purpose, and a few items you may want to revisit together.</p>
 
       <form (submit)="$event.preventDefault(); saveSection()" class="space-y-4">
         <!-- Title -->
         <div>
-          <label class="block text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-1">Space Name</label>
-          <input type="text" [(ngModel)]="editTitle" name="editTitle" class="input-field w-full px-4 py-2.5 rounded-xl" placeholder="e.g. Travel List" required />
+          <label for="edit-title" class="block text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-1">Space name</label>
+          <input type="text" id="edit-title" [(ngModel)]="editTitle" name="editTitle" class="input-field w-full px-4 py-2.5 rounded-xl" placeholder="e.g. Travel List" required />
         </div>
 
         <!-- Icon selection -->
         <div>
           <label class="block text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-2">Space Icon (Preset Emojis)</label>
           <div class="icon-preset-grid grid grid-cols-8 gap-2 p-3 bg-neutral-900/60 rounded-xl max-h-32 overflow-y-auto mb-2 scrollbar-thin">
-            <button type="button" *ngFor="let emoji of emojiPresets" (click)="selectEmoji(emoji, true)" class="emoji-btn text-xl p-1.5 rounded-lg hover:bg-white/10" [class.active]="editIcon === emoji">
+            <button type="button" *ngFor="let emoji of emojiPresets" (click)="selectEmoji(emoji, true)" class="emoji-btn text-xl p-1.5 rounded-lg hover:bg-white/10" [class.active]="editIcon === emoji" [aria-label]="'Select emoji ' + emoji">
               {{ emoji }}
             </button>
           </div>
           <div class="flex items-center gap-3">
-            <span class="text-xs text-neutral-400">Selected Icon:</span>
-            <span class="text-2xl p-1 bg-neutral-800 rounded-lg">{{ editIcon }}</span>
-            <input type="text" [(ngModel)]="editIcon" name="editIcon" class="input-field w-12 text-center py-1 px-2 rounded-lg text-sm" maxlength="2" />
+            <label for="edit-icon" class="text-xs text-neutral-400">Selected Icon:</label>
+            <span class="text-2xl p-1 bg-neutral-800 rounded-lg" aria-hidden="true">{{ editIcon }}</span>
+            <input type="text" id="edit-icon" [(ngModel)]="editIcon" name="editIcon" class="input-field w-12 text-center py-1 px-2 rounded-lg text-sm" maxlength="2" />
           </div>
         </div>
 
         <!-- Description -->
         <div>
-          <label class="block text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-1">Description (Optional)</label>
-          <textarea [(ngModel)]="editDescription" name="editDescription" class="input-field w-full px-4 py-2.5 rounded-xl h-20 resize-none" placeholder="Description..."></textarea>
+          <label for="edit-description" class="block text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-1">Description (Optional)</label>
+          <textarea id="edit-description" [(ngModel)]="editDescription" name="editDescription" class="input-field w-full px-4 py-2.5 rounded-xl h-20 resize-none" placeholder="Description..."></textarea>
         </div>
 
         <div class="flex gap-3 justify-end pt-4">
@@ -263,7 +280,7 @@
             Cancel
           </button>
           <button type="submit" class="btn-create px-5 py-2.5 rounded-xl text-sm font-semibold">
-            Save Changes
+            Save changes
           </button>
         </div>
       </form>

@@ -103,3 +103,151 @@
   color: $text-muted;
   margin-bottom: 18px;
 }
+
+// ── Plans Comparison Section ──────────────────────────────
+.comparison-section {
+  margin-top: clamp(60px, 10vw, 100px);
+  margin-bottom: 50px;
+  max-width: 1120px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 0 40px;
+
+  .comparison-title {
+    font-family: $font-display;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    color: $cream;
+    margin-bottom: 30px;
+    letter-spacing: -0.01em;
+  }
+
+  .table-scroll-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: $radius-md;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.01);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    margin-bottom: 24px;
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.9rem;
+    min-width: 650px; /* Ensures side-by-side columns don't squish on mobile, allowing swipe scroll */
+
+    th, td {
+      padding: 18px 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      vertical-align: middle;
+    }
+
+    thead th {
+      font-weight: 600;
+      color: $cream;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .feature-name {
+      font-weight: 500;
+      color: $cream;
+      width: 40%;
+    }
+
+    .starter-cell,
+    .pro-cell,
+    .enterprise-cell {
+      text-align: center;
+      width: 20%;
+    }
+
+    // Pro Highlight
+    .highlighted-col {
+      background: rgba(255, 255, 255, 0.02);
+      position: relative;
+    }
+
+    tbody tr:hover {
+      background: rgba(255, 255, 255, 0.015);
+      
+      .highlighted-col {
+        background: rgba(255, 255, 255, 0.03);
+      }
+    }
+
+    // SVGs and Text styling
+    .table-icon {
+      width: 18px;
+      height: 18px;
+      margin: 0 auto;
+      display: block;
+
+      &.check-icon {
+        color: $cream;
+      }
+
+      &.x-icon {
+        color: $text-muted;
+        opacity: 0.4;
+      }
+    }
+
+    .cell-text {
+      color: $text-muted;
+      font-size: 0.85rem;
+    }
+  }
+
+  // Billing Disclaimer Styling
+  .table-disclaimer {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.01);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    border-radius: $radius-md;
+    padding: 20px;
+    
+    .disclaimer-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+      color: $soft-pink;
+    }
+
+    .disclaimer-text {
+      font-size: 0.8rem;
+      color: $text-muted;
+      line-height: 1.5;
+      margin: 0;
+      font-weight: 300;
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .comparison-section {
+    padding: 0 10px 30px;
+    
+    .table-scroll-wrapper {
+      // Allow swipeable table cards
+      margin-left: -10px;
+      margin-right: -10px;
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+    }
+    
+    .comparison-table {
+      min-width: 600px;
+    }
+  }
+}

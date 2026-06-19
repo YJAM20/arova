@@ -27,4 +27,89 @@
       </a>
     </article>
   </section>
+
+  <!-- Comparison Section -->
+  <section class="comparison-section" aria-labelledby="comparison-title">
+    <div class="comparison-container">
+      <h2 id="comparison-title" class="comparison-title">Compare Features</h2>
+      
+      <div class="table-scroll-wrapper glass-container">
+        <table class="comparison-table">
+          <caption class="sr-only">Detailed plan comparison across Starter, Pro, and Enterprise tiers</caption>
+          <thead>
+            <tr>
+              <th scope="col" class="feature-col">Feature</th>
+              <th scope="col" class="starter-col">Starter</th>
+              <th scope="col" class="pro-col highlighted-col">Pro</th>
+              <th scope="col" class="enterprise-col">Enterprise</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of comparisonRows">
+              <th scope="row" class="feature-name">{{ row.name }}</th>
+              
+              <!-- Starter Cell -->
+              <td class="starter-cell">
+                <ng-container *ngIf="row.starter === true || row.starter === false; else starterText">
+                  <span class="sr-only">{{ row.starter ? 'Yes' : 'No' }}</span>
+                  <svg *ngIf="row.starter" class="table-icon check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  <svg *ngIf="!row.starter" class="table-icon x-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </ng-container>
+                <ng-template #starterText>
+                  <span class="cell-text">{{ row.starter }}</span>
+                </ng-template>
+              </td>
+
+              <!-- Pro Cell -->
+              <td class="pro-cell highlighted-col">
+                <ng-container *ngIf="row.pro === true || row.pro === false; else proText">
+                  <span class="sr-only">{{ row.pro ? 'Yes' : 'No' }}</span>
+                  <svg *ngIf="row.pro" class="table-icon check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  <svg *ngIf="!row.pro" class="table-icon x-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </ng-container>
+                <ng-template #proText>
+                  <span class="cell-text">{{ row.pro }}</span>
+                </ng-template>
+              </td>
+
+              <!-- Enterprise Cell -->
+              <td class="enterprise-cell">
+                <ng-container *ngIf="row.enterprise === true || row.enterprise === false; else enterpriseText">
+                  <span class="sr-only">{{ row.enterprise ? 'Yes' : 'No' }}</span>
+                  <svg *ngIf="row.enterprise" class="table-icon check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  <svg *ngIf="!row.enterprise" class="table-icon x-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </ng-container>
+                <ng-template #enterpriseText>
+                  <span class="cell-text">{{ row.enterprise }}</span>
+                </ng-template>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Billing Disclaimer -->
+      <footer class="table-disclaimer">
+        <span class="disclaimer-label">Billing Note</span>
+        <p class="disclaimer-text">
+          Pricing and subscription features are local demonstrations. No actual payments or billing integrations exist in this application. All options can be unlocked via local configuration or pairing.
+        </p>
+      </footer>
+    </div>
+  </section>
 </main>

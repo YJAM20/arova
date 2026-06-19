@@ -17,9 +17,9 @@
 
     <form class="feedback" (ngSubmit)="sendFeedback()">
       <h2>Share feedback</h2>
-      <input name="name" [(ngModel)]="feedback.name" placeholder="Name optional" />
-      <input name="email" [(ngModel)]="feedback.email" placeholder="Email optional" />
-      <textarea name="message" rows="4" [(ngModel)]="feedback.message" placeholder="What should we improve?" required></textarea>
+      <input name="name" [(ngModel)]="feedback.name" placeholder="Name optional" aria-label="Your Name (optional)" />
+      <input name="email" [(ngModel)]="feedback.email" placeholder="Email optional" aria-label="Your Email (optional)" />
+      <textarea name="message" rows="4" [(ngModel)]="feedback.message" placeholder="What should we improve?" required aria-label="Feedback Message"></textarea>
       <button type="submit" [disabled]="isBusy || !feedback.message.trim()">Send feedback</button>
     </form>
 

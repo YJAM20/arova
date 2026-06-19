@@ -1,173 +1,285 @@
-<div class="arova-page arova-page--compact">
-  <arova-page-header
-    [title]="t('settingsTitle')"
-    [subtitle]="t('settingsSubtitle')"
-    eyebrow="✦ Universe Settings"
-  ></arova-page-header>
+<div class="settings-page animate-fade-in">
 
-  <!-- Premium Tabs Navigation -->
-  <nav class="settings-tabs-nav flex gap-2 border-b border-neutral-800/60 pb-3 mb-8 animate-fade-in">
-    <button type="button" 
-            (click)="activeTab = 'general'" 
-            class="tab-nav-btn px-4 py-2.5 rounded-xl text-sm font-semibold transition-all"
-            [class.active]="activeTab === 'general'">
+  <!-- Page Hero -->
+  <header class="settings-header">
+    <p class="page-eyebrow" id="settings-eyebrow">✦ Settings</p>
+    <h1>Shape your Arova space</h1>
+    <p class="page-sub">Manage how your private space feels, stores data, and connects across Local Mode and API Mode.</p>
+  </header>
+
+  <!-- Mode Status Panel -->
+  <section class="mode-status-panel glass" id="settings-mode-panel" aria-label="Current app mode">
+    <div class="mode-status-inner">
+      <div class="mode-status-left">
+        <span class="mode-label-eyebrow">Current app mode</span>
+        <div class="mode-status-row">
+          <span
+            class="mode-pill"
+            [class.mode-pill--local]="appMode === 'local'"
+            [class.mode-pill--api]="appMode === 'api'"
+          >
+            <span class="mode-dot" aria-hidden="true"></span>
+            {{ appMode === 'local' ? 'Local Mode' : 'API Mode' }}
+          </span>
+        </div>
+        <p class="mode-status-desc" *ngIf="appMode === 'local'">
+          Local Mode keeps demo data in this browser. It does not require the backend.
+        </p>
+        <p class="mode-status-desc" *ngIf="appMode === 'api'">
+          API Mode connects to the local ASP.NET backend at <code>{{ apiBaseUrl }}</code> when it is running.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Settings Tabs Nav -->
+  <nav class="settings-tabs-nav" id="settings-tabs-nav" aria-label="Settings sections">
+    <button
+      type="button"
+      (click)="activeTab = 'general'"
+      class="tab-nav-btn"
+      [class.active]="activeTab === 'general'"
+      [attr.aria-selected]="activeTab === 'general'"
+    >
       ⚙️ General
     </button>
-    <button type="button" 
-            (click)="activeTab = 'appearance'" 
-            class="tab-nav-btn px-4 py-2.5 rounded-xl text-sm font-semibold transition-all"
-            [class.active]="activeTab === 'appearance'">
+    <button
+      type="button"
+      (click)="activeTab = 'appearance'"
+      class="tab-nav-btn"
+      [class.active]="activeTab === 'appearance'"
+      [attr.aria-selected]="activeTab === 'appearance'"
+    >
       🎨 Appearance
     </button>
-    <button type="button" 
-            (click)="activeTab = 'account'" 
-            class="tab-nav-btn px-4 py-2.5 rounded-xl text-sm font-semibold transition-all"
-            [class.active]="activeTab === 'account'">
-      🪐 Partner & Profile
+    <button
+      type="button"
+      (click)="activeTab = 'account'"
+      class="tab-nav-btn"
+      [class.active]="activeTab === 'account'"
+      [attr.aria-selected]="activeTab === 'account'"
+    >
+      🪐 Partner &amp; Profile
     </button>
   </nav>
 
-  <!-- Settings Panels form wrapper -->
-  <form (ngSubmit)="saveSettings()" class="settings-form animate-fade-in" style="animation-delay: 0.05s;">
-    
-    <!-- Tab 1: General Preferences -->
-    <arova-card *ngIf="activeTab === 'general'" [hoverable]="false" [glow]="true" class="settings-card mb-6">
-      <arova-section-header 
-        title="App Space Mode" 
-        description="Choose how this app should behave. Switching modes never deletes LocalStorage data."
-      ></arova-section-header>
+  <!-- Settings Form -->
+  <form (ngSubmit)="saveSettings()" class="settings-form" id="settings-form">
 
-      <div class="mode-options-container mb-6">
-        <label class="mode-option" *ngFor="let option of modeOptions">
-          <input type="radio" name="appMode" [value]="option.value" [(ngModel)]="appMode" />
-          <span class="mode-info">
-            <strong class="mode-title">
-              {{ option.label }}
-              <arova-status-pill type="accent" [showDot]="false" *ngIf="appMode === option.value">Active</arova-status-pill>
-            </strong>
-            <small class="mode-desc">{{ option.description }}</small>
-          </span>
-        </label>
-      </div>
+    <!-- Tab 1: General -->
+    <div class="settings-card glass" *ngIf="activeTab === 'general'">
 
-      <div class="api-warning-container mb-6" *ngIf="appMode === 'api'">
-        <arova-status-pill type="warning" [showDot]="true">
-          API Mode active: Requires ASP.NET Core backend at {{ apiBaseUrl }}
-        </arova-status-pill>
-      </div>
+      <!-- App Mode Section -->
+      <section class="settings-section" aria-labelledby="mode-heading">
+        <h2 id="mode-heading" class="section-heading">Current app mode</h2>
+        <p class="section-desc">Choose how this app should behave. Switching modes never deletes LocalStorage data.</p>
 
-      <arova-section-header 
-        [title]="t('languageMode')" 
-        description="Select language preference for universe interfaces."
-      ></arova-section-header>
-
-      <div class="form-group mb-6">
-        <select name="languageMode" [(ngModel)]="settings.languageMode" class="arova-select">
-          <option *ngFor="let language of languageOptions" [value]="language.value">{{ language.label }}</option>
-        </select>
-      </div>
-
-      <arova-section-header 
-        title="Interface Preferences" 
-        description="Adjust sensory options for a calm, premium experience."
-      ></arova-section-header>
-
-      <div class="toggle-container mb-6">
-        <label class="toggle-row">
-          <span class="toggle-label">
-            <strong>{{ t('animations') }}</strong>
-            <small>Enable fluid transitions and motion</small>
-          </span>
-          <div class="checkbox-wrapper">
-            <input type="checkbox" name="animationsEnabled" [(ngModel)]="settings.animationsEnabled" />
-          </div>
-        </label>
-
-        <label class="toggle-row">
-          <span class="toggle-label">
-            <strong>{{ t('musicEnabled') }}</strong>
-            <small>Enable ambient sounds and melodies</small>
-          </span>
-          <div class="checkbox-wrapper">
-            <input type="checkbox" name="musicEnabled" [(ngModel)]="settings.musicEnabled" />
-          </div>
-        </label>
-      </div>
-
-      <div class="actions-row">
-        <button type="submit" class="save-button">{{ t('saveSettings') }}</button>
-        <div class="success-message" *ngIf="message">
-          <arova-status-pill type="success">{{ message }}</arova-status-pill>
+        <div class="mode-options-container">
+          <label class="mode-option" *ngFor="let option of modeOptions">
+            <input type="radio" name="appMode" [value]="option.value" [(ngModel)]="appMode" />
+            <span class="mode-info">
+              <strong class="mode-title">
+                {{ option.label }}
+                <arova-status-pill type="accent" [showDot]="false" *ngIf="appMode === option.value">Active</arova-status-pill>
+              </strong>
+              <small class="mode-desc">{{ option.description }}</small>
+            </span>
+          </label>
         </div>
-      </div>
-    </arova-card>
 
-    <!-- Tab 2: Appearance & Themes -->
-    <arova-card *ngIf="activeTab === 'appearance'" [hoverable]="false" [glow]="true" class="settings-card mb-6">
-      <arova-section-header 
-        [title]="t('theme')" 
-        description="Personalize the visual atmosphere of your shared universe. Select a preset below."
-      ></arova-section-header>
-
-      <div class="theme-selector-grid">
-        <button 
-          type="button" 
-          *ngFor="let theme of themeOptions" 
-          class="theme-select-btn"
-          [class.active]="settings.activeTheme === theme.value"
-          (click)="settings.activeTheme = theme.value"
-        >
-          <span class="theme-swatch" [ngClass]="'swatch-' + theme.value"></span>
-          <span class="theme-label">{{ theme.label }}</span>
-        </button>
-      </div>
-
-      <div class="actions-row">
-        <button type="submit" class="save-button">{{ t('saveSettings') }}</button>
-        <div class="success-message" *ngIf="message">
-          <arova-status-pill type="success">{{ message }}</arova-status-pill>
-        </div>
-      </div>
-    </arova-card>
-
-    <!-- Tab 3: Account & Pairing Details -->
-    <arova-card *ngIf="activeTab === 'account'" [hoverable]="false" [glow]="true" class="settings-card">
-      <div class="user-profile-summary mb-6 pb-6 border-b border-neutral-800/60">
-        <span class="section-label uppercase tracking-wider text-accent text-3xs font-semibold block mb-2">{{ t('currentUser') }}</span>
-        <h2 class="profile-name text-2xl font-extrabold text-white mb-2">{{ currentUser?.displayName || 'Arova Member' }}</h2>
-        <div class="profile-badge-row">
-          <arova-status-pill type="accent" [showDot]="true">
-            {{ currentUser?.role === 'admin' ? 'Creator Account' : 'Partner Account' }}
+        <div class="api-warning-container" *ngIf="appMode === 'api'">
+          <arova-status-pill type="warning" [showDot]="true">
+            API Mode active: Requires ASP.NET Core backend at {{ apiBaseUrl }}
           </arova-status-pill>
         </div>
-      </div>
+      </section>
 
-      <div class="info-section mb-6 pb-6 border-b border-neutral-800/60">
-        <span class="section-label uppercase tracking-wider text-accent text-3xs font-semibold block mb-2">{{ t('localPrivacy') }}</span>
-        <p class="section-text text-sm text-neutral-300">
+      <div class="section-divider"></div>
+
+      <!-- Language Section -->
+      <section class="settings-section" aria-labelledby="language-heading">
+        <h2 id="language-heading" class="section-heading">Language</h2>
+        <p class="section-desc">Select the language preference for Arova interfaces.</p>
+
+        <div class="form-group">
+          <label for="language-select" class="form-label">Interface language</label>
+          <select id="language-select" name="languageMode" [(ngModel)]="settings.languageMode" class="arova-select">
+            <option *ngFor="let language of languageOptions" [value]="language.value">{{ language.label }}</option>
+          </select>
+        </div>
+      </section>
+
+      <div class="section-divider"></div>
+
+      <!-- Interface Preferences Section -->
+      <section class="settings-section" aria-labelledby="interface-heading">
+        <h2 id="interface-heading" class="section-heading">Interface preferences</h2>
+        <p class="section-desc">Adjust sensory options for a calm, premium experience.</p>
+
+        <div class="toggle-container">
+          <label class="toggle-row">
+            <span class="toggle-label">
+              <strong>{{ t('animations') }}</strong>
+              <small>Enable fluid transitions and motion</small>
+            </span>
+            <div class="checkbox-wrapper">
+              <input type="checkbox" name="animationsEnabled" [(ngModel)]="settings.animationsEnabled" aria-describedby="animations-desc" />
+            </div>
+          </label>
+
+          <label class="toggle-row">
+            <span class="toggle-label">
+              <strong>{{ t('musicEnabled') }}</strong>
+              <small>Enable ambient sounds and melodies</small>
+            </span>
+            <div class="checkbox-wrapper">
+              <input type="checkbox" name="musicEnabled" [(ngModel)]="settings.musicEnabled" />
+            </div>
+          </label>
+        </div>
+      </section>
+
+      <div class="section-divider"></div>
+
+      <!-- Sensory Guides Section (preserves tooltip test) -->
+      <section class="settings-section" aria-labelledby="sensory-heading">
+        <h2 id="sensory-heading" class="section-heading">Sensory guides</h2>
+        <p class="section-desc">Hover over these elements to explore features.</p>
+
+        <div class="tooltip-demo-row">
+          <button
+            type="button"
+            class="tooltip-demo-btn"
+            arovaTooltip="Get support and view Arova documentation"
+            tooltipPosition="top"
+            aria-label="Help documentation"
+          >
+            ❓ Help Info
+          </button>
+
+          <button
+            type="button"
+            class="tooltip-demo-btn"
+            arovaTooltip="Click to persist preferences to browser storage"
+            tooltipPosition="bottom"
+          >
+            💾 Quick Save
+          </button>
+
+          <div
+            class="tooltip-demo-info"
+            arovaTooltip="Arova lets you choose between local sandbox storage or a remote ASP.NET Core database. Toggling space modes preserves all history."
+            tooltipPosition="right"
+          >
+            ℹ️ Info Details
+          </div>
+        </div>
+      </section>
+
+      <div class="section-divider"></div>
+
+      <!-- Actions -->
+      <div class="actions-row">
+        <button type="submit" class="save-button" id="settings-save-btn">{{ t('saveSettings') }}</button>
+        <div class="success-message" *ngIf="message">
+          <arova-status-pill type="success">{{ message }}</arova-status-pill>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 2: Appearance -->
+    <div class="settings-card glass" *ngIf="activeTab === 'appearance'">
+      <section class="settings-section" aria-labelledby="theme-heading">
+        <h2 id="theme-heading" class="section-heading">{{ t('theme') }}</h2>
+        <p class="section-desc">Personalize the visual atmosphere of your shared universe. Select a preset below.</p>
+
+        <div class="theme-selector-grid">
+          <button
+            type="button"
+            *ngFor="let theme of themeOptions"
+            class="theme-select-btn"
+            [class.active]="settings.activeTheme === theme.value"
+            (click)="settings.activeTheme = theme.value"
+            [attr.aria-pressed]="settings.activeTheme === theme.value"
+            [attr.aria-label]="theme.label + (settings.activeTheme === theme.value ? ' (selected)' : '')"
+          >
+            <span class="theme-swatch" [ngClass]="'swatch-' + theme.value" aria-hidden="true"></span>
+            <span class="theme-label">{{ theme.label }}</span>
+          </button>
+        </div>
+      </section>
+
+      <div class="actions-row">
+        <button type="submit" class="save-button" id="settings-appearance-save-btn">{{ t('saveSettings') }}</button>
+        <div class="success-message" *ngIf="message">
+          <arova-status-pill type="success">{{ message }}</arova-status-pill>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 3: Partner & Profile -->
+    <div class="settings-card glass" *ngIf="activeTab === 'account'">
+
+      <!-- Current User -->
+      <section class="settings-section" aria-labelledby="profile-heading">
+        <h2 id="profile-heading" class="section-heading">{{ t('currentUser') }}</h2>
+        <div class="user-profile-summary">
+          <p class="profile-name">{{ currentUser?.displayName || 'Arova Member' }}</p>
+          <div class="profile-badge-row">
+            <arova-status-pill type="accent" [showDot]="true">
+              {{ currentUser?.role === 'admin' ? 'Creator Account' : 'Partner Account' }}
+            </arova-status-pill>
+          </div>
+        </div>
+      </section>
+
+      <div class="section-divider"></div>
+
+      <!-- Privacy & Data Section -->
+      <section class="settings-section" aria-labelledby="privacy-heading" id="settings-privacy-section">
+        <h2 id="privacy-heading" class="section-heading">{{ t('localPrivacy') }}</h2>
+        <p class="section-text">
           Your private universe lives in this browser's LocalStorage unless you export a backup file.
           Keep personal media and backup files private.
         </p>
-      </div>
-
-      <div class="info-section mb-6 pb-6 border-b border-neutral-800/60">
-        <span class="section-label uppercase tracking-wider text-accent text-3xs font-semibold block mb-2">Couple Setup</span>
-        <p class="section-text text-sm text-neutral-300 mb-4">
-          Connect your space with your partner's space using a pairing code.
+        <p class="section-text section-text--limitation">
+          Some account, billing, SMS, OAuth, and production backup features are placeholders in this demo.
+          Local Mode data lives in browser storage only. True E2EE and production chat messaging infrastructure are planned, not active.
         </p>
-        <a routerLink="/couple-setup" class="settings-link-btn inline-block px-4 py-2 border border-neutral-700 hover:border-accent hover:text-accent rounded-xl text-xs font-semibold transition-all">
+      </section>
+
+      <div class="section-divider"></div>
+
+      <!-- Couple Setup -->
+      <section class="settings-section" aria-labelledby="couple-heading">
+        <h2 id="couple-heading" class="section-heading">Couple setup</h2>
+        <p class="section-text">Connect your space with your partner's space using a pairing code.</p>
+        <a routerLink="/couple-setup" class="settings-link-btn">
           Link to Partner
         </a>
-      </div>
+      </section>
 
-      <div class="info-section">
-        <span class="section-label uppercase tracking-wider text-accent text-3xs font-semibold block mb-2">Onboarding Setup</span>
-        <p class="section-text text-sm text-neutral-300">Reset the onboarding questionnaire without losing memories, letters, or backups.</p>
-        <button type="button" class="reset-onboarding-btn px-4 py-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl text-xs font-semibold mt-4 transition-all" (click)="resetOnboarding()">
-          Reset onboarding flow
-        </button>
-      </div>
-    </arova-card>
+      <div class="section-divider"></div>
+
+      <!-- Danger Zone -->
+      <section class="settings-section settings-section--danger" aria-labelledby="danger-heading" id="settings-danger-zone">
+        <h2 id="danger-heading" class="section-heading section-heading--danger">Careful actions</h2>
+        <div class="info-section">
+          <p class="section-desc">Onboarding setup</p>
+          <p class="section-text">Reset the onboarding questionnaire without losing memories, letters, or backups.</p>
+          <button
+            type="button"
+            class="reset-onboarding-btn"
+            id="reset-onboarding-btn"
+            (click)="resetOnboarding()"
+          >
+            Reset onboarding flow
+          </button>
+        </div>
+      </section>
+
+    </div>
 
   </form>
+
 </div>

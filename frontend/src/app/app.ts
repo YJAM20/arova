@@ -1,5 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
+import { NgxSonnerToaster } from 'ngx-sonner';
 import { ThemeService } from './core/services/theme.service';
 import { TranslationService } from './core/services/translation.service';
 import { AppModeService } from './core/services/app-mode.service';
@@ -8,7 +9,7 @@ import { AuthApiService } from './core/services/auth-api.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, NgxSonnerToaster],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })

@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { forkJoin } from 'rxjs';
 import { AuthService } from '../../../../core/services/auth.service';
-import { MoodService } from '../../../../core/services/mood.service';
+import { MoodDataService } from '../../../../core/services/mood-data.service';
 import { StorageService } from '../../../../core/services/storage.service';
 import { TranslationService } from '../../../../core/services/translation.service';
 import { MoodEntry, MoodType } from '../../../../shared/models/mood.model';
@@ -33,6 +34,11 @@ export class MoodRoomComponent implements OnInit {
   otherTodayMoods: MoodEntry[] = [];
   responseDrafts: Record<string, string> = {};
 
+  isLoading = false;
+  isSaving = false;
+  errorMessage = '';
+  saveErrorMessage = '';
+
   moodOptions: MoodOption[] = [
     { value: 'happy', label: 'Happy', icon: '😊', hint: 'Light and steady' },
     { value: 'silent', label: 'Calm', icon: '😌', hint: 'Quiet but present' },
@@ -62,7 +68,7 @@ export class MoodRoomComponent implements OnInit {
   }
 
   constructor(
-    private moodService: MoodService,
+    private moodDataService: MoodDataService,
     private auth: AuthService,
     private storage: StorageService,
     private translation: TranslationService
@@ -71,25 +77,83 @@ export class MoodRoomComponent implements OnInit {
   ngOnInit(): void {
     this.currentUser = this.auth.getCurrentUser();
     this.users = this.storage.getUsers();
-    this.refresh();
+    this.loadMoods();
   }
 
   selectMood(mood: MoodType): void {
     this.selectedMood = mood;
     this.savedMessage = '';
+    this.saveErrorMessage = '';
+  }
+
+  loadMoods(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    forkJoin({
+      history: this.moodDataService.getMoodHistory(),
+      todayMood: this.moodDataService.getTodayMoodForCurrentUser(),
+    }).subscribe({
+      next: ({ history, todayMood }) => {
+        this.history = history;
+        this.todayMood = todayMood;
+        this.isLoading = false;
+
+        const todayStr = new Date().toISOString().slice(0, 10);
+        this.otherTodayMoods = this.history.filter(
+          entry => entry.date === todayStr && entry.userId !== this.currentUser?.id
+        );
+
+        if (this.todayMood) {
+          this.selectedMood = this.todayMood.mood;
+          this.note = this.todayMood.note ?? '';
+          if (!this.savedMessage) {
+            this.savedMessage = this.moodDataService.getMoodMessage(this.todayMood.mood);
+          }
+        }
+      },
+      error: error => {
+        this.history = [];
+        this.todayMood = null;
+        this.otherTodayMoods = [];
+        this.errorMessage = error instanceof Error ? error.message : 'We couldn’t load the mood room right now.';
+        this.isLoading = false;
+      },
+    });
   }
 
   saveMood(): void {
-    const entry = this.moodService.setTodayMood(this.selectedMood, this.note);
-    this.savedMessage = this.moodService.getMoodMessage(entry.mood);
-    this.refresh();
+    this.isSaving = true;
+    this.saveErrorMessage = '';
+    this.savedMessage = '';
+
+    this.moodDataService.setTodayMood(this.selectedMood, this.note).subscribe({
+      next: entry => {
+        this.todayMood = entry;
+        this.savedMessage = this.moodDataService.getMoodMessage(entry.mood);
+        this.isSaving = false;
+        this.loadMoods();
+      },
+      error: error => {
+        this.saveErrorMessage = error instanceof Error ? error.message : 'We couldn’t save your mood right now.';
+        this.isSaving = false;
+      },
+    });
   }
 
   respond(entry: MoodEntry): void {
     const response = this.responseDrafts[entry.id] ?? '';
-    this.moodService.respondToMood(entry.id, response);
-    this.responseDrafts[entry.id] = '';
-    this.refresh();
+    if (!response.trim()) return;
+
+    this.moodDataService.respondToMood(entry.id, response).subscribe({
+      next: () => {
+        this.responseDrafts[entry.id] = '';
+        this.loadMoods();
+      },
+      error: error => {
+        this.errorMessage = error instanceof Error ? error.message : 'Could not send response.';
+      },
+    });
   }
 
   getMoodLabel(mood: MoodType): string {
@@ -101,7 +165,7 @@ export class MoodRoomComponent implements OnInit {
   }
 
   getMoodMessage(mood: MoodType): string {
-    return this.moodService.getMoodMessage(mood);
+    return this.moodDataService.getMoodMessage(mood);
   }
 
   getUserName(userId: string): string {
@@ -120,20 +184,21 @@ export class MoodRoomComponent implements OnInit {
     return this.translation.t(key);
   }
 
-  private refresh(): void {
-    const today = new Date().toISOString().slice(0, 10);
-    this.todayMood = this.moodService.getTodayMoodForCurrentUser();
-    this.history = this.moodService.getMoodHistory();
-    this.otherTodayMoods = this.history.filter(
-      entry => entry.date === today && entry.userId !== this.currentUser?.id
-    );
+  /* Summary helpers */
+  getMyTotalCheckIns(): number {
+    return this.history.filter(e => e.userId === this.currentUser?.id).length;
+  }
 
-    if (this.todayMood) {
-      this.selectedMood = this.todayMood.mood;
-      this.note = this.todayMood.note ?? '';
-      if (!this.savedMessage) {
-        this.savedMessage = this.moodService.getMoodMessage(this.todayMood.mood);
-      }
-    }
+  getMyLatestNote(): string {
+    const latest = this.history.find(e => e.userId === this.currentUser?.id && e.note);
+    return latest?.note ?? '';
+  }
+
+  getPartnerLatestMood(): MoodEntry | null {
+    const todayStr = new Date().toISOString().slice(0, 10);
+    // Prefer today's, otherwise most recent in history
+    const partnerId = this.users.find(u => u.id !== this.currentUser?.id)?.id;
+    if (!partnerId) return null;
+    return this.history.find(e => e.userId === partnerId) ?? null;
   }
 }

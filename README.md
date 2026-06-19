@@ -389,6 +389,7 @@ Chat is correctly described as **secure couple-scoped chat with encryption-ready
 - Every resource (memories, letters, chat, moods, plans, etc.) is scoped to the user's active couple identity — no data leaks across couples.
 - Passwords are stored as hashed values via a dedicated `IPasswordHasherService`.
 - Chat messages are broadcast only to the `couple-{id}` SignalR group.
+- Netlify hosting environments implement strict security headers (CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, and Permissions-Policy) via `netlify.toml` for static-site production safety.
 - No real secrets, private screenshots, or production credentials are committed to this repository. See [`BACKEND_PRIVACY_SECRET_SCAN_REPORT.md`](backend/OurLittleUniverse/BACKEND_PRIVACY_SECRET_SCAN_REPORT.md).
 - SQLite database files (`*.db`, `*.sqlite`) and `.env` files are excluded via `.gitignore`.
 
@@ -403,7 +404,7 @@ Arova is a personal portfolio project and is not currently accepting external co
 ## ✦ Version
 
 ```
-v1.0.0 — Arova Portfolio Preview
+v2.0.0 — Arova Version 2 Upgrade
 ```
 
 ---

@@ -136,6 +136,15 @@ test.describe('Arova E2E Local Mode Smoke Tests', () => {
     await page.goto('/settings');
     await page.waitForURL('**/settings');
 
+    // Hover over elements to trigger tooltips
+    const helpBtn = page.locator('button:has-text("Help Info")');
+    await helpBtn.hover();
+    await expect(page.locator('text="Get support and view Arova documentation"')).toBeVisible();
+
+    const saveBtn = page.locator('button:has-text("Quick Save")');
+    await saveBtn.hover();
+    await expect(page.locator('text="Click to persist preferences to browser storage"')).toBeVisible();
+
     // Click on the Appearance tab
     await page.click('button.tab-nav-btn:has-text("Appearance")');
 
@@ -148,6 +157,10 @@ test.describe('Arova E2E Local Mode Smoke Tests', () => {
     // Verify confirmation message
     const message = page.locator('.success-message');
     await expect(message).toBeVisible();
+
+    // Verify toast notification
+    await expect(page.locator('text="Changes saved successfully!"')).toBeVisible();
+    await expect(page.locator('text="Your preferences have been updated."')).toBeVisible();
 
     // Verify the root html element has the theme class added
     const htmlElement = page.locator('html');

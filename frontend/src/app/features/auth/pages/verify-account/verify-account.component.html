@@ -1,34 +1,121 @@
-<main class="verify-page">
-  <section class="verify-card glass">
+<main class="verify-page stars-bg">
+  <div class="cosmos-decor" aria-hidden="true">
+    <div class="orbit-ring"></div>
+    <div class="orbital-dot"></div>
+  </div>
+
+  <section class="verify-card glass" [attr.aria-busy]="isBusy">
     <a routerLink="/" class="brand">Arova</a>
     <h1>Verify your account</h1>
-    <p>Email verification keeps your shared space safer.</p>
+    <p class="description">Confirm your email to continue setting up your private space for two.</p>
 
-    <div class="tabs">
-      <button type="button" [class.active]="activeTab === 'email'" (click)="setTab('email')">Email</button>
-      <button type="button" [class.active]="activeTab === 'phone'" (click)="setTab('phone')">Phone</button>
+    <!-- Tabs System -->
+    <div class="tabs" role="tablist">
+      <button 
+        type="button" 
+        role="tab" 
+        [attr.aria-selected]="activeTab === 'email'"
+        [class.active]="activeTab === 'email'" 
+        (click)="setTab('email')"
+        [disabled]="isBusy"
+      >
+        Email
+      </button>
+      <button 
+        type="button" 
+        role="tab" 
+        [attr.aria-selected]="activeTab === 'phone'"
+        [class.active]="activeTab === 'phone'" 
+        (click)="setTab('phone')"
+        [disabled]="isBusy"
+      >
+        Phone
+      </button>
     </div>
 
-    <form *ngIf="activeTab === 'email'" (ngSubmit)="verify()">
-      <label>
-        <span>Email address</span>
-        <input name="email" type="email" [(ngModel)]="email" />
-      </label>
-      <button type="button" (click)="requestCode()" [disabled]="isBusy">Request code</button>
-      <label>
-        <span>6-digit code</span>
-        <input name="code" maxlength="6" [(ngModel)]="code" />
-      </label>
-      <button type="submit" [disabled]="isBusy || !/^\d{6}$/.test((code || '').trim())">Verify</button>
-      <small>In local development, the verification code appears in the backend console.</small>
+    <!-- Tasteful CSS-only orbital loading overlay -->
+    <div class="loading-overlay" *ngIf="isBusy" aria-live="polite">
+      <div class="orbital-ring-spinner">
+        <div class="dot"></div>
+      </div>
+      <p class="loading-text">Verifying space link...</p>
+    </div>
+
+    <!-- Email Form -->
+    <form *ngIf="activeTab === 'email'" (ngSubmit)="verify()" [attr.aria-busy]="isBusy" [class.is-busy]="isBusy">
+      <div class="input-group">
+        <label for="email-input">Email address</label>
+        <input 
+          id="email-input"
+          name="email" 
+          type="email" 
+          [(ngModel)]="email" 
+          autocomplete="email"
+          [disabled]="isBusy"
+          placeholder="yourname@example.com"
+          required
+        />
+      </div>
+      
+      <button 
+        type="button" 
+        class="request-btn"
+        (click)="requestCode()" 
+        [disabled]="isBusy || !email.trim()"
+      >
+        Request code
+      </button>
+      
+      <div class="input-group">
+        <label for="code-input">6-digit code</label>
+        <input 
+          id="code-input"
+          name="code" 
+          maxlength="6" 
+          [(ngModel)]="code" 
+          inputmode="numeric"
+          autocomplete="one-time-code"
+          pattern="[0-9]*"
+          placeholder="000000"
+          [disabled]="isBusy"
+          class="otp-digit-input"
+          required
+        />
+      </div>
+      
+      <button 
+        type="submit" 
+        class="verify-btn"
+        [disabled]="isBusy || !/^\d{6}$/.test((code || '').trim())"
+      >
+        Verify
+      </button>
+      
+      <small class="dev-note">
+        <span class="icon">✦</span> In local development, the verification code appears in the backend console.
+      </small>
     </form>
 
-    <section *ngIf="activeTab === 'phone'" class="phone-note">
-      <h2>Phone verification placeholder</h2>
+    <!-- Phone Placeholder Panel -->
+    <section *ngIf="activeTab === 'phone'" class="phone-note glass animate-fade-in" role="tabpanel">
+      <div class="lock-visual-container">
+        <div class="orbital-orbit" aria-hidden="true">
+          <div class="orbit-node"></div>
+        </div>
+        <div class="padlock-icon">🔒</div>
+      </div>
+      <h2>Phone Verification Planned</h2>
       <p>Phone verification is not available yet. Please use email verification for now.</p>
     </section>
 
-    <p class="message" *ngIf="message">{{ message }}</p>
-    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+    <!-- Feedback messages -->
+    <div class="feedback-area">
+      <p class="message" *ngIf="message" aria-live="polite">
+        ✦ {{ message }}
+      </p>
+      <p class="error" *ngIf="errorMessage" role="alert" aria-live="assertive">
+        ⚠️ {{ errorMessage }}
+      </p>
+    </div>
   </section>
 </main>

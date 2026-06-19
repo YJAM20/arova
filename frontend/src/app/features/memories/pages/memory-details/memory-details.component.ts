@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
@@ -29,6 +29,7 @@ export class MemoryDetailsComponent implements OnInit {
   notFound = false;
   isLoading = false;
   errorMessage = '';
+  currentUser: any = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -40,6 +41,7 @@ export class MemoryDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.isAdmin = this.auth.isAdmin();
     this.isApiMode = this.memoryService.isApiMode();
+    this.currentUser = this.auth.getCurrentUser();
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) {
       this.notFound = true;

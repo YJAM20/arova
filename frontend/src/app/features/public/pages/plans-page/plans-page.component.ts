@@ -10,6 +10,13 @@ interface DisplayPlan {
   features: string[];
 }
 
+interface ComparisonRow {
+  name: string;
+  starter: string | boolean;
+  pro: string | boolean;
+  enterprise: string | boolean;
+}
+
 @Component({
   selector: 'app-plans-page',
   standalone: true,
@@ -21,6 +28,17 @@ export class PlansPageComponent implements OnInit {
   brand = BRAND_CONFIG;
   plans: DisplayPlan[] = this.fallbackPlans();
   message = '';
+
+  comparisonRows: ComparisonRow[] = [
+    { name: 'Shared memories space', starter: 'Up to 50', pro: 'Unlimited', enterprise: 'Unlimited' },
+    { name: 'Private letters vault', starter: false, pro: true, enterprise: true },
+    { name: 'Interactive mood logs', starter: 'Basic', pro: 'Deeper history', enterprise: 'Custom triggers' },
+    { name: 'Shared future board', starter: 'Basic', pro: 'Advanced', enterprise: 'Advanced' },
+    { name: 'Dual storage (Local/API)', starter: true, pro: true, enterprise: true },
+    { name: 'Space personalization', starter: 'Standard', pro: 'Custom categories', enterprise: 'Full themes' },
+    { name: 'Advanced privacy controls', starter: false, pro: false, enterprise: true },
+    { name: 'End-to-End Encryption', starter: 'Planned', pro: 'Planned', enterprise: 'Planned' }
+  ];
 
   constructor(private planApi: PlanApiService) {}
 

@@ -1,140 +1,412 @@
-<div class="future-page">
-  <header class="page-header animate-fade-in">
-    <p class="page-eyebrow">{{ t('future') }}</p>
-    <h1>{{ t('futureTitle') }}</h1>
-    <p>{{ t('futureSubtitle') }}</p>
+<div class="future-page animate-fade-in">
+
+  <!-- Page Hero -->
+  <header class="page-header">
+    <p class="page-eyebrow" id="future-eyebrow">✦ Future Board</p>
+    <h1>Plans worth growing into</h1>
+    <p>A private place for the trips, goals, promises, and quiet ideas you want to keep in sight together.</p>
   </header>
 
-  <form class="quick-add glass animate-fade-in" style="animation-delay: 0.06s;" (ngSubmit)="addPlan()">
-    <div class="quick-add-intro">
-      <span class="section-label">Add gently</span>
-      <p>Plan something small, practical, dreamy, or private. Secret plans are only available to admin.</p>
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading" id="future-loading-indicator" role="status" aria-live="polite">
+    <span class="loading-spinner"></span>
+    <p>Loading your future board…</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-banner glass" *ngIf="!isLoading && errorMessage" role="alert">
+    <span class="error-icon" aria-hidden="true">⚠</span>
+    <div>
+      <p>{{ errorMessage }}</p>
+      <button type="button" class="retry-btn" (click)="loadPlans()">Try again</button>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading">
+
+    <!-- Summary Stats -->
+    <section class="summary-section" *ngIf="plans.length > 0">
+      <div class="summary-cards" id="future-summary-cards">
+        <div class="summary-card glass">
+          <span class="summary-value" id="total-plans-count">{{ getTotalPlans() }}</span>
+          <span class="summary-label">Plans in sight</span>
+        </div>
+        <div class="summary-card glass">
+          <span class="summary-value" id="inprogress-plans-count">{{ getInProgressCount() }}</span>
+          <span class="summary-label">In progress</span>
+        </div>
+        <div class="summary-card glass">
+          <span class="summary-value" id="upcoming-plans-count">{{ getUpcomingCount() }}</span>
+          <span class="summary-label">Planned</span>
+        </div>
+        <div class="summary-card glass">
+          <span class="summary-value" id="completed-plans-count">{{ getCompletedCount() }}</span>
+          <span class="summary-label">Completed</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Save Success Toast -->
+    <div class="save-success-toast" *ngIf="saveSuccess" id="plan-save-success" role="status" aria-live="polite">
+      <span aria-hidden="true">✦</span> Plan saved to your future board.
     </div>
 
-    <label class="wide-field">
-      <span>Plan title</span>
-      <input type="text" name="title" [(ngModel)]="draft.title" placeholder="A future moment to remember" required />
-    </label>
-
-    <label class="wide-field">
-      <span>Optional note</span>
-      <textarea name="description" rows="3" [(ngModel)]="draft.description" placeholder="What would make this meaningful?"></textarea>
-    </label>
-
-    <div class="quick-add-row">
-      <label>
-        <span>Type</span>
-        <select name="type" [(ngModel)]="draft.type">
-          <option value="travel">Travel</option>
-          <option value="movie">Movie</option>
-          <option value="food">Food</option>
-          <option value="date">Date</option>
-          <option value="dream">Dream</option>
-          <option value="promise">Promise</option>
-          <option value="learning">Learning</option>
-        </select>
-      </label>
-
-      <label>
-        <span>Visibility</span>
-        <select name="status" [(ngModel)]="draft.status">
-          <option value="one-day">One day</option>
-          <option value="planned">Planned</option>
-          <option value="in-progress">In progress</option>
-          <option value="secret" *ngIf="isAdmin">Secret</option>
-        </select>
-      </label>
-
-      <label>
-        <span>Priority</span>
-        <select name="priority" [(ngModel)]="draft.priority">
-          <option value="low">Low</option>
-          <option value="medium">Medium</option>
-          <option value="high">High</option>
-        </select>
-      </label>
-
-      <label>
-        <span>Optional date</span>
-        <input type="date" name="targetDate" [(ngModel)]="draft.targetDate" />
-      </label>
-    </div>
-
-    <button type="submit" [disabled]="!draft.title.trim()">Add to Future Board</button>
-  </form>
-
-  <section class="board animate-fade-in" style="animation-delay: 0.1s;">
-    <div class="status-column" *ngFor="let column of columns">
-      <div class="column-heading">
-        <h2>{{ column.label }}</h2>
-        <span>{{ getPlans(column.status).length }}</span>
+    <!-- Add / Edit Form Toggle -->
+    <section class="form-section">
+      <div class="form-header">
+        <button
+          type="button"
+          class="add-plan-toggle"
+          id="toggle-add-plan-form"
+          (click)="toggleAddForm()"
+          [attr.aria-expanded]="showAddForm"
+        >
+          <span class="toggle-icon" aria-hidden="true">{{ showAddForm ? '−' : '+' }}</span>
+          <span>{{ showAddForm ? (editingPlan ? 'Cancel editing' : 'Cancel') : 'Add future plan' }}</span>
+        </button>
       </div>
 
-      <div class="plan-list" *ngIf="getPlans(column.status).length > 0; else emptyColumn">
+      <!-- Form Card -->
+      <div class="add-form glass" *ngIf="showAddForm" id="future-plan-form">
+        <h2 class="form-title">{{ editingPlan ? 'Refine this plan' : 'Add a future plan' }}</h2>
+        <p class="form-subtitle">Save an idea for something you want to build, visit, try, or remember together.</p>
+
+        <div class="form-body">
+          <!-- Title -->
+          <div class="form-field form-field--full">
+            <label for="plan-title-input" class="form-label">
+              Plan title <span class="required" aria-hidden="true">*</span>
+            </label>
+            <input
+              id="plan-title-input"
+              type="text"
+              class="form-input"
+              placeholder="e.g. Visit Iceland together"
+              [(ngModel)]="draft.title"
+              maxlength="180"
+            />
+          </div>
+
+          <!-- Description -->
+          <div class="form-field form-field--full">
+            <label for="plan-description-input" class="form-label">Plan note</label>
+            <textarea
+              id="plan-description-input"
+              class="form-textarea"
+              rows="3"
+              placeholder="What would make this meaningful?"
+              [(ngModel)]="draft.description"
+              maxlength="1000"
+            ></textarea>
+          </div>
+
+          <!-- Type, Status, Priority, Target Date -->
+          <div class="form-grid-4">
+            <div class="form-field">
+              <label for="plan-type-select" class="form-label">Category</label>
+              <select id="plan-type-select" class="form-select" [(ngModel)]="draft.type">
+                <option *ngFor="let t of validTypes" [value]="t">{{ getTypeLabel(t) }}</option>
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label for="plan-status-select" class="form-label">Status</label>
+              <select id="plan-status-select" class="form-select" [(ngModel)]="draft.status">
+                <option value="one-day">One day</option>
+                <option value="planned">Planned</option>
+                <option value="in-progress">In progress</option>
+                <option value="secret" *ngIf="isAdmin">Secret</option>
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label for="plan-priority-select" class="form-label">When</label>
+              <select id="plan-priority-select" class="form-select" [(ngModel)]="draft.priority">
+                <option value="low">Someday</option>
+                <option value="medium">When we can</option>
+                <option value="high">Soon</option>
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label for="plan-target-date-input" class="form-label">Target date</label>
+              <input
+                id="plan-target-date-input"
+                type="date"
+                class="form-input"
+                [(ngModel)]="draft.targetDate"
+              />
+            </div>
+          </div>
+
+          <!-- Form Error -->
+          <div class="form-error" *ngIf="saveError" role="alert">
+            <span aria-hidden="true">⚠</span> {{ saveError }}
+          </div>
+
+          <!-- Actions -->
+          <div class="form-actions">
+            <button
+              type="button"
+              class="btn-primary"
+              id="plan-submit-btn"
+              (click)="savePlan()"
+              [disabled]="isSaving || !draft.title.trim()"
+            >
+              <span *ngIf="!isSaving">{{ editingPlan ? 'Save changes' : 'Save plan' }}</span>
+              <span *ngIf="isSaving">Saving…</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filter Chips -->
+    <section class="filters-section" *ngIf="plans.length > 0 || activeFilter !== 'all'">
+      <div class="filter-scroll">
+        <div class="filter-chips" id="future-filter-chips">
+          <button
+            type="button"
+            *ngFor="let f of statusFilters"
+            class="filter-chip"
+            [class.active]="activeFilter === f.key"
+            [id]="'filter-chip-' + f.key"
+            (click)="setFilter(f.key)"
+            [attr.aria-pressed]="activeFilter === f.key"
+          >
+            {{ f.label }}
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Board — Status Columns -->
+    <section class="board-section" *ngIf="activeFilter === 'all'" id="future-board">
+      <div class="board-columns">
+        <div class="status-column" *ngFor="let column of columns" [id]="'column-' + column.status">
+          <div class="column-heading">
+            <span class="column-icon" aria-hidden="true">{{ column.icon }}</span>
+            <h2>{{ column.label }}</h2>
+            <span class="column-count">{{ getPlans(column.status).length }}</span>
+          </div>
+
+          <div class="plan-list" *ngIf="getPlans(column.status).length > 0; else emptyColumn">
+            <article
+              class="plan-card glass"
+              *ngFor="let plan of getPlans(column.status)"
+              [class.plan-card--done]="plan.status === 'done'"
+              [id]="'plan-card-' + plan.id"
+            >
+              <div class="plan-topline">
+                <span class="type-tag">
+                  <span aria-hidden="true">{{ getTypeIcon(plan.type) }}</span>
+                  {{ getTypeLabel(plan.type) }}
+                </span>
+                <span class="priority-tag" [class.priority-tag--high]="plan.priority === 'high'" [class.priority-tag--soon]="plan.priority === 'high'">
+                  {{ getPriorityLabel(plan.priority) }}
+                </span>
+              </div>
+
+              <h3>{{ plan.title }}</h3>
+              <p class="plan-description">{{ plan.description || 'No note added yet.' }}</p>
+
+              <div class="plan-meta">
+                <span class="plan-date">
+                  <span aria-hidden="true">◷</span> {{ formatDate(plan.targetDate) }}
+                </span>
+              </div>
+
+              <div class="plan-actions" *ngIf="canEdit(plan)">
+                <button
+                  *ngIf="plan.status !== 'done'"
+                  type="button"
+                  class="done-btn"
+                  [id]="'mark-done-' + plan.id"
+                  (click)="markDone(plan, $event)"
+                  [disabled]="isMarkingDone === plan.id"
+                  aria-label="Mark as completed"
+                >
+                  <span *ngIf="isMarkingDone !== plan.id">✓ Mark done</span>
+                  <span *ngIf="isMarkingDone === plan.id">…</span>
+                </button>
+                <button
+                  type="button"
+                  class="edit-btn"
+                  [id]="'edit-plan-' + plan.id"
+                  (click)="startEdit(plan, $event)"
+                  aria-label="Edit plan"
+                >
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  class="delete-btn"
+                  [id]="'delete-plan-' + plan.id"
+                  (click)="deletePlan(plan, $event)"
+                  [disabled]="isDeleting === plan.id"
+                  aria-label="Delete plan"
+                >
+                  <span *ngIf="isDeleting !== plan.id">Delete</span>
+                  <span *ngIf="isDeleting === plan.id">…</span>
+                </button>
+              </div>
+            </article>
+          </div>
+
+          <ng-template #emptyColumn>
+            <div class="empty-column">
+              <p>Nothing here yet</p>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filtered List View (when a filter is active) -->
+    <section class="filtered-section" *ngIf="activeFilter !== 'all'" id="future-filtered-list">
+      <div class="plan-grid" *ngIf="getFilteredPlans().length > 0; else emptyFiltered">
         <article
           class="plan-card glass"
-          *ngFor="let plan of getPlans(column.status)"
+          *ngFor="let plan of getFilteredPlans()"
           [class.plan-card--done]="plan.status === 'done'"
-          [class.plan-card--low]="plan.priority === 'low'"
-          [class.plan-card--medium]="plan.priority === 'medium'"
-          [class.plan-card--high]="plan.priority === 'high'"
+          [id]="'plan-card-' + plan.id"
         >
           <div class="plan-topline">
-            <span class="type-tag">{{ getTypeLabel(plan.type) }}</span>
-            <span class="priority-tag">{{ getPriorityLabel(plan.priority) }}</span>
+            <span class="type-tag">
+              <span aria-hidden="true">{{ getTypeIcon(plan.type) }}</span>
+              {{ getTypeLabel(plan.type) }}
+            </span>
+            <span class="priority-tag" [class.priority-tag--high]="plan.priority === 'high'">
+              {{ getPriorityLabel(plan.priority) }}
+            </span>
           </div>
 
           <h3>{{ plan.title }}</h3>
-          <p *ngIf="plan.description">{{ plan.description }}</p>
+          <p class="plan-description">{{ plan.description || 'No note added yet.' }}</p>
 
           <div class="plan-meta">
-            <span>{{ formatDate(plan.targetDate) }}</span>
-            <span>{{ column.label }}</span>
+            <span class="plan-date">
+              <span aria-hidden="true">◷</span> {{ formatDate(plan.targetDate) }}
+            </span>
+            <span class="status-chip status-chip--{{ plan.status }}">
+              {{ getStatusLabel(plan.status) }}
+            </span>
           </div>
 
-          <button
-            *ngIf="canEdit(plan) && plan.status !== 'done'"
-            type="button"
-            class="done-button"
-            (click)="markDone(plan)"
-          >
-            {{ t('markDone') }}
-          </button>
+          <div class="plan-actions" *ngIf="canEdit(plan)">
+            <button
+              *ngIf="plan.status !== 'done'"
+              type="button"
+              class="done-btn"
+              [id]="'mark-done-' + plan.id"
+              (click)="markDone(plan, $event)"
+              [disabled]="isMarkingDone === plan.id"
+              aria-label="Mark as completed"
+            >
+              <span *ngIf="isMarkingDone !== plan.id">✓ Mark done</span>
+              <span *ngIf="isMarkingDone === plan.id">…</span>
+            </button>
+            <button
+              type="button"
+              class="edit-btn"
+              [id]="'edit-plan-' + plan.id"
+              (click)="startEdit(plan, $event)"
+              aria-label="Edit plan"
+            >
+              Edit
+            </button>
+            <button
+              type="button"
+              class="delete-btn"
+              [id]="'delete-plan-' + plan.id"
+              (click)="deletePlan(plan, $event)"
+              [disabled]="isDeleting === plan.id"
+              aria-label="Delete plan"
+            >
+              Delete
+            </button>
+          </div>
         </article>
       </div>
 
-      <ng-template #emptyColumn>
-        <div class="empty-column glass">Nothing here yet</div>
+      <ng-template #emptyFiltered>
+        <div class="empty-state glass" id="future-empty-state">
+          <span class="empty-icon" aria-hidden="true">◌</span>
+          <h3>No future plans yet</h3>
+          <p>Start with one small idea — a trip, a promise, a goal, or something you both want to experience later.</p>
+        </div>
       </ng-template>
-    </div>
-  </section>
+    </section>
 
-  <section class="secret-section animate-fade-in" style="animation-delay: 0.18s;" *ngIf="getSecretPlans().length > 0">
-    <div class="column-heading">
-      <h2>Secret</h2>
-      <span>{{ getSecretPlans().length }}</span>
+    <!-- Global empty state (no plans at all) -->
+    <div class="empty-state glass" id="future-empty-state" *ngIf="plans.length === 0 && !isLoading && !errorMessage">
+      <span class="empty-icon" aria-hidden="true">◌</span>
+      <h3>No future plans yet</h3>
+      <p>Start with one small idea — a trip, a promise, a goal, or something you both want to experience later.</p>
+      <button type="button" class="btn-primary" id="empty-add-plan-btn" (click)="toggleAddForm()">
+        + Add future plan
+      </button>
     </div>
 
-    <div class="secret-grid">
-      <article
-        class="plan-card plan-card--secret glass"
-        *ngFor="let plan of getSecretPlans()"
-        [class.plan-card--low]="plan.priority === 'low'"
-        [class.plan-card--medium]="plan.priority === 'medium'"
-        [class.plan-card--high]="plan.priority === 'high'"
-      >
-        <div class="plan-topline">
-          <span class="type-tag">{{ getTypeLabel(plan.type) }}</span>
-          <span class="priority-tag">{{ getPriorityLabel(plan.priority) }}</span>
-        </div>
-        <h3>{{ plan.title }}</h3>
-        <p *ngIf="plan.description">{{ plan.description }}</p>
-        <div class="plan-meta">
-          <span>{{ formatDate(plan.targetDate) }}</span>
-          <span>Hidden from partner</span>
-        </div>
-        <button type="button" class="done-button" (click)="markDone(plan)">{{ t('markDone') }}</button>
-      </article>
-    </div>
-  </section>
+    <!-- Secret Plans (admin only) -->
+    <section class="secret-section" *ngIf="getSecretPlans().length > 0" id="future-secret-section">
+      <div class="column-heading">
+        <span class="column-icon" aria-hidden="true">◈</span>
+        <h2>Hidden from partner</h2>
+        <span class="column-count">{{ getSecretPlans().length }}</span>
+      </div>
+      <div class="plan-grid">
+        <article
+          class="plan-card plan-card--secret glass"
+          *ngFor="let plan of getSecretPlans()"
+          [id]="'plan-card-' + plan.id"
+        >
+          <div class="plan-topline">
+            <span class="type-tag">
+              <span aria-hidden="true">{{ getTypeIcon(plan.type) }}</span>
+              {{ getTypeLabel(plan.type) }}
+            </span>
+            <span class="priority-tag">{{ getPriorityLabel(plan.priority) }}</span>
+          </div>
+          <h3>{{ plan.title }}</h3>
+          <p class="plan-description">{{ plan.description || 'No note added yet.' }}</p>
+          <div class="plan-meta">
+            <span class="plan-date">◷ {{ formatDate(plan.targetDate) }}</span>
+          </div>
+          <div class="plan-actions">
+            <button
+              type="button"
+              class="done-btn"
+              [id]="'mark-done-' + plan.id"
+              (click)="markDone(plan, $event)"
+              [disabled]="isMarkingDone === plan.id"
+              aria-label="Mark secret plan as completed"
+            >
+              ✓ Mark done
+            </button>
+            <button
+              type="button"
+              class="edit-btn"
+              [id]="'edit-plan-' + plan.id"
+              (click)="startEdit(plan, $event)"
+              aria-label="Edit secret plan"
+            >
+              Edit
+            </button>
+            <button
+              type="button"
+              class="delete-btn"
+              [id]="'delete-plan-' + plan.id"
+              (click)="deletePlan(plan, $event)"
+              [disabled]="isDeleting === plan.id"
+              aria-label="Delete secret plan"
+            >
+              Delete
+            </button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+  </div>
 </div>

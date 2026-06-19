@@ -2,6 +2,22 @@
 @use 'styles/animations';
 @use 'styles/themes';
 
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Source+Serif+4:ital,wght@1,400;1,500;1,600&display=swap');
+
+* {
+  font-family: 'Poppins', sans-serif;
+}
+
+.font-serif-accent,
+h1 em,
+h2 em,
+h3 em,
+h1 i,
+h2 i,
+h3 i {
+  font-family: 'Source Serif 4', serif;
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;

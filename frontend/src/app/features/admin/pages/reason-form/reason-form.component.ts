@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -180,29 +180,15 @@ export class ReasonFormComponent implements OnInit {
   }
 
   get pageTitle(): string {
-    if (this.isAdminRoute && this.auth.isAdmin()) {
-      return this.isEditMode ? 'Edit Reason' : 'Add Reason';
-    }
-
-    return this.isEditMode ? 'Update this reason' : 'Write a reason to remember';
+    return this.isEditMode ? 'Refine this reason' : 'Add a reason';
   }
 
   get pageSubtitle(): string {
-    if (this.isAdminRoute && this.auth.isAdmin()) {
-      return this.isEditMode ? 'Update a reason with care.' : 'Write another reason into the constellation.';
-    }
-
-    return this.isEditMode
-      ? 'Refine the wording and decide whether it is shared or just for you.'
-      : 'Add a gentle note of appreciation, trust, or hope for later.';
+    return 'Write something honest and specific — a reason you may want to return to later.';
   }
 
   get saveLabel(): string {
-    if (this.isAdminRoute && this.auth.isAdmin()) {
-      return this.isEditMode ? 'Save changes' : 'Create reason';
-    }
-
-    return this.isEditMode ? 'Save this reason' : 'Add reason';
+    return this.isEditMode ? 'Save changes' : 'Save reason';
   }
 
   private returnPath(): string {

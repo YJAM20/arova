@@ -10,10 +10,11 @@ import { ThemeService } from '../../../../core/services/theme.service';
 import { TranslationService } from '../../../../core/services/translation.service';
 import { AppSettings } from '../../../../shared/models/app-settings.model';
 import { AppUser } from '../../../../shared/models/user.model';
-import { ArovaPageHeaderComponent } from '../../../../shared/components/arova-page-header/arova-page-header.component';
-import { ArovaCardComponent } from '../../../../shared/components/arova-card/arova-card.component';
 import { ArovaStatusPillComponent } from '../../../../shared/components/arova-status-pill/arova-status-pill.component';
-import { ArovaSectionHeaderComponent } from '../../../../shared/components/arova-section-header/arova-section-header.component';
+
+import { toast } from 'ngx-sonner';
+
+import { ArovaTooltipDirective } from '../../../../shared/components/arova-tooltip/arova-tooltip.directive';
 
 @Component({
   selector: 'app-settings-page',
@@ -22,10 +23,8 @@ import { ArovaSectionHeaderComponent } from '../../../../shared/components/arova
     CommonModule, 
     FormsModule, 
     RouterModule,
-    ArovaPageHeaderComponent,
-    ArovaCardComponent,
     ArovaStatusPillComponent,
-    ArovaSectionHeaderComponent
+    ArovaTooltipDirective
   ],
   templateUrl: './settings-page.component.html',
   styleUrls: ['./settings-page.component.scss'],
@@ -109,6 +108,10 @@ export class SettingsPageComponent implements OnInit {
     this.settings = this.themeService.updateSettings({ ...this.settings });
     this.translation.applyLanguageMode(this.settings.languageMode);
     this.message = 'Settings saved for this browser.';
+    toast.success('Changes saved successfully!', {
+      description: 'Your preferences have been updated.',
+      duration: 4000
+    });
   }
 
   resetOnboarding(): void {

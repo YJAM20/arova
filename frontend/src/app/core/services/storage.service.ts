@@ -223,8 +223,14 @@ export class StorageService {
   updateUser(userId: string, changes: Partial<AppUser>): void {
     const user = this.data.users.find(u => u.id === userId);
     if (user) {
-      if (changes.displayName) user.displayName = changes.displayName;
-      if (changes.avatarUrl) user.avatarUrl = changes.avatarUrl;
+      if (changes.displayName !== undefined) user.displayName = changes.displayName;
+      if ('avatarUrl' in changes) {
+        if (changes.avatarUrl) {
+          user.avatarUrl = changes.avatarUrl;
+        } else {
+          delete user.avatarUrl;
+        }
+      }
       this.persist();
     }
   }

@@ -1,167 +1,272 @@
-<div class="arova-page arova-page--wide animate-fade-in">
+<div class="mood-page animate-fade-in">
+  <!-- Page Header -->
   <header class="page-header">
-    <p class="page-eyebrow">{{ t('mood') }}</p>
-    <h1>{{ t('moodTitle') }}</h1>
-    <p>{{ t('moodSubtitle') }}</p>
+    <p class="page-eyebrow" id="mood-eyebrow">✦ Mood Room</p>
+    <h1 id="mood-title">A gentle check-in for today</h1>
+    <p class="page-subtitle">Notice how you feel, leave a small note, and keep the emotional rhythm of your shared space visible.</p>
   </header>
 
-  <section class="mood-layout">
-    <div class="mood-compose glass">
-      <!-- Daily Prompt Banner -->
-      <div class="daily-prompt-banner">
-        <span class="prompt-star">✦</span>
-        <div class="prompt-text">
-          <span class="prompt-label">Daily Prompt</span>
-          <p class="prompt-question">"{{ dailyPrompt }}"</p>
+  <!-- Error Banners -->
+  <div class="alert alert-error" role="alert" *ngIf="errorMessage">
+    <span class="alert-icon" aria-hidden="true">⚠️</span>
+    <div class="alert-content">
+      <h3>We couldn’t load the mood room right now</h3>
+      <p>{{ errorMessage }}</p>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" aria-live="polite" *ngIf="isLoading">
+    <span class="spinner" aria-hidden="true"></span>
+    <p>Loading mood room...</p>
+  </div>
+
+  <ng-container *ngIf="!isLoading && !errorMessage">
+    <!-- Main Check-in Compose Area -->
+    <div class="mood-layout">
+      <main class="mood-compose glass">
+        <!-- Daily Prompt Banner -->
+        <div class="daily-prompt-banner" aria-label="Daily reflection prompt">
+          <span class="prompt-star" aria-hidden="true">✦</span>
+          <div class="prompt-text">
+            <span class="prompt-label">Daily Prompt</span>
+            <p class="prompt-question">"{{ dailyPrompt }}"</p>
+          </div>
         </div>
-      </div>
 
-      <div class="section-heading">
-        <span>How are you feeling?</span>
-        <strong *ngIf="todayMood" class="active-badge">
-          Currently: {{ getMoodEmoji(todayMood.mood) }} {{ getMoodLabel(todayMood.mood) }}
-        </strong>
-      </div>
+        <div class="section-heading">
+          <h2 id="selector-label">How are you feeling?</h2>
+          <strong *ngIf="todayMood" class="active-badge" id="currently-set-badge">
+            Currently: {{ getMoodEmoji(todayMood.mood) }} {{ getMoodLabel(todayMood.mood) }}
+          </strong>
+        </div>
 
-      <div class="mood-grid" role="listbox" aria-label="Choose today's mood">
-        <button
-          type="button"
-          class="mood-card-option"
-          *ngFor="let option of moodOptions"
-          [class.active]="selectedMood === option.value"
-          (click)="selectMood(option.value)"
+        <!-- Accessible Mood Options Grid -->
+        <div 
+          class="mood-grid" 
+          role="listbox" 
+          aria-labelledby="selector-label"
+          [attr.aria-activedescendant]="'mood-option-' + selectedMood"
         >
-          <span class="mood-emoji-display">{{ option.icon }}</span>
-          <span class="mood-meta">
-            <span class="mood-label-name">{{ option.label }}</span>
-            <small class="mood-hint-desc">{{ option.hint }}</small>
+          <button
+            type="button"
+            class="mood-card-option"
+            *ngFor="let option of moodOptions"
+            [class.active]="selectedMood === option.value"
+            (click)="selectMood(option.value)"
+            role="option"
+            [id]="'mood-option-' + option.value"
+            [attr.aria-selected]="selectedMood === option.value"
+            [attr.aria-pressed]="selectedMood === option.value ? 'true' : 'false'"
+          >
+            <span class="mood-emoji-display" aria-hidden="true">{{ option.icon }}</span>
+            <span class="mood-meta">
+              <span class="mood-label-name">{{ option.label }}</span>
+              <small class="mood-hint-desc">{{ option.hint }}</small>
+            </span>
+          </button>
+        </div>
+
+        <!-- Note field -->
+        <div class="note-field-wrapper">
+          <label class="note-field" for="mood-note">
+            <span>Add a gentle note (optional)</span>
+            <textarea
+              id="mood-note"
+              rows="3"
+              [(ngModel)]="note"
+              placeholder="What's on your mind or heart? Your partner will see this..."
+              class="arova-textarea"
+              [disabled]="isSaving"
+            ></textarea>
+          </label>
+        </div>
+
+        <!-- Save button / feedback -->
+        <div class="save-actions">
+          <button 
+            class="save-mood-btn" 
+            type="button" 
+            (click)="saveMood()"
+            [disabled]="isSaving"
+            id="save-mood-submit"
+          >
+            <span class="spinner spinner--compact" *ngIf="isSaving" aria-hidden="true"></span>
+            <span *ngIf="!isSaving" aria-hidden="true">✦</span>
+            {{ isSaving ? 'Saving...' : 'Save mood' }}
+          </button>
+          <span class="saved-indicator animate-fade-in" *ngIf="savedMessage && !isSaving" id="save-success-indicator">
+            ✓ Saved
           </span>
-        </button>
-      </div>
+          <span class="error animate-fade-in" *ngIf="saveErrorMessage && !isSaving" role="alert">
+            {{ saveErrorMessage }}
+          </span>
+        </div>
 
-      <label class="note-field" for="mood-note">
-        <span>Add a gentle note (optional)</span>
-        <textarea
-          id="mood-note"
-          rows="3"
-          [(ngModel)]="note"
-          placeholder="What's on your mind or heart? Your partner will see this..."
-          class="arova-textarea"
-        ></textarea>
-      </label>
+        <!-- Save confirmation response message -->
+        <div class="mood-message animate-fade-in" *ngIf="savedMessage && !isSaving">
+          <p>{{ savedMessage }}</p>
+        </div>
+      </main>
 
-      <div class="save-actions">
-        <button class="save-mood-btn" type="button" (click)="saveMood()">
-          <span>✦</span> {{ t('saveMood') }}
-        </button>
-        <span class="saved-indicator" *ngIf="savedMessage">✓ Saved</span>
-      </div>
-
-      <div class="mood-message" *ngIf="savedMessage">
-        <p>{{ savedMessage }}</p>
-      </div>
+      <!-- Sidebar summary card -->
+      <aside class="today-card glass" aria-label="Your summary today">
+        <div class="sidebar-header-row">
+          <span class="card-label">Your heart today</span>
+          <span class="star-accent" aria-hidden="true">✦</span>
+        </div>
+        <ng-container *ngIf="todayMood; else noMood">
+          <div class="current-mood-status">
+            <span class="large-mood-emoji" aria-hidden="true">{{ getMoodEmoji(todayMood.mood) }}</span>
+            <div class="status-text">
+              <h2>{{ getMoodLabel(todayMood.mood) }}</h2>
+              <small>Shared today</small>
+            </div>
+          </div>
+          <div class="mood-desc-box">
+            <p>{{ getMoodMessage(todayMood.mood) }}</p>
+          </div>
+          <blockquote *ngIf="todayMood.note" class="mood-quote">
+            “{{ todayMood.note }}”
+          </blockquote>
+        </ng-container>
+        <ng-template #noMood>
+          <div class="empty-state-sidebar">
+            <span class="empty-icon" aria-hidden="true">🤍</span>
+            <h2>Not set yet</h2>
+            <p>Choose an emotion from the grid to let your partner know how you are holding up.</p>
+          </div>
+        </ng-template>
+      </aside>
     </div>
 
-    <aside class="today-card glass">
-      <div class="sidebar-header-row">
-        <span class="card-label">Your heart today</span>
-        <span class="star-accent">✦</span>
-      </div>
-      <ng-container *ngIf="todayMood; else noMood">
-        <div class="current-mood-status">
-          <span class="large-mood-emoji">{{ getMoodEmoji(todayMood.mood) }}</span>
-          <div class="status-text">
-            <h2>{{ getMoodLabel(todayMood.mood) }}</h2>
-            <small>Shared today</small>
+    <!-- Partner's Mood Today -->
+    <section class="other-moods" *ngIf="otherTodayMoods.length > 0">
+      <h2 class="section-title">Their mood today</h2>
+      <article class="other-card glass" *ngFor="let entry of otherTodayMoods">
+        <div class="partner-mood-details">
+          <span class="entry-owner">{{ getUserName(entry.userId) }}’s Space</span>
+          <div class="partner-mood-display">
+            <span class="partner-emoji" aria-hidden="true">{{ getMoodEmoji(entry.mood) }}</span>
+            <div class="partner-status">
+              <h3>{{ getMoodLabel(entry.mood) }}</h3>
+              <p>{{ getMoodMessage(entry.mood) }}</p>
+            </div>
+          </div>
+          <blockquote *ngIf="entry.note" class="partner-quote">“{{ entry.note }}”</blockquote>
+          
+          <div class="response-display" *ngIf="entry.response">
+            <span class="response-label">Your response</span>
+            <p class="response-text">“{{ entry.response }}”</p>
           </div>
         </div>
-        <div class="mood-desc-box">
-          <p>{{ getMoodMessage(todayMood.mood) }}</p>
-        </div>
-        <blockquote *ngIf="todayMood.note" class="mood-quote">
-          “{{ todayMood.note }}”
-        </blockquote>
-      </ng-container>
-      <ng-template #noMood>
-        <div class="empty-state-sidebar">
-          <span class="empty-icon">🤍</span>
-          <h2>Not set yet</h2>
-          <p>Choose an emotion from the grid to let your partner know how you are holding up.</p>
-        </div>
-      </ng-template>
-    </aside>
-  </section>
 
-  <!-- Partner's Mood Today -->
-  <section class="other-moods" *ngIf="otherTodayMoods.length > 0">
-    <h2 class="section-title">Their mood today</h2>
-    <article class="other-card glass" *ngFor="let entry of otherTodayMoods">
-      <div class="partner-mood-details">
-        <span class="entry-owner">{{ getUserName(entry.userId) }}’s Space</span>
-        <div class="partner-mood-display">
-          <span class="partner-emoji">{{ getMoodEmoji(entry.mood) }}</span>
-          <div class="partner-status">
-            <h3>{{ getMoodLabel(entry.mood) }}</h3>
-            <p>{{ getMoodMessage(entry.mood) }}</p>
-          </div>
-        </div>
-        <blockquote *ngIf="entry.note" class="partner-quote">“{{ entry.note }}”</blockquote>
-        
-        <div class="response-display" *ngIf="entry.response">
-          <span class="response-label">Your response</span>
-          <p class="response-text">“{{ entry.response }}”</p>
-        </div>
-      </div>
-
-      <div class="response-box-wrapper" *ngIf="!entry.response">
-        <span class="response-title">Leave a soft response</span>
-        <textarea
-          rows="2"
-          [(ngModel)]="responseDrafts[entry.id]"
-          placeholder="Send reassurance, support, or love..."
-          class="arova-textarea"
-        ></textarea>
-        <button class="send-response-btn" type="button" (click)="respond(entry)">
-          Send response
-        </button>
-      </div>
-    </article>
-  </section>
-
-  <!-- History section -->
-  <section class="history-section">
-    <h2 class="section-title">Mood history</h2>
-
-    <div class="history-list" *ngIf="history.length > 0; else emptyHistory">
-      <article class="history-item-card glass" *ngFor="let entry of history">
-        <div class="history-header">
-          <div class="history-user-info">
-            <span class="history-owner-badge" [class.partner-a]="entry.userId === currentUser?.id">
-              {{ getUserName(entry.userId) }}
-            </span>
-            <span class="history-date">{{ formatDate(entry.date) }}</span>
-          </div>
-          <div class="history-mood-badge">
-            <span class="history-emoji">{{ getMoodEmoji(entry.mood) }}</span>
-            <span class="history-label">{{ getMoodLabel(entry.mood) }}</span>
-          </div>
-        </div>
-        <div class="history-body">
-          <blockquote *ngIf="entry.note" class="history-quote">“{{ entry.note }}”</blockquote>
-          <div class="history-response" *ngIf="entry.response">
-            <span class="response-badge">Response</span>
-            <p class="response-content">“{{ entry.response }}”</p>
-          </div>
+        <div class="response-box-wrapper" *ngIf="!entry.response">
+          <span class="response-title">Leave a soft response</span>
+          <textarea
+            rows="2"
+            [(ngModel)]="responseDrafts[entry.id]"
+            placeholder="Send reassurance, support, or love..."
+            class="arova-textarea"
+            [id]="'response-input-' + entry.id"
+          ></textarea>
+          <button 
+            class="send-response-btn" 
+            type="button" 
+            (click)="respond(entry)"
+            [disabled]="!responseDrafts[entry.id]?.trim()"
+          >
+            Send response
+          </button>
         </div>
       </article>
-    </div>
+    </section>
 
-    <ng-template #emptyHistory>
-      <div class="empty-state-placeholder glass">
-        <span class="empty-history-icon">📜</span>
-        <h3>No moods logged yet</h3>
-        <p>Your logged moods and shared notes will appear here over time.</p>
+    <!-- Us Summary Statistics Dashboard section -->
+    <section class="summary-section animate-fade-in" *ngIf="history.length > 0">
+      <h2 class="section-title">Mood snapshot</h2>
+      <div class="summary-cards">
+        <!-- Latest check-in -->
+        <div class="summary-card glass">
+          <h3>Your Mood Today</h3>
+          <p class="summary-stat" *ngIf="todayMood">
+            {{ getMoodEmoji(todayMood.mood) }} {{ getMoodLabel(todayMood.mood) }}
+          </p>
+          <p class="summary-stat summary-stat--empty" *ngIf="!todayMood">
+            Not check-in yet
+          </p>
+        </div>
+
+        <!-- Total check-ins -->
+        <div class="summary-card glass">
+          <h3>Total check-ins</h3>
+          <p class="summary-stat">{{ getMyTotalCheckIns() }}</p>
+        </div>
+
+        <!-- Most recent note -->
+        <div class="summary-card glass">
+          <h3>Most recent note</h3>
+          <p class="summary-desc" *ngIf="getMyLatestNote()">
+            “{{ getMyLatestNote() }}”
+          </p>
+          <p class="summary-desc summary-desc--empty" *ngIf="!getMyLatestNote()">
+            No note added for this check-in.
+          </p>
+        </div>
+
+        <!-- Partner's current mood -->
+        <div class="summary-card glass">
+          <h3>Partner's Status</h3>
+          <p class="summary-stat" *ngIf="getPartnerLatestMood()">
+            {{ getMoodEmoji(getPartnerLatestMood()!.mood) }} {{ getMoodLabel(getPartnerLatestMood()!.mood) }}
+          </p>
+          <p class="summary-stat summary-stat--empty" *ngIf="!getPartnerLatestMood()">
+            Not check-in yet
+          </p>
+        </div>
       </div>
-    </ng-template>
-  </section>
+    </section>
+
+    <!-- History list section -->
+    <section class="history-section">
+      <h2 class="section-title">Mood history</h2>
+
+      <div class="history-list" *ngIf="history.length > 0; else emptyHistory">
+        <article class="history-item-card glass" *ngFor="let entry of history">
+          <div class="history-header">
+            <div class="history-user-info">
+              <span class="history-owner-badge" [class.partner-a]="entry.userId === currentUser?.id">
+                {{ getUserName(entry.userId) }}
+              </span>
+              <span class="history-date">{{ formatDate(entry.date) }}</span>
+            </div>
+            <div class="history-mood-badge">
+              <span class="history-emoji" aria-hidden="true">{{ getMoodEmoji(entry.mood) }}</span>
+              <span class="history-label">{{ getMoodLabel(entry.mood) }}</span>
+            </div>
+          </div>
+          <div class="history-body">
+            <blockquote *ngIf="entry.note" class="history-quote">“{{ entry.note }}”</blockquote>
+            <div class="history-response" *ngIf="entry.response">
+              <span class="response-badge">Response</span>
+              <p class="response-content">“{{ entry.response }}”</p>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <ng-template #emptyHistory>
+        <div class="empty-state-placeholder glass">
+          <span class="empty-history-icon" aria-hidden="true">✧</span>
+          <h2>No mood check-ins yet</h2>
+          <p>Start with one small check-in. It does not need to be perfect — just honest enough for today.</p>
+        </div>
+      </ng-template>
+    </section>
+  </ng-container>
+
+  <!-- Product Disclaimer Footer -->
+  <footer class="mood-disclaimer" role="contentinfo">
+    <p>Mood Room is a private reflection tool, not medical or mental-health advice.</p>
+  </footer>
 </div>

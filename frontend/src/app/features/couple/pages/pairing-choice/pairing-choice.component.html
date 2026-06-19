@@ -1,105 +1,178 @@
-<main class="pairing-page stars-bg">
-  <section class="pairing-card glass animate-fade-in">
-    <header class="pairing-header">
-      <a routerLink="/" class="brand">Arova</a>
-      <h1>Create or join your shared space</h1>
-      <p class="subtitle">Enter your partner's code to link spaces, or generate a code to invite them into your sanctuary.</p>
-    </header>
+<main class="pairing-page stars-bg" [attr.aria-busy]="isBusy">
+  <div class="nebula-detail" aria-hidden="true">
+    <span class="orbital-line orbital-line--one"></span>
+    <span class="orbital-line orbital-line--two"></span>
+    <span class="nebula-point nebula-point--one"></span>
+    <span class="nebula-point nebula-point--two"></span>
+  </div>
 
-    <div class="choice-grid" *ngIf="!ready">
-      <!-- Join Section -->
-      <form class="choice-box join-box" (ngSubmit)="join()">
-        <div class="choice-icon">✉</div>
-        <h2>I have a partner code</h2>
-        <p class="choice-desc">Link your account to an existing space created by your partner.</p>
-        
-        <div class="form-field">
-          <input 
-            name="pairingCode" 
-            [(ngModel)]="pairingCode" 
-            placeholder="Enter code (e.g. AROVA-XXXX)" 
-            class="pairing-input"
-            autocomplete="off"
-          />
+  <section class="pairing-shell animate-fade-in" aria-labelledby="pairing-title">
+    <button type="button" class="back-button" (click)="goBack()">
+      <span aria-hidden="true">←</span>
+      Back
+    </button>
+
+    <div class="pairing-card glass">
+      <section class="context-panel" aria-labelledby="pairing-title">
+        <p class="page-kicker">Couple setup</p>
+        <h1 id="pairing-title">Create your private space for two</h1>
+        <p class="subtitle">
+          Arova works best when both people have a calm shared place for memories, letters,
+          moods, and future plans.
+        </p>
+
+        <div class="mode-note" aria-live="polite">
+          <strong>{{ modeLabel }}</strong>
+          <p *ngIf="isLocalMode">
+            In Local Mode, pairing is simulated for the public demo and does not require a backend.
+          </p>
+          <p *ngIf="!isLocalMode">
+            In API Mode, pairing uses the local ASP.NET backend and couple-scoped APIs.
+          </p>
         </div>
-        
-        <button type="submit" class="submit-btn" [disabled]="isBusy || !pairingCode.trim()">
-          Join couple
-        </button>
-      </form>
 
-      <!-- Create Section -->
-      <form class="choice-box create-box" (ngSubmit)="createCode()">
-        <div class="choice-icon">✦</div>
-        <h2>Create code for my partner</h2>
-        <p class="choice-desc">Initialize a new private space and get a pairing code to share.</p>
-        
-        <div class="form-field">
-          <input 
-            name="coupleName" 
-            [(ngModel)]="coupleName" 
-            placeholder="Shared space name" 
-            class="pairing-input"
-            autocomplete="off"
-          />
+        <div class="privacy-list" aria-label="What this setup supports">
+          <span>Create a private shared space</span>
+          <span>Invite or pair with a partner</span>
+          <span>Keep data scoped to your couple</span>
         </div>
-        
-        <button type="submit" class="submit-btn generate-btn" [disabled]="isBusy">
-          Generate partner code
-        </button>
-      </form>
-    </div>
+      </section>
 
-    <!-- Generated Code Widget -->
-    <section class="generated-widget glass animate-fade-in" *ngIf="generatedCode && !ready">
-      <h3>Your invite is ready</h3>
-      <p>Send this code to your partner. They should enter it on their pairing screen.</p>
-      
-      <div class="code-display-box" (click)="copyToClipboard()">
-        <strong class="code-text">{{ generatedCode.code }}</strong>
-        <span class="copy-hint">Click to copy</span>
-      </div>
-      
-      <div class="code-meta" *ngIf="generatedCode.expiresAt">
-        <span>Expires {{ generatedCode.expiresAt | date:'medium' }}</span>
-      </div>
-    </section>
+      <section class="action-panel" aria-label="Pairing options">
+        <div class="option-grid" role="group" aria-label="Choose a pairing path">
+          <button
+            type="button"
+            class="option-card"
+            [class.option-card--selected]="selectedFlow === 'create'"
+            [attr.aria-pressed]="selectedFlow === 'create'"
+            (click)="selectFlow('create')"
+          >
+            <span class="option-meta">
+              <span>01</span>
+              <strong *ngIf="selectedFlow === 'create'">Selected</strong>
+            </span>
+            <span class="option-title">Create a shared space</span>
+            <span class="option-copy">
+              Start a private Arova space and invite your partner when you are ready.
+            </span>
+          </button>
 
-    <!-- Ready / Success State -->
-    <section class="ready-state glass animate-fade-in" *ngIf="ready">
-      <div class="success-ring">
-        <span class="heart-pulse">♡</span>
-      </div>
-      <h2>Your space is ready</h2>
-      <p class="success-desc">Welcome to Arova. Your private sanctuary is active. Choose where to start first:</p>
-      
-      <div class="quick-actions-grid">
-        <a routerLink="/memories/new" class="action-card">
-          <span class="action-icon">⚃</span>
-          <span class="action-label">Add your first memory</span>
-        </a>
-        <a routerLink="/daily-questions" class="action-card">
-          <span class="action-icon">?</span>
-          <span class="action-label">Answer today’s question</span>
-        </a>
-        <a routerLink="/letters/new" class="action-card">
-          <span class="action-icon">✉</span>
-          <span class="action-label">Write a private letter</span>
-        </a>
-        <a routerLink="/chat" class="action-card">
-          <span class="action-icon">✉</span>
-          <span class="action-label">Open chat room</span>
-        </a>
-      </div>
-      
-      <button type="button" class="enter-arova-btn" (click)="enterArova()">
-        Enter Arova <span>→</span>
-      </button>
-    </section>
+          <button
+            type="button"
+            class="option-card"
+            [class.option-card--selected]="selectedFlow === 'join'"
+            [attr.aria-pressed]="selectedFlow === 'join'"
+            (click)="selectFlow('join')"
+          >
+            <span class="option-meta">
+              <span>02</span>
+              <strong *ngIf="selectedFlow === 'join'">Selected</strong>
+            </span>
+            <span class="option-title">Join with a code</span>
+            <span class="option-copy">
+              Enter your partner's pairing code to connect to an existing space.
+            </span>
+          </button>
+        </div>
 
-    <div class="message-banner" *ngIf="message || errorMessage">
-      <p class="message" *ngIf="message">{{ message }}</p>
-      <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+        <form
+          *ngIf="selectedFlow === 'create' && !ready"
+          class="flow-form"
+          (ngSubmit)="createCode()"
+          aria-describedby="create-help"
+        >
+          <label for="coupleName">Shared space name</label>
+          <input
+            id="coupleName"
+            name="coupleName"
+            [(ngModel)]="coupleName"
+            autocomplete="off"
+            maxlength="80"
+          />
+          <p id="create-help" class="field-help">
+            You can rename this later. The invitation code is meant to be shared privately.
+          </p>
+
+          <button type="submit" class="primary-action" [disabled]="isBusy">
+            {{ primaryActionLabel }}
+          </button>
+        </form>
+
+        <form
+          *ngIf="selectedFlow === 'join' && !ready"
+          class="flow-form"
+          (ngSubmit)="join()"
+          aria-describedby="join-help pairing-error"
+        >
+          <label for="pairingCode">Pairing code</label>
+          <input
+            id="pairingCode"
+            name="pairingCode"
+            [(ngModel)]="pairingCode"
+            autocomplete="off"
+            inputmode="text"
+            maxlength="40"
+            placeholder="AROVA-XXXX"
+          />
+          <p id="join-help" class="field-help">
+            Codes are created by the person who started the shared space.
+          </p>
+
+          <button type="submit" class="primary-action" [disabled]="isBusy || !pairingCode.trim()">
+            {{ primaryActionLabel }}
+          </button>
+        </form>
+
+        <section class="code-panel" *ngIf="generatedCode" aria-labelledby="pairing-code-label">
+          <div>
+            <span id="pairing-code-label" class="code-label">Your pairing code</span>
+            <p>Share this code with your partner so they can join your Arova space.</p>
+          </div>
+
+          <div class="code-row">
+            <code>{{ generatedCode.code }}</code>
+            <button
+              type="button"
+              class="copy-button"
+              (click)="copyToClipboard()"
+              [attr.aria-label]="'Copy pairing code ' + generatedCode.code"
+            >
+              {{ copyFeedback || 'Copy pairing code' }}
+            </button>
+          </div>
+
+          <small *ngIf="generatedCode.expiresAt">
+            Expires {{ generatedCode.expiresAt | date:'medium' }}
+          </small>
+          <span class="copy-feedback" aria-live="polite">{{ copyFeedback }}</span>
+        </section>
+
+        <section class="ready-state" *ngIf="ready" aria-live="polite">
+          <span class="success-mark" aria-hidden="true">✓</span>
+          <h2>Your shared space is ready.</h2>
+          <p>
+            You can enter Arova now. Your space stays private to this couple flow, whether this is
+            the Local Mode demo or the API-backed setup.
+          </p>
+
+          <div class="quick-actions-grid" aria-label="Suggested next places">
+            <a routerLink="/memories/new">Add a memory</a>
+            <a routerLink="/daily-questions">Answer a question</a>
+            <a routerLink="/letters/new">Write a letter</a>
+            <a routerLink="/chat">Open chat</a>
+          </div>
+
+          <button type="button" class="enter-arova-btn" (click)="enterArova()">
+            Enter Arova
+            <span aria-hidden="true">→</span>
+          </button>
+        </section>
+
+        <p class="status-message" *ngIf="statusMessage" aria-live="polite">{{ statusMessage }}</p>
+        <p id="pairing-error" class="error-message" *ngIf="errorMessage" role="alert">
+          {{ errorMessage }}
+        </p>
+      </section>
     </div>
   </section>
 </main>

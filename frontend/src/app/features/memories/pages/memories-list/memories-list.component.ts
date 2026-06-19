@@ -46,6 +46,7 @@ export class MemoriesListComponent implements OnInit {
   isApiMode = false;
   isLoading = false;
   errorMessage = '';
+  currentUser: any = null;
 
   categories: Array<{ key: MemoryCategory | 'all'; label: string }> = Object.entries(
     CATEGORY_LABELS
@@ -56,6 +57,7 @@ export class MemoriesListComponent implements OnInit {
   ngOnInit(): void {
     this.isAdmin = this.auth.isAdmin();
     this.isApiMode = this.memories.isApiMode();
+    this.currentUser = this.auth.getCurrentUser();
     this.loadMemories();
   }
 
@@ -71,7 +73,7 @@ export class MemoriesListComponent implements OnInit {
         : this.allMemories.filter(memory => memory.category === this.activeCategory);
   }
 
-  private loadMemories(): void {
+  loadMemories(): void {
     this.isLoading = true;
     this.errorMessage = '';
 

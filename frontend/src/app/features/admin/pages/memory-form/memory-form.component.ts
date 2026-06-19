@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -171,29 +171,15 @@ export class MemoryFormComponent implements OnInit {
   }
 
   get pageTitle(): string {
-    if (this.isAdminRoute && this.auth.isAdmin()) {
-      return this.isEditMode ? 'Edit Memory' : 'Add Memory';
-    }
-
-    return this.isEditMode ? 'Update this shared moment' : 'Save a meaningful moment';
+    return this.isEditMode ? 'Refine this memory' : 'Add a memory';
   }
 
   get pageSubtitle(): string {
-    if (this.isAdminRoute && this.auth.isAdmin()) {
-      return this.isEditMode ? 'Refine a preserved moment.' : 'Save a new moment in the universe.';
-    }
-
-    return this.isEditMode
-      ? 'Adjust the details and choose whether this stays private or shared.'
-      : 'Capture something worth remembering, even if it is small.';
+    return 'Save a photo, a note, a date, or a small detail you both might want to return to.';
   }
 
   get saveLabel(): string {
-    if (this.isAdminRoute && this.auth.isAdmin()) {
-      return this.isEditMode ? 'Save changes' : 'Create memory';
-    }
-
-    return this.isEditMode ? 'Save this moment' : 'Add to our memories';
+    return this.isEditMode ? 'Save changes' : 'Save memory';
   }
 
   private returnPath(): string {

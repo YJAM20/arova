@@ -74,4 +74,41 @@ test.describe('Arova Planets E2E Smoke Tests', () => {
     const pointsText = page.locator('.sidebar-footer');
     await expect(pointsText).toBeVisible();
   });
+
+  test('should display built-in planets section and custom spaces CTA link', async ({ page }) => {
+    await page.goto('/planets');
+    
+    // Check heading for relationship planets map section
+    const subHeading = page.getByRole('heading', { name: /relationship planets/i }).last();
+    await expect(subHeading).toBeVisible();
+
+    // Check custom space CTA banner
+    const ctaCard = page.locator('.custom-spaces-cta');
+    await expect(ctaCard).toBeVisible();
+    await expect(ctaCard.locator('h2')).toContainText(/build your own private universe/i);
+    
+    const linkBtn = ctaCard.locator('a[routerlink="/custom-sections"]');
+    await expect(linkBtn).toBeVisible();
+  });
+
+  test('Local Mode does not make any backend API calls on planets load', async ({ page }) => {
+    let backendCalled = false;
+    await page.route('**/api/**', () => {
+      backendCalled = true;
+    });
+
+    await page.goto('/planets');
+    await expect(page.locator('h1')).toContainText('Relationship Planets');
+    expect(backendCalled).toBe(false);
+  });
+
+  test('has no horizontal overflow at 320px viewport', async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 720 });
+    await page.goto('/planets');
+
+    const hasHorizontalOverflow = await page.evaluate(
+      () => document.documentElement.scrollWidth > document.documentElement.clientWidth
+    );
+    expect(hasHorizontalOverflow).toBe(false);
+  });
 });

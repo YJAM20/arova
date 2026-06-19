@@ -1,117 +1,268 @@
-// Custom Sections Page Style Sheet - Premium Cosmic Theme
+@use '../../../../../styles/variables' as *;
 
-
-
-.arova-page {
-  animation: fadeIn 0.8s ease-out;
+/* ─────────────────────────────────────────
+   Page Layout & Typography
+───────────────────────────────────────── */
+.custom-sections-page {
+  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-// Plan Tiers Styling
+.page-header {
+  margin-bottom: 32px;
+
+  .page-eyebrow {
+    color: $gold;
+    font-size: 0.76rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+
+  h1 {
+    color: $cream;
+    font-size: 2.2rem;
+    font-family: $font-display;
+    margin-bottom: 10px;
+    font-weight: 300;
+    line-height: 1.25;
+  }
+
+  .page-sub {
+    color: $text-muted;
+    font-size: 1rem;
+    font-weight: 300;
+    max-w: 640px;
+  }
+}
+
+/* ─────────────────────────────────────────
+   Pricing Tiers Panel
+───────────────────────────────────────── */
+.tier-card {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--theme-card, rgba(5, 20, 36, 0.45));
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(circle at 10% 20%, rgba($gold, 0.04) 0%, transparent 60%);
+    pointer-events: none;
+  }
+}
+
+.tier-selectors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 .tier-btn {
   background: rgba(255, 255, 255, 0.03);
-  border-color: rgba(255, 255, 255, 0.08);
-  color: #a3a3a3;
-  
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: $text-muted;
+  cursor: pointer;
+  transition: all $transition-base;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.18);
+    color: white;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $gold;
+    box-shadow: 0 0 8px rgba($gold, 0.25);
+  }
+
+  &.active {
+    background: linear-gradient(135deg, rgba($gold, 0.15) 0%, rgba($gold, 0.05) 100%);
+    border-color: rgba($gold, 0.45);
+    color: $cream;
+    box-shadow: 0 4px 15px rgba($gold, 0.12);
+  }
+}
+
+/* ─────────────────────────────────────────
+   Usage Meter Panel
+───────────────────────────────────────── */
+.usage-meter-card {
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(5, 20, 36, 0.3);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.progress-bar {
+  background: rgba(0, 0, 0, 0.35) !important;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.progress-fill {
+  background: linear-gradient(90deg, rgba($gold, 0.8) 0%, #f6be38 100%) !important;
+  box-shadow: 0 0 8px rgba($gold, 0.4);
+}
+
+.btn-add-section {
+  background: linear-gradient(135deg, rgba($gold, 0.15) 0%, rgba($gold, 0.05) 100%);
+  color: $cream;
+  border: 1px solid rgba($gold, 0.45);
+  transition: all $transition-base;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, rgba($gold, 0.25) 0%, rgba($gold, 0.12) 100%);
+    border-color: $gold;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba($gold, 0.18);
+  }
+
+  &:focus:not(:disabled) {
+    outline: none;
+    border-color: $gold;
+    box-shadow: 0 0 8px rgba($gold, 0.3);
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    background: rgba(255, 255, 255, 0.02);
+    border-color: rgba(255, 255, 255, 0.06);
+    color: $text-dim;
+  }
+}
+
+/* ─────────────────────────────────────────
+   Workspace Directories & Cards
+───────────────────────────────────────── */
+.index-card {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--theme-card, rgba(5, 20, 36, 0.45));
+  backdrop-filter: blur(24px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+}
+
+.section-item {
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.08);
+
+    .item-actions {
+      opacity: 1;
+    }
+  }
+
+  &:focus {
+    outline: none;
+    border-color: rgba($gold, 0.35);
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  &.active {
+    background: rgba($gold, 0.04) !important;
+    border-color: rgba($gold, 0.4) !important;
+    box-shadow: 0 0 15px rgba($gold, 0.05) inset;
+
+    .section-icon {
+      transform: scale(1.1);
+      filter: drop-shadow(0 0 8px rgba($gold, 0.3));
+    }
+
+    .section-title {
+      color: $gold !important;
+    }
+  }
+}
+
+.section-icon {
+  transition: all $transition-base;
+}
+
+.action-icon-btn {
+  transition: all $transition-fast;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    transform: scale(1.12);
+  }
+
+  &:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+  }
+}
+
+/* ─────────────────────────────────────────
+   Right Workspace Panel
+───────────────────────────────────────── */
+.workspace-card {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--theme-card, rgba(5, 20, 36, 0.45));
+  backdrop-filter: blur(24px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+}
+
+.btn-sec-action {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: $text-muted;
+  transition: all $transition-base;
+  cursor: pointer;
+
   &:hover {
     background: rgba(255, 255, 255, 0.08);
     border-color: rgba(255, 255, 255, 0.15);
     color: white;
   }
-  
-  &.active {
-    background: linear-gradient(135deg, var(--primary-color, #a855f7) 0%, var(--accent-color, #ec4899) 100%);
-    border-color: transparent;
-    color: white;
-    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.35);
-  }
-}
 
-.progress-fill {
-  background: linear-gradient(90deg, var(--primary-color, #a855f7) 0%, var(--accent-color, #ec4899) 100%);
-  box-shadow: 0 0 8px rgba(168, 85, 247, 0.5);
-}
-
-.btn-add-section {
-  background: linear-gradient(135deg, var(--primary-color, #a855f7) 0%, var(--accent-color, #ec4899) 100%);
-  color: white;
-  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.25);
-  border: none;
-  transition: all 0.2s ease;
-  
-  &:hover:not(:disabled) {
-    opacity: 0.9;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4);
-  }
-  
-  &:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-}
-
-// Left Index Panel
-.section-item {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  position: relative;
-  overflow: hidden;
-
-  &.active {
-    background: color-mix(in srgb, var(--theme-accent) 12%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent) 35%, transparent);
-    box-shadow: 0 0 15px color-mix(in srgb, var(--theme-accent) 10%, transparent) inset;
-    
-    .section-icon {
-      transform: scale(1.1);
-      text-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
-    }
-  }
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.05);
-    
-    .item-actions {
-      opacity: 1;
-    }
-  }
-}
-
-.action-icon-btn {
-  transition: all 0.2s ease;
-  &:hover {
-    transform: scale(1.1);
-  }
-}
-
-// Right Workspace Panel
-.btn-sec-action {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #d4d4d4;
-  transition: all 0.2s ease;
-  
-  &:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: white;
+  &:focus {
+    outline: none;
+    border-color: $gold;
+    box-shadow: 0 0 6px rgba($gold, 0.2);
   }
 }
 
 .item-entry {
-  transition: all 0.2s ease;
-  
+  background: rgba(0, 0, 0, 0.25) !important;
+  border: 1px solid rgba(255, 255, 255, 0.03) !important;
+  transition: all $transition-base;
+
   &:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.35) !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+
+    .item-delete {
+      opacity: 0.8;
+    }
+  }
+
+  &:focus-within {
+    border-color: rgba($gold, 0.3) !important;
   }
 }
 
 .item-content {
-  transition: all 0.2s ease;
+  transition: all $transition-base;
+
   &.completed {
     text-decoration: line-through;
-    color: #737373 !important;
-    opacity: 0.6;
+    color: $text-dim !important;
+    opacity: 0.55;
   }
 }
 
@@ -119,126 +270,210 @@
   appearance: none;
   width: 18px;
   height: 18px;
-  border: 1.5px solid rgba(255, 255, 255, 0.25) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.22) !important;
   border-radius: 4px;
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(0, 0, 0, 0.3);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all $transition-fast;
 
   &:checked {
-    background: linear-gradient(135deg, var(--primary-color, #a855f7) 0%, var(--accent-color, #ec4899) 100%) !important;
+    background: $gold !important;
     border-color: transparent !important;
+    box-shadow: 0 0 8px rgba($gold, 0.35);
 
     &::after {
       content: '✓';
-      color: white;
-      font-size: 0.75rem;
+      color: #000;
+      font-size: 0.72rem;
       font-weight: bold;
     }
   }
 
   &:hover:not(:checked) {
-    border-color: rgba(255, 255, 255, 0.5) !important;
+    border-color: rgba(255, 255, 255, 0.45) !important;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $gold !important;
   }
 }
 
 .input-field {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(0, 0, 0, 0.35);
   border: 1px solid rgba(255, 255, 255, 0.08);
   color: white;
-  transition: all 0.2s ease;
-  
+  transition: all $transition-base;
+  outline: none;
+
   &:focus {
-    outline: none;
-    border-color: var(--primary-color, #c084fc);
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 0 10px rgba(192, 132, 252, 0.2);
+    border-color: $gold;
+    background: rgba(0, 0, 0, 0.45);
+    box-shadow: 0 0 8px rgba($gold, 0.2);
   }
 }
 
 .btn-add-item {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: white;
-  transition: all 0.2s ease;
-  
+  background: rgba($gold, 0.1);
+  border: 1px solid rgba($gold, 0.4);
+  color: $cream;
+  cursor: pointer;
+  transition: all $transition-base;
+
   &:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.25);
+    background: rgba($gold, 0.2);
+    border-color: $gold;
+    box-shadow: 0 4px 12px rgba($gold, 0.15);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $gold;
+    box-shadow: 0 0 8px rgba($gold, 0.25);
   }
 }
 
-// Modals
-.modal-backdrop {
-  z-index: 100;
-  backdrop-filter: blur(12px);
-}
+.item-delete {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.15rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all $transition-fast;
 
-.modal-card {
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
-  animation: modalScaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-  max-height: 90vh;
-  overflow-y: auto;
-}
-
-.emoji-btn {
-  transition: all 0.15s ease;
-  
-  &.active, &:hover {
-    background: rgba(168, 85, 247, 0.25);
+  &:hover {
+    color: #f87171 !important;
     transform: scale(1.15);
   }
-}
 
-.btn-create {
-  background: linear-gradient(135deg, var(--primary-color, #a855f7) 0%, var(--accent-color, #ec4899) 100%);
-  color: white;
-  border: none;
-  transition: all 0.2s ease;
-  
-  &:hover {
-    opacity: 0.95;
-    transform: translateY(-1px);
+  &:focus {
+    outline: none;
+    color: #f87171 !important;
   }
 }
 
-.btn-cancel {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #d4d4d4;
-  transition: all 0.2s ease;
-  &:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-  }
-}
-
-// Alerts styles
+/* ─────────────────────────────────────────
+   Alert Banners
+───────────────────────────────────────── */
 .alert {
   border-left: 4px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+
   &.alert-success {
-    background: rgba(16, 185, 129, 0.12);
-    border-color: #10b981;
+    background: rgba(74, 222, 128, 0.08);
+    border-color: #4ade80;
     color: #a7f3d0;
   }
+
   &.alert-danger {
-    background: rgba(239, 68, 68, 0.12);
-    border-color: #ef4444;
+    background: rgba(248, 113, 113, 0.08);
+    border-color: #f87171;
     color: #fca5a5;
   }
+
   .close-btn {
     opacity: 0.6;
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    transition: opacity $transition-fast;
+
     &:hover {
       opacity: 1;
     }
   }
 }
 
-// Custom Scrollbar Utility
+/* ─────────────────────────────────────────
+   Modals & Overlays
+───────────────────────────────────────── */
+.modal-backdrop {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.modal-card {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(10, 15, 25, 0.85);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8);
+  animation: modalScaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.emoji-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover, &.active {
+    background: rgba($gold, 0.15) !important;
+    border-radius: 8px;
+    transform: scale(1.15);
+  }
+
+  &:focus {
+    outline: none;
+    background: rgba($gold, 0.1) !important;
+    border-radius: 8px;
+  }
+}
+
+.btn-create {
+  background: linear-gradient(135deg, rgba($gold, 0.15) 0%, rgba($gold, 0.05) 100%);
+  border: 1px solid rgba($gold, 0.45);
+  color: $cream;
+  transition: all $transition-base;
+  cursor: pointer;
+
+  &:hover {
+    background: linear-gradient(135deg, rgba($gold, 0.25) 0%, rgba($gold, 0.12) 100%);
+    border-color: $gold;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba($gold, 0.18);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $gold;
+    box-shadow: 0 0 8px rgba($gold, 0.25);
+  }
+}
+
+.btn-cancel {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: $text-muted;
+  transition: all $transition-base;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+}
+
+/* ─────────────────────────────────────────
+   Scrollbar & Animations
+───────────────────────────────────────── */
 .scrollbar-thin {
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
@@ -253,13 +488,71 @@
   }
 }
 
-// Animations
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(15px); }
+  from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes modalScaleUp {
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+/* ─────────────────────────────────────────
+   Responsive Grid & Overrides
+───────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .lg\:col-span-1, .lg\:col-span-2 {
+    grid-column: span 1 / span 1 !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .custom-sections-page {
+    padding: 24px 16px 40px;
+  }
+
+  .page-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .tier-card {
+    padding: 16px;
+  }
+
+  .workspace-card {
+    padding: 20px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tier-selectors {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tier-btn {
+    text-align: center;
+  }
+
+  .workspace-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
 }

@@ -31,6 +31,11 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
   myUserId: string | null = null;
   private subscription?: Subscription;
   private shouldScrollToBottom = false;
+  private _apiToken: string | null = null;
+
+  get canRetry(): boolean {
+    return !!this._apiToken;
+  }
 
   constructor(
     private appMode: AppModeService,
@@ -48,6 +53,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
 
     const token = this.tokenStorage.getToken();
+    this._apiToken = token;
     if (!token) {
       this.errorMessage = 'Please login in API Mode first.';
       return;
@@ -104,6 +110,13 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
           },
         });
       });
+  }
+
+  retryLoad(): void {
+    if (!this._apiToken) return;
+    this.errorMessage = '';
+    this.loadMessages();
+    this.startHub(this._apiToken);
   }
 
   onEnterKey(event: Event): void {

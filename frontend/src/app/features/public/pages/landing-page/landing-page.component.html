@@ -1,187 +1,174 @@
-<main class="public-page stars-bg">
-  <nav class="public-nav">
-    <a routerLink="/" class="brand">{{ brand.name }}</a>
-    <div class="nav-links">
-      <a routerLink="/plans">Plans</a>
-      <a routerLink="/auth">Sign In</a>
-    </div>
-  </nav>
+<!-- Fixed Background Layers -->
+<div class="scroll-video-layer">
+  <video 
+    #scrollVideo
+    class="hero-video" 
+    muted 
+    playsinline 
+    preload="metadata"
+    aria-hidden="true"
+    tabindex="-1"
+  >
+    <source [src]="scrollVideoUrl" type="video/mp4" />
+  </video>
+  <div class="video-overlay" aria-hidden="true"></div>
+</div>
 
-  <header class="hero-container">
-    <!-- Cosmic orbit animation background -->
-    <div class="solar-system" aria-hidden="true">
-      <div class="sun"></div>
-      <div class="orbit orbit-1"><div class="planet planet-1"></div></div>
-      <div class="orbit orbit-2"><div class="planet planet-2"></div></div>
-      <div class="orbit orbit-3"><div class="planet planet-3"></div></div>
+<canvas #particlesCanvas class="particles-canvas" aria-hidden="true"></canvas>
+
+<!-- Fixed Top Navigation -->
+<nav class="landing-nav" aria-label="Main Navigation">
+  <div class="nav-container">
+    <a routerLink="/" class="nav-brand">
+      <svg class="brand-logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M12 2L15 9H22L16.5 13.5L18.5 20.5L12 16L5.5 20.5L7.5 13.5L2 9H9L12 2Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>
+      </svg>
+      <span class="brand-text">Arova</span>
+    </a>
+
+    <div class="nav-links">
+      <a routerLink="/" fragment="product" class="nav-link">Product</a>
+      <a routerLink="/auth" class="nav-link">Demo</a>
+      <a routerLink="/plans" class="nav-link">Plans</a>
     </div>
-    
-    <section class="hero content-reveal">
-      <p class="eyebrow">{{ brand.brandLine }}</p>
-      <h1>{{ brand.name }}</h1>
-      <h2>{{ brand.tagline }}</h2>
-      <p class="hero-copy">
-        Memories, letters, moods, questions, plans, and private conversations — all in one shared space made for two.
+
+    <div class="nav-actions">
+      <a routerLink="/auth" class="signin-btn">Sign In</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Scroll Flow Container -->
+<div class="scroll-landing">
+
+  <!-- Section 1: Hero -->
+  <header class="hero" [style.opacity]="heroOpacity">
+    <div class="hero-content">
+      <span class="hero-eyebrow">Arova Purpose</span>
+      <h1 id="landing-hero-title">Create a private universe <em>for two</em>.</h1>
+      <p class="hero-description">
+        Arova brings memories, letters, moods, music, future plans, and daily questions into one calm shared space.
       </p>
-      <div class="hero-actions">
-        <a routerLink="/auth" class="primary">Start Free</a>
-        <a routerLink="/auth" class="secondary">Sign In</a>
-        <a routerLink="/plans" class="secondary">See Plans</a>
+
+      <div class="hero-ctas">
+        <a routerLink="/auth" class="cta-btn primary-cta">Start with Arova</a>
+        <div class="demo-cta-container">
+          <a routerLink="/auth" class="cta-btn secondary-cta">
+            Local Demo
+          </a>
+          <span class="demo-credentials-note">owner / 1234</span>
+        </div>
       </div>
-    </section>
+
+      <div class="scroll-indicator" aria-hidden="true">
+        <span class="scroll-text">Scroll to explore</span>
+        <svg class="scroll-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <polyline points="19 12 12 19 5 12"></polyline>
+        </svg>
+      </div>
+    </div>
   </header>
 
-  <!-- About section -->
-  <section class="section glass content-reveal">
-    <span class="section-label">About Arova</span>
-    <h2>A private shared space for two people in a relationship.</h2>
-    <p>
-      Arova helps partners remember, communicate, plan, and feel closer without forcing romance or turning care into performance. It provides a digital sanctuary away from general social feed noise.
-    </p>
-  </section>
+  <!-- Section 2: Trigger spacer for revealed cards -->
+  <div #cardsTrigger class="trigger-section">
+    <!-- This empty section drives the scroll animation bounds for the cards -->
+  </div>
 
-  <!-- How it works -->
-  <section class="section content-reveal">
-    <span class="section-label">How it works</span>
-    <div class="steps">
-      <div class="glass step-card">
-        <h3>1. Create Account</h3>
-        <p>Set up your profile and choose your preferred UI language.</p>
+  <!-- Section 3: Fixed Revealed Cards Layer -->
+  <div 
+    #fixedCards 
+    class="fixed-cards"
+    [style.opacity]="cardsOpacity"
+    [style.clip-path]="cardsClipPath"
+    [style.pointer-events]="cardsPointerEvents"
+  >
+    <div class="cards-container">
+      <div class="cards-header">
+        <span class="cards-eyebrow">Shared Rituals</span>
+        <h2>Designed for Connection</h2>
       </div>
-      <div class="glass step-card">
-        <h3>2. Configure Space</h3>
-        <p>Run onboarding questions and mature content checks.</p>
+
+      <div class="cards-grid">
+        <!-- Card 1: Memories -->
+        <article class="product-card">
+          <div class="card-glass"></div>
+          <div class="card-content">
+            <div class="card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <polyline points="21 15 16 10 5 21"></polyline>
+              </svg>
+            </div>
+            <h3>Memories that stay close</h3>
+            <p>Save images, notes, dates, and small details in a shared space that feels personal, not public.</p>
+          </div>
+        </article>
+
+        <!-- Card 2: Letters & Moods -->
+        <article class="product-card">
+          <div class="card-glass"></div>
+          <div class="card-content">
+            <div class="card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+            </div>
+            <h3>Private letters and moods</h3>
+            <p>Write letters, check in emotionally, and keep the quiet parts of the relationship in one calm place.</p>
+          </div>
+        </article>
+
+        <!-- Card 3: Dual Storage Modes -->
+        <article class="product-card">
+          <div class="card-glass"></div>
+          <div class="card-content">
+            <div class="card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                <line x1="6" y1="18" x2="6.01" y2="18"></line>
+              </svg>
+            </div>
+            <h3>Local demo, API-ready path</h3>
+            <p>Arova works in Local Mode for the public demo and supports API Mode for full-stack development.</p>
+          </div>
+        </article>
       </div>
-      <div class="glass step-card">
-        <h3>3. Invite Partner</h3>
-        <p>Share a privately generated pairing token to link your views.</p>
-      </div>
-      <div class="glass step-card">
-        <h3>4. Start Sharing</h3>
-        <p>Begin exchanging live notes, moods, letters, and custom memories.</p>
+    </div>
+  </div>
+
+  <!-- Section 4: Final Reveal Section -->
+  <section 
+    #finalReveal 
+    class="final-reveal-section" 
+    [class.visible]="finalRevealVisible"
+    aria-labelledby="final-reveal-title"
+  >
+    <div class="reveal-content">
+      <span class="reveal-eyebrow">Presenting</span>
+      <h2 id="final-reveal-title">Arova v2</h2>
+      <p class="reveal-description">
+        A calmer, stronger, more mature private space for two — built as a serious full-stack portfolio product.
+      </p>
+      
+      <div class="reveal-ctas">
+        <a routerLink="/auth" class="cta-btn primary-cta">Enter Arova</a>
       </div>
     </div>
   </section>
 
-  <!-- Feature Grid -->
-  <section class="section content-reveal">
-    <span class="section-label">Core Features</span>
-    <div class="feature-grid">
-      <article class="glass feature-card" *ngFor="let group of featureGroups">
-        <h3>{{ group.title }}</h3>
-        <p *ngFor="let item of group.items">✧ {{ item }}</p>
-      </article>
-    </div>
-  </section>
-
-  <!-- Plans section -->
-  <section class="section glass content-reveal">
-    <span class="section-label">Subscription Tiers</span>
-    <h2>One plan covers both partners.</h2>
-    <p class="section-subtitle">Upgrade for extra themes, extended timelines, and custom rituals.</p>
-    <div class="plan-row">
-      <a *ngFor="let plan of plans" [routerLink]="plan === 'Free' ? '/auth' : '/plans/gifted'" [queryParams]="{ plan }">
-        {{ plan }} Tier
-      </a>
-    </div>
-  </section>
-
-  <!-- Privacy and Security Note -->
-  <section class="section glass content-reveal">
-    <span class="section-label">Privacy & Transparency</span>
-    <h2>Private by design, honest about what is implemented.</h2>
-    <p>
-      True end-to-end encryption is a roadmap item, not a current claim. Arova supports couple-scoped data, Local Mode storage, API Mode database configurations, and secure WebSocket chat. All communications use standard transport layer security.
-    </p>
-  </section>
-
-  <!-- Roadmap Section -->
-  <section class="section content-reveal">
-    <span class="section-label">Roadmap & Coming Soon</span>
-    <div class="roadmap-grid">
-      <div class="glass roadmap-card">
-        <h3>Phase 1 (Active)</h3>
-        <p>Standalone Local Mode, API mode sync, SignalR live chat, letters vault, reasons log, and settings customization.</p>
-      </div>
-      <div class="glass roadmap-card">
-        <h3>Phase 2 (Planned)</h3>
-        <p>Cryptographic client-side E2EE implementation, Apple & Google sign-in templates, and SMS pairing confirmation gateways.</p>
-      </div>
-      <div class="glass roadmap-card">
-        <h3>Phase 3 (Mobile)</h3>
-        <p>Native iOS & Android mobile wrappers (Capacitor), push notifications, and widget shortcuts for home screens.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- FAQ Section -->
-  <section class="section content-reveal">
-    <span class="section-label">Frequently Asked Questions</span>
-    <div class="faq-list accordion-faq-list">
-      <div class="glass faq-card accordion-card" 
-           *ngFor="let faq of faqs; let i = index" 
-           [class.open]="activeFaqIndex === i" 
-           (click)="toggleFaq(i)">
-        <div class="faq-header">
-          <h4>{{ faq.q }}</h4>
-          <span class="faq-icon" [class.rotated]="activeFaqIndex === i">＋</span>
-        </div>
-        <div class="faq-body" [class.open]="activeFaqIndex === i">
-          <p>{{ faq.a }}</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Contact/Feedback Section -->
-  <section class="section glass content-reveal">
-    <span class="section-label">Share Feedback / Contact</span>
-    <h2>We would love to hear from you.</h2>
-    <p class="section-subtitle">Submit suggestions, feature requests, or report visual bugs to the team.</p>
-    
-    <form class="feedback-form" (ngSubmit)="sendFeedback()" *ngIf="!feedbackSent">
-      <div class="form-row">
-        <input type="text" name="name" [(ngModel)]="feedback.name" placeholder="Name (optional)" [disabled]="isBusy" />
-        <input type="email" name="email" [(ngModel)]="feedback.email" placeholder="Email (optional)" [disabled]="isBusy" />
-      </div>
-      <textarea name="message" rows="4" [(ngModel)]="feedback.message" placeholder="Message or suggestion..." [disabled]="isBusy" required></textarea>
-      <button type="submit" [disabled]="isBusy || !feedback.message.trim()">
-        {{ isBusy ? 'Submitting...' : 'Send Feedback' }}
-      </button>
-      <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
-    </form>
-    
-    <div class="feedback-success" *ngIf="feedbackSent">
-      <p>✦ Thank you for your feedback! It helps us improve Arova.</p>
-    </div>
-  </section>
-
-  <!-- Final CTA -->
-  <section class="final-cta content-reveal">
-    <h2>Create your shared space today.</h2>
-    <a routerLink="/auth" class="primary">Start Free</a>
-  </section>
-
-  <!-- Footer -->
-  <footer class="public-footer">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <h3>{{ brand.name }}</h3>
-        <p>{{ brand.brandLine }}</p>
-        <small>© 2026 Arova. All rights reserved.</small>
-      </div>
-      <div class="footer-links-col">
-        <h4>Product</h4>
-        <a routerLink="/plans">Pricing Plans</a>
-        <a routerLink="/auth">Account Sign In</a>
-        <a routerLink="/plans/gifted">Redeem Gifted Plan</a>
-      </div>
-      <div class="footer-links-col">
-        <h4>Security & Privacy</h4>
-        <p>Planned: End-to-end encryption (E2EE)</p>
-        <p>Active: Local Mode / API Mode options</p>
-        <p>No fake payment processors or fake SMS gateways</p>
-      </div>
+  <!-- Footer Disclaimer -->
+  <footer class="limitations-footer">
+    <div class="footer-container">
+      <h2 class="sr-only">Private by design, honest about what is implemented.</h2>
+      <span class="note-label">Product Note</span>
+      <p class="limitations-text">
+        True end-to-end encryption is a roadmap item, not a current claim. OAuth, SMS, billing, and true E2EE are planned production features, not active in this demo.
+      </p>
     </div>
   </footer>
-</main>
+
+</div>

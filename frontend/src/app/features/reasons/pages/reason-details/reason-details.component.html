@@ -1,25 +1,55 @@
 <div class="detail-page reason-detail-page">
-  <section class="missing-state glass animate-fade-in" *ngIf="isLoading">
-    <h1>Loading reason</h1>
-    <p>Opening this little piece of the universe...</p>
-  </section>
+  <!-- Loading state -->
+  <div class="loading-state glass" *ngIf="isLoading" aria-live="polite">
+    <div class="spinner"></div>
+    <p>Loading this reason...</p>
+  </div>
 
   <ng-container *ngIf="!isLoading">
     <ng-container *ngIf="reason; else missing">
-      <button class="back-button" type="button" (click)="goBack()">Back to reasons</button>
+      <button class="back-button" type="button" (click)="goBack()">
+        <span aria-hidden="true">←</span> Back to reasons
+      </button>
 
       <article class="detail-card glass animate-fade-in">
-        <div class="reason-number">{{ reason.order < 10 ? '0' + reason.order : reason.order }}</div>
+        <div class="reason-number" aria-hidden="true">{{ reason.order < 10 ? '0' + reason.order : reason.order }}</div>
         <div class="detail-body">
-          <div class="detail-meta">
-            <span class="category-badge">{{ getCategoryLabel(reason.category) }}</span>
-            <span *ngIf="reason.isFavorite">Favorite</span>
-            <span *ngIf="isAdmin && reason.isSecret">Secret</span>
+          <p class="page-kicker">Reason</p>
+          <h1 class="reason-title">{{ reason.title || 'A quiet reason' }}</h1>
+
+          <!-- Metadata Section -->
+          <div class="metadata-grid" role="presentation">
+            <div class="meta-item">
+              <span class="meta-label">Category</span>
+              <span class="meta-value">{{ getCategoryLabel(reason.category) }}</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Order</span>
+              <span class="meta-value">Reason #{{ reason.order }}</span>
+            </div>
+            <div class="meta-item" *ngIf="reason.isFavorite">
+              <span class="meta-label">Favorite</span>
+              <span class="meta-value favorite-star">✦ Marked Favorite</span>
+            </div>
+            <div class="meta-item" *ngIf="isAdmin || reason.isSecret">
+              <span class="meta-label">Privacy</span>
+              <span class="meta-value">{{ reason.isSecret ? '🔒 Private' : '👥 Visible to partner' }}</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Created</span>
+              <span class="meta-value">{{ reason.createdAt | date:'longDate' }}</span>
+            </div>
+            <div class="meta-item" *ngIf="reason.updatedAt && reason.updatedAt !== reason.createdAt">
+              <span class="meta-label">Last updated</span>
+              <span class="meta-value">{{ reason.updatedAt | date:'longDate' }}</span>
+            </div>
           </div>
 
-          <h1>{{ reason.title }}</h1>
+          <div class="content-divider" aria-hidden="true"></div>
+
           <p class="main-copy">{{ reason.body }}</p>
-          <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+          
+          <p class="error" *ngIf="errorMessage" role="alert">{{ errorMessage }}</p>
 
           <div class="reaction-row">
             <button
@@ -29,16 +59,18 @@
               [class.active]="hasReaction(reaction.type)"
               (click)="toggleReaction(reaction.type)"
             >
-              <span>{{ reaction.label }}</span>
-              <span>{{ getReactionCount(reaction.type) }}</span>
+              <span class="reaction-icon-label">{{ reaction.label }}</span>
+              <span class="reaction-count">{{ getReactionCount(reaction.type) }}</span>
             </button>
           </div>
 
           <div class="detail-footer">
-            <span *ngIf="isAdmin">{{ reason.isSecret ? 'Hidden from partner' : 'Visible to partner' }}</span>
+            <span class="visibility-status" *ngIf="isAdmin">
+              {{ reason.isSecret ? 'Private memory' : 'Visible to partner' }}
+            </span>
             <div class="detail-actions">
-              <a *ngIf="canEdit" [routerLink]="[isAdmin ? '/admin/reasons' : '/reasons', reason.id, 'edit']">Edit reason</a>
-              <button *ngIf="canEdit" type="button" (click)="deleteReason()">Delete reason</button>
+              <a *ngIf="canEdit" [routerLink]="[isAdmin ? '/admin/reasons' : '/reasons', reason.id, 'edit']" class="action-btn action-btn--edit">Edit reason</a>
+              <button *ngIf="canEdit" type="button" class="action-btn action-btn--delete" (click)="deleteReason()">Delete reason</button>
             </div>
           </div>
         </div>
@@ -47,10 +79,11 @@
   </ng-container>
 
   <ng-template #missing>
-    <section class="missing-state glass">
-      <h1>Reason not found</h1>
-      <p>{{ errorMessage || 'This reason is private or no longer exists.' }}</p>
-      <button type="button" class="back-button" (click)="goBack()">Back to reasons</button>
+    <section class="missing-state glass animate-fade-in" role="alert">
+      <span class="missing-icon" aria-hidden="true">🔍</span>
+      <h1>We couldn’t find this reason.</h1>
+      <p class="missing-desc">It may have been removed, or it may not exist in this space.</p>
+      <button type="button" class="return-btn" (click)="goBack()">Return to reasons</button>
     </section>
   </ng-template>
 </div>

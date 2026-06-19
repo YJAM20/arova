@@ -1,17 +1,61 @@
 <div class="arova-page arova-page--wide animate-fade-in">
+  <!-- Page Hero -->
   <header class="page-header">
-    <p class="page-eyebrow">{{ t('music') }}</p>
-    <h1>{{ t('musicTitle') }}</h1>
-    <p>{{ t('musicSubtitle') }}</p>
+    <p class="page-eyebrow" id="music-eyebrow">✦ Music Room</p>
+    <h1>Your Shared Soundtrack</h1>
+    <p>A private collection of melodies that belong to your story.</p>
   </header>
 
-  <div class="music-dashboard">
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading" id="music-loading-indicator" role="status" aria-live="polite">
+    <span class="loading-spinner"></span>
+    <p>Loading your music room…</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-banner glass" *ngIf="!isLoading && errorMessage" role="alert">
+    <span class="error-icon">⚠</span>
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <div class="music-dashboard" *ngIf="!isLoading">
+    <!-- Summary Stats -->
+    <section class="summary-section" *ngIf="songs.length > 0">
+      <div class="summary-cards" id="music-summary-cards">
+        <div class="summary-card glass">
+          <span class="summary-value" id="total-songs-count">{{ getTotalSongs() }}</span>
+          <span class="summary-label">Melodies added</span>
+        </div>
+        <div class="summary-card glass">
+          <span class="summary-value" id="favorites-count">{{ getFavoritesCount() }}</span>
+          <span class="summary-label">Favourites</span>
+        </div>
+        <div class="summary-card glass">
+          <span class="summary-value summary-value--mood" id="most-used-mood">{{ getMostUsedMoodLabel() }}</span>
+          <span class="summary-label">Most‑tagged mood</span>
+        </div>
+        <div class="summary-card glass">
+          <span class="summary-value">{{ isApiMode() ? 'API' : 'Local' }}</span>
+          <span class="summary-label">Active mode</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Save Success Toast -->
+    <div class="save-success-toast" *ngIf="saveSuccess" id="song-save-success" role="status" aria-live="polite">
+      <span>✦ Melody added to your shared soundtrack.</span>
+    </div>
+
     <!-- Main Premium Player Panel -->
     <section class="player-panel glass">
       <div class="player-layout">
         <!-- Vinyl Record / Artwork Container -->
         <div class="artwork-container">
-          <div class="vinyl-record" [class.rotating]="hasPlayablePreview(selectedSong)" [style.background-image]="selectedSong?.coverUrl ? 'url(' + selectedSong.coverUrl + ')' : ''">
+          <div
+            class="vinyl-record"
+            [class.rotating]="hasPlayablePreview(selectedSong)"
+            [style.background-image]="selectedSong?.coverUrl ? 'url(' + selectedSong.coverUrl + ')' : ''"
+          >
             <div class="vinyl-center"></div>
           </div>
           <!-- Animated sound waves -->
@@ -28,13 +72,14 @@
         <div class="track-details-wrapper">
           <div class="player-copy" *ngIf="selectedSong; else noSelection">
             <div class="player-header-row">
-              <span class="now-label">✦ {{ t('nowPlaying') }}</span>
+              <span class="now-label">✦ Now playing</span>
               <button
                 type="button"
                 class="favorite-heart-btn"
                 [class.active]="selectedSong.isFavorite"
                 (click)="toggleFavorite(selectedSong, $event)"
-                aria-label="Toggle favorite"
+                [attr.aria-pressed]="selectedSong.isFavorite"
+                aria-label="Toggle favourite"
               >
                 <svg viewBox="0 0 24 24" class="heart-svg">
                   <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
@@ -57,13 +102,13 @@
             <div class="player-copy">
               <span class="now-label">Silence</span>
               <h2>No song selected</h2>
-              <p>Select a melody from the list below to play.</p>
+              <p>Select a melody from the list below to highlight it here.</p>
             </div>
           </ng-template>
 
           <div class="player-controls">
-            <button type="button" class="random-btn" (click)="pickRandomSong()" [disabled]="songs.length === 0">
-              <span class="btn-icon">✦</span> {{ t('randomSong') }}
+            <button type="button" class="random-btn" id="random-song-btn" (click)="pickRandomSong()" [disabled]="songs.length === 0">
+              <span class="btn-icon">✦</span> Surprise me
             </button>
           </div>
 
@@ -78,10 +123,132 @@
             <ng-template #noPreview>
               <div class="preview-unavailable">
                 <span class="warning-icon">ℹ</span>
-                <span>{{ t('previewUnavailable') }}</span>
+                <span>Audio preview not available for this track. Add a direct audio URL to enable playback.</span>
               </div>
             </ng-template>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Add Song Section -->
+    <section class="add-song-section">
+      <div class="add-song-header">
+        <button
+          type="button"
+          class="add-song-toggle"
+          id="toggle-add-song-form"
+          (click)="toggleAddForm()"
+          [attr.aria-expanded]="showAddForm"
+        >
+          <span class="toggle-icon">{{ showAddForm ? '−' : '+' }}</span>
+          <span>{{ showAddForm ? 'Cancel' : 'Add a melody' }}</span>
+        </button>
+      </div>
+
+      <div class="add-song-form glass" *ngIf="showAddForm" id="add-song-form">
+        <h3 class="form-title">Add a new melody</h3>
+        <p class="form-subtitle">
+          Add a track you both love. This is your private collection — not a streaming platform.
+        </p>
+
+        <div class="form-grid">
+          <div class="form-field form-field--full">
+            <label for="song-title-input" class="form-label">Title <span class="required">*</span></label>
+            <input
+              id="song-title-input"
+              type="text"
+              class="form-input"
+              placeholder="e.g. Bloom"
+              [(ngModel)]="formTitle"
+              maxlength="160"
+            />
+          </div>
+
+          <div class="form-field">
+            <label for="song-artist-input" class="form-label">Artist</label>
+            <input
+              id="song-artist-input"
+              type="text"
+              class="form-input"
+              placeholder="e.g. The Paper Kites"
+              [(ngModel)]="formArtist"
+              maxlength="120"
+            />
+          </div>
+
+          <div class="form-field">
+            <label for="song-mood-select" class="form-label">Emotional mood</label>
+            <select id="song-mood-select" class="form-select" [(ngModel)]="formMood">
+              <option value="">— No mood tag —</option>
+              <option *ngFor="let mood of validMoods" [value]="mood">{{ getMoodLabel(mood) }}</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="song-source-name-input" class="form-label">Source name</label>
+            <input
+              id="song-source-name-input"
+              type="text"
+              class="form-input"
+              placeholder="e.g. Spotify, SoundCloud"
+              [(ngModel)]="formSourceName"
+              maxlength="80"
+            />
+          </div>
+
+          <div class="form-field">
+            <label for="song-source-url-input" class="form-label">Source URL</label>
+            <input
+              id="song-source-url-input"
+              type="url"
+              class="form-input"
+              placeholder="https://…"
+              [(ngModel)]="formSourceUrl"
+              maxlength="300"
+            />
+          </div>
+
+          <div class="form-field">
+            <label for="song-license-input" class="form-label">License</label>
+            <input
+              id="song-license-input"
+              type="text"
+              class="form-input"
+              placeholder="e.g. CC BY 4.0"
+              [(ngModel)]="formLicense"
+              maxlength="80"
+            />
+          </div>
+
+          <div class="form-field">
+            <label for="song-attribution-input" class="form-label">Attribution</label>
+            <input
+              id="song-attribution-input"
+              type="text"
+              class="form-input"
+              placeholder="e.g. Artist Name / Label"
+              [(ngModel)]="formAttribution"
+              maxlength="160"
+            />
+          </div>
+        </div>
+
+        <div class="form-error" *ngIf="saveError" role="alert">
+          <span>⚠ {{ saveError }}</span>
+        </div>
+
+        <div class="form-actions">
+          <button
+            type="button"
+            class="btn-primary"
+            id="song-submit-btn"
+            (click)="addSong()"
+            [disabled]="isSaving || !formTitle.trim()"
+          >
+            <span *ngIf="!isSaving">✦ Save melody</span>
+            <span *ngIf="isSaving">Saving…</span>
+          </button>
         </div>
       </div>
     </section>
@@ -90,19 +257,21 @@
     <section class="songs-section">
       <div class="playlist-header">
         <div class="section-row">
-          <h2>{{ t('playlist') }}</h2>
-          <span class="count-badge">{{ filteredSongs.length }} / {{ songs.length }} Melodies</span>
+          <h2>Playlist</h2>
+          <span class="count-badge" id="song-count-badge">{{ filteredSongs.length }} / {{ songs.length }} Melodies</span>
         </div>
 
         <!-- Filter Chips -->
         <div class="mood-filters-scroll">
-          <div class="mood-filters">
+          <div class="mood-filters" id="mood-filter-chips">
             <button
               type="button"
               *ngFor="let mood of moodFilters"
               class="filter-chip"
               [class.active]="activeMood === mood.key"
+              [id]="'filter-chip-' + mood.key"
               (click)="setMoodFilter(mood.key)"
+              [attr.aria-pressed]="activeMood === mood.key"
             >
               {{ mood.label }}
             </button>
@@ -110,19 +279,25 @@
         </div>
       </div>
 
-      <div class="songs-grid" *ngIf="filteredSongs.length > 0; else emptySongs">
+      <div class="songs-grid" *ngIf="filteredSongs.length > 0; else emptySongs" id="songs-grid">
         <article
           class="song-card glass"
           *ngFor="let song of filteredSongs"
           [class.song-card--active]="selectedSong?.id === song.id"
+          [id]="'song-card-' + song.id"
           (click)="selectSong(song)"
+          role="button"
+          tabindex="0"
+          [attr.aria-label]="song.title + ' by ' + (song.artist || 'Unknown Artist')"
+          (keydown.enter)="selectSong(song)"
+          (keydown.space)="selectSong(song)"
         >
           <!-- Cover Art -->
           <div class="cover-wrapper">
             <div class="cover" *ngIf="song.coverUrl; else plainCover" [style.background-image]="'url(' + song.coverUrl + ')'"></div>
             <ng-template #plainCover>
               <div class="cover cover--plain">
-                <span>🎵</span>
+                <span>♪</span>
               </div>
             </ng-template>
             <!-- Active Overlay -->
@@ -135,17 +310,35 @@
           <div class="song-info">
             <div class="song-title-row">
               <h3>{{ song.title }}</h3>
-              <button
-                type="button"
-                class="favorite-heart-btn-small"
-                [class.active]="song.isFavorite"
-                (click)="toggleFavorite(song, $event)"
-                aria-label="Toggle favorite"
-              >
-                <svg viewBox="0 0 24 24" class="heart-svg">
-                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                </svg>
-              </button>
+              <div class="song-actions">
+                <button
+                  type="button"
+                  class="favorite-heart-btn-small"
+                  [class.active]="song.isFavorite"
+                  (click)="toggleFavorite(song, $event)"
+                  [attr.aria-pressed]="song.isFavorite"
+                  [attr.aria-label]="song.isFavorite ? 'Remove from favourites' : 'Add to favourites'"
+                >
+                  <svg viewBox="0 0 24 24" class="heart-svg">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  class="delete-song-btn"
+                  [id]="'delete-song-' + song.id"
+                  (click)="deleteSong(song.id, $event)"
+                  [disabled]="isDeleting === song.id"
+                  aria-label="Remove melody"
+                >
+                  <svg viewBox="0 0 24 24" class="delete-svg" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6l-1 14H6L5 6"></path>
+                    <path d="M10 11v6M14 11v6"></path>
+                    <path d="M9 6V4h6v2"></path>
+                  </svg>
+                </button>
+              </div>
             </div>
             <p class="song-artist-name">{{ song.artist || 'Unknown Artist' }}</p>
             <div class="song-footer-row">
@@ -157,12 +350,21 @@
       </div>
 
       <ng-template #emptySongs>
-        <div class="empty-state glass">
-          <span class="empty-music-icon">🎵</span>
-          <h3>No melodies found</h3>
-          <p>No tracks matching this emotional filter are currently listed.</p>
+        <div class="empty-state glass" id="music-empty-state">
+          <span class="empty-music-icon">♪</span>
+          <h3>No melodies yet</h3>
+          <p *ngIf="activeMood === 'all'">Start building your shared soundtrack by adding your first melody above.</p>
+          <p *ngIf="activeMood !== 'all'">No tracks tagged with this mood. Try a different filter or add one above.</p>
         </div>
       </ng-template>
     </section>
+
+    <!-- Disclaimer Footer -->
+    <footer class="music-disclaimer" id="music-disclaimer">
+      <p>
+        Music Room is a private reflection space for you and your partner, not a streaming platform or music service.
+        No audio files are stored or hosted by Arova. All tracks you add are references only.
+      </p>
+    </footer>
   </div>
 </div>

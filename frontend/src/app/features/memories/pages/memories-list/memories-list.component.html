@@ -1,78 +1,113 @@
 <div class="memories-page">
   <arova-page-header 
-    title="The Moments We Lived" 
-    [subtitle]="allMemories.length + ' memories preserved'"
-    eyebrow="[] Planet of Memories"
+    title="Moments worth keeping" 
+    subtitle="A calm private archive for the photos, notes, dates, and small details that belong to your shared space."
+    eyebrow="Memories"
   >
-    <a actions class="add-content-link" routerLink="/memories/new">Add Memory</a>
+    <a actions class="add-content-link" routerLink="/memories/new">Add memory</a>
   </arova-page-header>
 
+  <!-- Loading State -->
   <arova-loading-state 
-    message="Checking the current couple space..." 
+    message="Loading your memories..." 
     *ngIf="isLoading"
+    aria-live="polite"
   ></arova-loading-state>
 
-  <div class="empty-state glass animate-fade-in" *ngIf="!isLoading && errorMessage">
-    <div class="empty-icon">[]</div>
-    <h3>Memories could not load</h3>
-    <p>{{ errorMessage }}</p>
-    <a class="add-content-link" routerLink="/api-auth" *ngIf="isApiMode">Open API Account</a>
-    <a class="add-content-link" routerLink="/couple-setup" *ngIf="isApiMode">Open Couple Setup</a>
+  <!-- Error State -->
+  <div class="empty-state glass error-state animate-fade-in" *ngIf="!isLoading && errorMessage" role="alert">
+    <div class="empty-icon" aria-hidden="true">⚠️</div>
+    <h3>We couldn’t load your memories right now.</h3>
+    <p class="error-detail">{{ errorMessage }}</p>
+    <div class="error-actions">
+      <button type="button" class="retry-btn" (click)="loadMemories()">Retry</button>
+      <a class="action-link" routerLink="/api-auth" *ngIf="isApiMode">Open API Account</a>
+      <a class="action-link" routerLink="/couple-setup" *ngIf="isApiMode">Open Couple Setup</a>
+    </div>
   </div>
 
-  <div class="filter-tabs animate-fade-in" style="animation-delay: 0.1s;" *ngIf="!isLoading && !errorMessage">
+  <!-- Stats Row -->
+  <div class="stats-summary-row glass animate-fade-in" *ngIf="!isLoading && !errorMessage && allMemories.length > 0">
+    <span class="stats-icon" aria-hidden="true">✦</span>
+    <span>{{ allMemories.length }} memories preserved in your space</span>
+    <span class="dot-separator" aria-hidden="true">•</span>
+    <span>Private shared archive</span>
+  </div>
+
+  <!-- Category Filter Tabs -->
+  <div class="filter-tabs animate-fade-in" style="animation-delay: 0.1s;" *ngIf="!isLoading && !errorMessage && allMemories.length > 0">
     <button
       *ngFor="let cat of categories"
       class="filter-tab"
       [class.active]="activeCategory === cat.key"
+      [attr.aria-selected]="activeCategory === cat.key"
       (click)="setCategory(cat.key)"
     >
       {{ cat.label }}
     </button>
   </div>
 
+  <!-- Memories Grid -->
   <div class="memories-grid animate-fade-in" style="animation-delay: 0.2s;" *ngIf="!isLoading && !errorMessage && filtered.length > 0">
     <arova-card
       class="memory-card-wrapper"
       *ngFor="let memory of filtered"
       [routerLink]="['/memories', memory.id]"
       [hoverable]="true"
+      tabindex="0"
     >
-      <div class="memory-card-header">
-        <div class="memory-meta">
-          <arova-status-pill type="info" [showDot]="false">
-            {{ getCategoryLabel(memory.category) }}
-          </arova-status-pill>
-          <span class="memory-date">{{ formatDate(memory.date) }}</span>
+      <!-- Media/Image Box -->
+      <div class="memory-media">
+        <img *ngIf="memory.imageUrl" [src]="memory.imageUrl" [alt]="memory.title" class="memory-image" />
+        <div *ngIf="!memory.imageUrl" class="memory-placeholder" aria-hidden="true">
+          <span class="placeholder-icon">📸</span>
+          <span class="placeholder-shine"></span>
         </div>
-        <div class="memory-indicators">
-          <span class="mood-indicator" *ngIf="memory.mood" [title]="memory.mood">
-            {{ getMoodEmoji(memory.mood) }}
+      </div>
+
+      <div class="memory-card-body">
+        <div class="memory-card-header">
+          <div class="memory-meta">
+            <arova-status-pill type="info" [showDot]="false">
+              {{ getCategoryLabel(memory.category) }}
+            </arova-status-pill>
+            <span class="memory-date">{{ formatDate(memory.date) }}</span>
+          </div>
+          <div class="memory-indicators">
+            <span class="mood-indicator" *ngIf="memory.mood" [title]="memory.mood">
+              {{ getMoodEmoji(memory.mood) }}
+            </span>
+            <span class="favorite-star" *ngIf="memory.isFavorite" title="Favorite">✦</span>
+          </div>
+        </div>
+
+        <h3 class="memory-title">{{ memory.title }}</h3>
+        <p class="memory-desc">{{ memory.description }}</p>
+
+        <div class="private-note" *ngIf="isAdmin && memory.privateNote">
+          <span class="private-note-label">Private note</span>
+          <p>{{ memory.privateNote }}</p>
+        </div>
+
+        <div class="memory-footer">
+          <span class="visibility-tag" *ngIf="isAdmin && !memory.visibleToPartner">
+            <arova-status-pill type="warning">Only you can see this</arova-status-pill>
           </span>
-          <span class="favorite-star" *ngIf="memory.isFavorite" title="Favorite">✦</span>
+          <span class="memory-owner" *ngIf="memory.createdBy">
+            Preserved by {{ memory.createdBy === currentUser?.id ? 'You' : 'Partner' }}
+          </span>
         </div>
-      </div>
-
-      <h3 class="memory-title">{{ memory.title }}</h3>
-      <p class="memory-desc">{{ memory.description }}</p>
-
-      <div class="private-note" *ngIf="isAdmin && memory.privateNote">
-        <span class="private-note-label">Private note</span>
-        <p>{{ memory.privateNote }}</p>
-      </div>
-
-      <div class="visibility-tag" *ngIf="isAdmin && !memory.visibleToPartner">
-        <arova-status-pill type="warning">Only you can see this</arova-status-pill>
       </div>
     </arova-card>
   </div>
 
+  <!-- Empty State -->
   <arova-empty-state
     *ngIf="!isLoading && !errorMessage && filtered.length === 0"
-    icon="[]"
-    title="No memories preserved here"
-    description="This space is ready for your moments. Save your first memory today."
-    actionText="Preserve a Memory"
+    icon="📸"
+    title="Your memory archive is quiet for now"
+    description="Start with one moment — a photo, a note, a date, or a small detail you both might want to return to."
+    actionText="Add memory"
     actionLink="/memories/new"
   ></arova-empty-state>
 </div>

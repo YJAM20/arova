@@ -1,25 +1,41 @@
 <div class="detail-page letter-detail-page">
   <section class="missing-state glass animate-fade-in" *ngIf="isLoading">
-    <h1>Loading letter</h1>
+    <h1>Loading Letter</h1>
     <p>Opening the envelope carefully...</p>
   </section>
 
   <ng-container *ngIf="!isLoading">
     <ng-container *ngIf="letter; else missing">
-      <button class="back-button" type="button" (click)="goBack()">Back to letters</button>
+      <div class="navigation-row">
+        <button class="back-button" type="button" (click)="goBack()">
+          ← Back to letters
+        </button>
+        <button 
+          class="favorite-toggle" 
+          type="button" 
+          (click)="toggleFavorite()"
+          [class.favorite-toggle--active]="letter.isFavorite"
+          [attr.aria-label]="letter.isFavorite ? 'Remove from favorites' : 'Add to favorites'"
+        >
+          <span class="star-icon">{{ letter.isFavorite ? '★' : '☆' }}</span>
+          <span class="favorite-label">{{ letter.isFavorite ? 'Favorited' : 'Favorite' }}</span>
+        </button>
+      </div>
 
       <article class="detail-card glass animate-fade-in">
-        <div class="letter-top">
+        <header class="letter-top">
           <div class="detail-meta">
             <span class="category-badge">{{ getCategoryLabel(letter.category) }}</span>
-            <span>{{ formatDate(letter.createdAt) }}</span>
-            <span *ngIf="letter.isFavorite">Favorite</span>
+            <span class="separator">✦</span>
+            <span>Written {{ formatDate(letter.createdAt) }}</span>
+            <span class="separator" *ngIf="letter.isFavorite">✦</span>
+            <span class="favorite-badge" *ngIf="letter.isFavorite">Favorite</span>
           </div>
 
-          <h1>{{ letter.title }}</h1>
-          <p class="lock-note" *ngIf="letter.isLocked && !isAdmin">This letter is sealed for now.</p>
-          <p class="lock-note" *ngIf="errorMessage">{{ errorMessage }}</p>
-        </div>
+          <h1 class="letter-details-title">{{ letter.title }}</h1>
+          <p class="lock-note" *ngIf="letter.isLocked && !canReadBody() && !isAdmin">This letter is sealed for now.</p>
+          <p class="error" *ngIf="errorMessage" role="alert">{{ errorMessage }}</p>
+        </header>
 
         <div class="opening-stage" [class.opening-stage--locked]="!canReadBody()">
           <div class="detail-envelope" aria-hidden="true">
@@ -34,29 +50,89 @@
         </div>
 
         <ng-template #lockedBody>
-          <div class="locked-panel">
-            <h2>Locked letter</h2>
-            <p>The words inside are waiting for the right time.</p>
+          <div class="locked-panel glass">
+            <h2>Sealed Letter</h2>
+            
+            <div class="lock-info-box">
+              <span class="lock-icon" aria-hidden="true">🔒</span>
+              <p class="lock-message" *ngIf="isLockedByDate()">
+                This letter is sealed until <strong>{{ getFormattedUnlockDate() }}</strong>.
+              </p>
+              <p class="lock-message" *ngIf="!isLockedByDate() && letter.passcode">
+                This letter is protected by a passcode.
+              </p>
+              <p class="lock-message" *ngIf="!isLockedByDate() && !letter.passcode">
+                This letter is sealed. Only the author can unlock it.
+              </p>
+            </div>
+
+            <form 
+              *ngIf="letter.passcode" 
+              class="passcode-form" 
+              (ngSubmit)="checkPasscode()"
+              #passForm="ngForm"
+            >
+              <div class="passcode-input-wrapper">
+                <input 
+                  id="passcode-input"
+                  type="password" 
+                  [(ngModel)]="enteredPasscode" 
+                  name="enteredPasscode" 
+                  placeholder="Enter passcode to unlock..." 
+                  required
+                  aria-label="Letter passcode"
+                />
+                <button type="submit" class="unlock-btn" [disabled]="!enteredPasscode">
+                  Unlock
+                </button>
+              </div>
+              <p class="passcode-error animate-fade-in" *ngIf="passcodeError" role="alert">
+                {{ passcodeError }}
+              </p>
+            </form>
           </div>
         </ng-template>
 
-        <div class="detail-footer">
-          <span *ngIf="isAdmin">{{ letter.visibleToPartner ? 'Visible to partner' : 'Private letter' }}</span>
-          <span *ngIf="isAdmin">{{ letter.isLocked ? 'Locked' : 'Unlocked' }}</span>
-          <div class="detail-actions">
-            <a *ngIf="canEdit" [routerLink]="[isAdmin ? '/admin/letters' : '/letters', letter.id, 'edit']">Edit letter</a>
-            <button *ngIf="canEdit" type="button" (click)="deleteLetter()">Delete letter</button>
+        <footer class="detail-footer">
+          <div class="sharing-status">
+            <span class="status-indicator" *ngIf="isAdmin">
+              {{ letter.visibleToPartner ? 'Visible to partner' : 'Private letter' }}
+            </span>
+            <span class="status-indicator" *ngIf="isAdmin">
+              {{ letter.isLocked ? 'Locked' : 'Unlocked' }}
+            </span>
           </div>
-        </div>
+          <div class="detail-actions">
+            <a 
+              *ngIf="canEdit" 
+              [routerLink]="[isAdmin ? '/admin/letters' : '/letters', letter.id, 'edit']"
+              class="action-btn action-btn--edit"
+              id="edit-letter-link"
+            >
+              Edit Letter
+            </a>
+            <button 
+              *ngIf="canEdit" 
+              type="button" 
+              (click)="deleteLetter()"
+              class="action-btn action-btn--delete"
+              id="delete-letter-btn"
+            >
+              Delete Letter
+            </button>
+          </div>
+        </footer>
       </article>
     </ng-container>
   </ng-container>
 
   <ng-template #missing>
     <section class="missing-state glass">
-      <h1>Letter not found</h1>
+      <h1>Letter Not Found</h1>
       <p>{{ errorMessage || 'This letter is private or no longer exists.' }}</p>
-      <button type="button" class="back-button" (click)="goBack()">Back to letters</button>
+      <button type="button" class="back-button" (click)="goBack()">
+        ← Back to letters
+      </button>
     </section>
   </ng-template>
 </div>

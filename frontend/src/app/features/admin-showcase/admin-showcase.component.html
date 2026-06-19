@@ -1,0 +1,523 @@
+<div class="admin-layout stars-bg">
+  <!-- Sidebar Navigation Container -->
+  <aside class="admin-sidebar" [class.mobile-open]="mobileSidebarOpen" aria-label="Admin Control Sidebar">
+    <div class="sidebar-brand">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" class="brand-icon" aria-hidden="true">
+        <path d="M12 2v20M2 12h20M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3 3-7z"/>
+      </svg>
+      <span class="brand-name">Arova Control</span>
+    </div>
+
+    <!-- Navigation Groups -->
+    <nav class="sidebar-nav" aria-label="Admin Navigation Links">
+      <div class="nav-group">
+        <span class="nav-group-title">Overview</span>
+        <ul class="nav-list">
+          <li class="nav-item active">
+            <a href="javascript:void(0)" class="nav-link" aria-current="page">
+              <span class="nav-icon" aria-hidden="true">📊</span>
+              <span class="nav-text">Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="javascript:void(0)" class="nav-link">
+              <span class="nav-icon" aria-hidden="true">⚡</span>
+              <span class="nav-text">Product Health</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="javascript:void(0)" class="nav-link">
+              <span class="nav-icon" aria-hidden="true">🔒</span>
+              <span class="nav-text">Demo Status</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="nav-group">
+        <span class="nav-group-title">Experience</span>
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a href="javascript:void(0)" class="nav-link">
+              <span class="nav-icon" aria-hidden="true">📷</span>
+              <span class="nav-text">Memories</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="javascript:void(0)" class="nav-link">
+              <span class="nav-icon" aria-hidden="true">✉️</span>
+              <span class="nav-text">Letters</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="javascript:void(0)" class="nav-link">
+              <span class="nav-icon" aria-hidden="true">💭</span>
+              <span class="nav-text">Moods</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="javascript:void(0)" class="nav-link">
+              <span class="nav-icon" aria-hidden="true">🎵</span>
+              <span class="nav-text">Music</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="javascript:void(0)" class="nav-link">
+              <span class="nav-icon" aria-hidden="true">📅</span>
+              <span class="nav-text">Future Plans</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="javascript:void(0)" class="nav-link">
+              <span class="nav-icon" aria-hidden="true">❓</span>
+              <span class="nav-text">Daily Questions</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="nav-group">
+        <span class="nav-group-title">Operations</span>
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a href="javascript:void(0)" class="nav-link">
+              <span class="nav-icon" aria-hidden="true">👥</span>
+              <span class="nav-text">Users Preview</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="javascript:void(0)" class="nav-link">
+              <span class="nav-icon" aria-hidden="true">🔗</span>
+              <span class="nav-text">Pairing Flow</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="javascript:void(0)" class="nav-link">
+              <span class="nav-icon" aria-hidden="true">💾</span>
+              <span class="nav-text">Backups</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="javascript:void(0)" class="nav-link">
+              <span class="nav-icon" aria-hidden="true">🚩</span>
+              <span class="nav-text">Feature Flags</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="nav-group">
+        <span class="nav-group-title">Production Planning</span>
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a href="javascript:void(0)" class="nav-link">
+              <span class="nav-icon" aria-hidden="true">🛡️</span>
+              <span class="nav-text">Security</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="javascript:void(0)" class="nav-link">
+              <span class="nav-icon" aria-hidden="true">💳</span>
+              <span class="nav-text">Billing Roadmap</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="javascript:void(0)" class="nav-link">
+              <span class="nav-icon" aria-hidden="true">🚀</span>
+              <span class="nav-text">Deployment</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- Mobile Overlay -->
+  <div class="mobile-sidebar-overlay" *ngIf="mobileSidebarOpen" (click)="closeSidebar()"></div>
+
+  <!-- Workspace Container (Header + Main Content) -->
+  <div class="admin-workspace">
+    <!-- Header Bar -->
+    <header class="admin-header">
+      <div class="header-left">
+        <!-- Toggle button on mobile -->
+        <button class="hamburger-btn" (click)="toggleSidebar()" aria-label="Toggle Navigation Sidebar">
+          <span></span><span></span><span></span>
+        </button>
+
+        <nav class="breadcrumb" aria-label="Breadcrumb navigation">
+          <span class="breadcrumb-item text-neutral-400">Pages</span>
+          <span class="breadcrumb-separator">/</span>
+          <span class="breadcrumb-item text-white font-semibold">Admin Showcase</span>
+        </nav>
+      </div>
+
+      <!-- Search and controls -->
+      <div class="header-right">
+        <div class="search-container">
+          <span class="search-icon" aria-hidden="true">🔍</span>
+          <input type="text" [(ngModel)]="searchQuery" placeholder="Search dashboard preview..." aria-label="Search dashboard" />
+        </div>
+
+        <div class="badges-group">
+          <arova-status-pill [type]="isLocalMode ? 'info' : 'accent'" [showDot]="true">
+            {{ isLocalMode ? 'Local Mode' : 'API Mode' }}
+          </arova-status-pill>
+        </div>
+
+        <button class="notification-btn" aria-label="3 notifications pending" title="Notifications">
+          🔔
+          <span class="notif-badge">3</span>
+        </button>
+
+        <div class="profile-chip" title="Admin Preview Profile">
+          <span class="chip-avatar">A</span>
+          <span class="chip-name">Arova Admin Preview</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Workspace Content -->
+    <main class="main-content">
+      <!-- Title & Showcase Badge -->
+      <header class="page-title-section glassmorphism mb-8">
+        <div class="flex justify-between items-start flex-wrap gap-4">
+          <div>
+            <h1 class="page-title">Arova Control Center</h1>
+            <p class="page-subtitle">A standalone product dashboard preview for monitoring the Arova experience, demo health, product sections, and future production readiness.</p>
+          </div>
+          <div class="showcase-badge-wrapper">
+            <span class="showcase-badge">Showcase mode</span>
+          </div>
+        </div>
+        <div class="disclaimer-alert mt-4">
+          ℹ️ <strong>Developer Note:</strong> This dashboard uses local sample data only. It is not connected to real admin accounts, billing, or production user records.
+        </div>
+      </header>
+
+      <!-- Main Metric Cards (Grid of 4) -->
+      <section class="metrics-grid mb-8" aria-label="System Metrics Summary">
+        <arova-card *ngFor="let metric of metrics" [hoverable]="true" [glow]="false" class="metric-card">
+          <div class="metric-header flex justify-between items-center mb-2">
+            <span class="metric-label text-neutral-400 text-xs uppercase tracking-wider font-semibold">{{ metric.label }}</span>
+            <span class="trend-indicator" [class.up]="metric.trend === 'up'" [class.down]="metric.trend === 'down'">
+              {{ metric.change }}
+            </span>
+          </div>
+          <div class="metric-body flex items-baseline gap-2 mb-1">
+            <span class="metric-value text-3xl font-extrabold text-white">{{ metric.value }}</span>
+            <span class="sample-tag text-neutral-500 text-3xs uppercase tracking-wider font-bold">Sample</span>
+          </div>
+          <div class="metric-footer">
+            <p class="metric-desc text-neutral-400 text-xs">{{ metric.description }}</p>
+          </div>
+        </arova-card>
+      </section>
+
+      <!-- Charts Row (Overview, Distribution, Health) -->
+      <div class="charts-row grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+        <!-- Chart 1: SVG Line Area Chart -->
+        <section class="chart-panel lg:col-span-2" aria-labelledby="activity-chart-title">
+          <arova-card [hoverable]="false" [glow]="true">
+            <div class="panel-header mb-6">
+              <h2 id="activity-chart-title" class="panel-title text-base font-bold text-white">Arova Activity Overview</h2>
+              <p class="panel-desc text-neutral-400 text-xs">Simulated shared experience interactions over the last 6 months.</p>
+            </div>
+
+            <!-- Custom SVG Area Chart -->
+            <div class="svg-chart-container relative">
+              <svg viewBox="0 0 500 200" class="w-full h-full" preserveAspectRatio="none" aria-hidden="true">
+                <!-- Grid Lines -->
+                <line x1="0" y1="50" x2="500" y2="50" stroke="rgba(255,255,255,0.03)" stroke-width="1"></line>
+                <line x1="0" y1="100" x2="500" y2="100" stroke="rgba(255,255,255,0.03)" stroke-width="1"></line>
+                <line x1="0" y1="150" x2="500" y2="150" stroke="rgba(255,255,255,0.03)" stroke-width="1"></line>
+                
+                <!-- Memories Path (Purple accent glow) -->
+                <path d="M 0 170 Q 100 130 200 150 T 400 60 T 500 40 L 500 200 L 0 200 Z" fill="url(#memoriesGrad)" opacity="0.15"></path>
+                <path d="M 0 170 Q 100 130 200 150 T 400 60 T 500 40" fill="none" stroke="var(--theme-accent, #dfe0ff)" stroke-width="2" stroke-linecap="round"></path>
+
+                <!-- Letters Path (Yellow accent) -->
+                <path d="M 0 190 Q 100 160 200 180 T 400 90 T 500 70 L 500 200 L 0 200 Z" fill="url(#lettersGrad)" opacity="0.1"></path>
+                <path d="M 0 190 Q 100 160 200 180 T 400 90 T 500 70" fill="none" stroke="var(--theme-accent-2, #f6be38)" stroke-width="1.5" stroke-linecap="round"></path>
+
+                <!-- Gradients Definitions -->
+                <defs>
+                  <linearGradient id="memoriesGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="var(--theme-accent, #dfe0ff)" />
+                    <stop offset="100%" stop-color="transparent" />
+                  </linearGradient>
+                  <linearGradient id="lettersGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="var(--theme-accent-2, #f6be38)" />
+                    <stop offset="100%" stop-color="transparent" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+
+            <!-- Chart X-Axis Labels -->
+            <div class="axis-labels flex justify-between mt-4 px-1 text-neutral-400 text-xs">
+              <span>Jan</span>
+              <span>Feb</span>
+              <span>Mar</span>
+              <span>Apr</span>
+              <span>May</span>
+              <span>Jun</span>
+            </div>
+
+            <!-- Chart Legend -->
+            <div class="legend flex justify-center gap-6 mt-6 text-xs">
+              <span class="legend-item flex items-center gap-2 text-neutral-300">
+                <span class="legend-dot" style="background: var(--theme-accent, #dfe0ff);"></span>
+                Memories Saved
+              </span>
+              <span class="legend-item flex items-center gap-2 text-neutral-300">
+                <span class="legend-dot" style="background: var(--theme-accent-2, #f6be38);"></span>
+                Letters Sent
+              </span>
+            </div>
+          </arova-card>
+        </section>
+
+        <!-- Chart 2: Distribution segment bars -->
+        <section class="chart-panel" aria-labelledby="dist-chart-title">
+          <arova-card [hoverable]="false" [glow]="true" class="h-full flex flex-col justify-between">
+            <div class="panel-header mb-6">
+              <h2 id="dist-chart-title" class="panel-title text-base font-bold text-white">Experience Distribution</h2>
+              <p class="panel-desc text-neutral-400 text-xs">Distribution of logged entries inside local mock spaces.</p>
+            </div>
+
+            <!-- Segmented distribution bars -->
+            <div class="distribution-bars space-y-4 my-auto">
+              <div *ngFor="let stat of distributionStats" class="dist-row">
+                <div class="flex justify-between text-xs mb-1 text-neutral-300">
+                  <span>{{ stat.label }}</span>
+                  <span class="font-bold">{{ stat.percent }}%</span>
+                </div>
+                <div class="progress-bar-track w-full h-2 rounded-full bg-neutral-800/60 overflow-hidden">
+                  <div class="progress-bar-fill h-full rounded-full" [style.width.%]="stat.percent" [style.background-color]="stat.color"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="distribution-footer pt-4 border-t border-neutral-800/40 text-neutral-400 text-3xs uppercase tracking-wider font-bold">
+              Database Ratio Index
+            </div>
+          </arova-card>
+        </section>
+      </div>
+
+      <!-- Mode Health & Product Health Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+        <!-- Mode Health Panel -->
+        <section class="lg:col-span-1" aria-labelledby="mode-health-title">
+          <arova-card [hoverable]="false" [glow]="true" class="h-full flex flex-col justify-between">
+            <div class="panel-header mb-4">
+              <h2 id="mode-health-title" class="panel-title text-base font-bold text-white">Mode Health Status</h2>
+              <p class="panel-desc text-neutral-400 text-xs">Product execution modes status and details.</p>
+            </div>
+
+            <div class="mode-status-list space-y-4 my-auto">
+              <div class="mode-status-item p-4 rounded-xl bg-neutral-900/60 border border-neutral-800">
+                <div class="flex justify-between items-center mb-1">
+                  <span class="text-sm font-bold text-white">Local Mode</span>
+                  <arova-status-pill type="success" [showDot]="true">Operational</arova-status-pill>
+                </div>
+                <p class="text-xs text-neutral-400">Sandbox state remains completely client-side in the browser. Zero dependencies on backend connection.</p>
+              </div>
+
+              <div class="mode-status-item p-4 rounded-xl bg-neutral-900/60 border border-neutral-800">
+                <div class="flex justify-between items-center mb-1">
+                  <span class="text-sm font-bold text-white">API Mode</span>
+                  <arova-status-pill type="info" [showDot]="true">Development</arova-status-pill>
+                </div>
+                <p class="text-xs text-neutral-400">Communicates with localhost ASP.NET Core REST APIs. Backend is currently local-only.</p>
+              </div>
+            </div>
+
+            <div class="panel-footer pt-4 border-t border-neutral-800/40 text-neutral-400 text-3xs uppercase tracking-wider font-semibold">
+              Dev connection: http://localhost:5036
+            </div>
+          </arova-card>
+        </section>
+
+        <!-- Product Health Grid of 4 Cards -->
+        <section class="lg:col-span-2" aria-labelledby="product-health-title">
+          <arova-card [hoverable]="false" [glow]="true">
+            <div class="panel-header mb-6">
+              <h2 id="product-health-title" class="panel-title text-base font-bold text-white">System Status & Health checks</h2>
+              <p class="panel-desc text-neutral-400 text-xs">Maturity logs of core functional pillars inside Arova.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <article *ngFor="let check of healthChecks" class="health-item-card p-4 rounded-xl bg-neutral-900/50 border border-neutral-800/60">
+                <div class="flex justify-between items-center mb-2">
+                  <h3 class="text-sm font-bold text-white">{{ check.system }}</h3>
+                  <arova-status-pill [type]="check.type" [showDot]="false">{{ check.status }}</arova-status-pill>
+                </div>
+                <p class="text-xs text-neutral-400">{{ check.details }}</p>
+              </article>
+            </div>
+          </arova-card>
+        </section>
+      </div>
+
+      <!-- Recent Product Activity Table -->
+      <section class="mb-8" aria-labelledby="activity-table-title">
+        <arova-card [hoverable]="false" [glow]="true">
+          <div class="panel-header mb-6">
+            <h2 id="activity-table-title" class="panel-title text-base font-bold text-white">Recent Product Activity</h2>
+            <p class="panel-desc text-neutral-400 text-xs">Simulation entries representing normal user interaction pathways.</p>
+          </div>
+
+          <div class="table-responsive">
+            <table class="admin-table" aria-label="Recent Product Activity Log Table">
+              <thead>
+                <tr>
+                  <th scope="col">Event</th>
+                  <th scope="col">Section</th>
+                  <th scope="col">Mode</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let log of activities">
+                  <th scope="row" class="font-bold text-white">{{ log.event }}</th>
+                  <td>{{ log.section }}</td>
+                  <td>{{ log.mode }}</td>
+                  <td>
+                    <arova-status-pill [type]="log.statusType" [showDot]="false">{{ log.status }}</arova-status-pill>
+                  </td>
+                  <td>{{ log.time }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-footer-caption text-neutral-500 text-3xs uppercase tracking-wider font-semibold mt-4">
+            Preview data only — not connected to real user logs.
+          </div>
+        </arova-card>
+      </section>
+
+      <!-- Feature Status Table (Production Readiness Matrix) -->
+      <section class="mb-8" aria-labelledby="matrix-table-title">
+        <arova-card [hoverable]="false" [glow]="true">
+          <div class="panel-header mb-6">
+            <h2 id="matrix-table-title" class="panel-title text-base font-bold text-white">Production Readiness Matrix</h2>
+            <p class="panel-desc text-neutral-400 text-xs">Maturity tracking sheet comparing Arova Local Mode and API Mode features.</p>
+          </div>
+
+          <div class="table-responsive">
+            <table class="admin-table" aria-label="Production Readiness Matrix Table">
+              <thead>
+                <tr>
+                  <th scope="col">Feature</th>
+                  <th scope="col">Current State</th>
+                  <th scope="col">Local Mode</th>
+                  <th scope="col">API Mode</th>
+                  <th scope="col">Production Note</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of matrix">
+                  <th scope="row" class="font-bold text-white">{{ row.feature }}</th>
+                  <td>
+                    <arova-status-pill [type]="row.isReady ? 'success' : 'warning'" [showDot]="false">{{ row.state }}</arova-status-pill>
+                  </td>
+                  <td>{{ row.localMode }}</td>
+                  <td>{{ row.apiMode }}</td>
+                  <td>{{ row.note }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </arova-card>
+      </section>
+
+      <!-- Quick Actions and System Notes -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Quick Actions Panel -->
+        <section aria-labelledby="quick-actions-title">
+          <arova-card [hoverable]="false" [glow]="true" class="h-full flex flex-col justify-between">
+            <div class="panel-header mb-6">
+              <h2 id="quick-actions-title" class="panel-title text-base font-bold text-white">Quick Actions</h2>
+              <p class="panel-desc text-neutral-400 text-xs">Safe navigational routes mapping to standard sections.</p>
+            </div>
+
+            <div class="actions-grid flex flex-col gap-3 my-auto">
+              <a routerLink="/universe" class="btn-action-link flex items-center justify-between p-3.5 rounded-xl border border-neutral-800 bg-neutral-900/40 hover:bg-neutral-800/40 hover:border-accent text-sm font-semibold transition-all">
+                <span>🌌 Go to Universe Dashboard</span>
+                <span>➔</span>
+              </a>
+              <a routerLink="/auth" class="btn-action-link flex items-center justify-between p-3.5 rounded-xl border border-neutral-800 bg-neutral-900/40 hover:bg-neutral-800/40 hover:border-accent text-sm font-semibold transition-all">
+                <span>🔐 Go to Authentication page</span>
+                <span>➔</span>
+              </a>
+              <a routerLink="/plans" class="btn-action-link flex items-center justify-between p-3.5 rounded-xl border border-neutral-800 bg-neutral-900/40 hover:bg-neutral-800/40 hover:border-accent text-sm font-semibold transition-all">
+                <span>💎 View Pricing Plans</span>
+                <span>➔</span>
+              </a>
+              <a routerLink="/settings" class="btn-action-link flex items-center justify-between p-3.5 rounded-xl border border-neutral-800 bg-neutral-900/40 hover:bg-neutral-800/40 hover:border-accent text-sm font-semibold transition-all">
+                <span>⚙️ Review App Settings</span>
+                <span>➔</span>
+              </a>
+              <button disabled class="flex items-center justify-between p-3.5 rounded-xl border border-neutral-850 bg-neutral-950/20 text-neutral-500 text-sm font-semibold cursor-not-allowed">
+                <span>📦 Export Demo Backup</span>
+                <span class="text-3xs uppercase tracking-wider font-bold">Coming later</span>
+              </button>
+            </div>
+
+            <div class="panel-footer pt-4 border-t border-neutral-800/40 text-neutral-400 text-3xs uppercase tracking-wider font-semibold">
+              Showcase navigation maps
+            </div>
+          </arova-card>
+        </section>
+
+        <!-- System Notes / Limitations Panel -->
+        <section class="lg:col-span-2" aria-labelledby="limitations-title">
+          <arova-card [hoverable]="false" [glow]="true" class="h-full">
+            <div class="panel-header mb-6">
+              <h2 id="limitations-title" class="panel-title text-base font-bold text-white">Important Product Notes</h2>
+              <p class="panel-desc text-neutral-400 text-xs">Honest roadmap matrix and portfolio stack constraints.</p>
+            </div>
+
+            <ul class="limitations-list space-y-2 text-xs text-neutral-300">
+              <li class="flex items-start gap-2">
+                <span>✦</span>
+                <span><strong>This admin dashboard is a standalone preview page.</strong> It exists to display UI quality and is not protected by guards.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span>✦</span>
+                <span><strong>OAuth sign-in:</strong> Apple and Google authentication options remain visual placeholders only.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span>✦</span>
+                <span><strong>SMS verification:</strong> The verification flow is mocked/planned for future stages.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span>✦</span>
+                <span><strong>Billing integration:</strong> Pricing lists are preview designs. No production payment gateway is connected.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span>✦</span>
+                <span><strong>End-to-End Encryption (E2EE):</strong> Message protocols do not execute full crypto-ciphers in this stack.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span>✦</span>
+                <span><strong>Database Stack:</strong> Local SQL database is configured for development purposes only.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span>✦</span>
+                <span><strong>Backend Deploys:</strong> The ASP.NET Core API is designed for local setup and is not deployed to production.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span>✦</span>
+                <span><strong>Netlify Hosting:</strong> The live public portfolio preview remains fully operational using Local Mode.</span>
+              </li>
+            </ul>
+          </arova-card>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
