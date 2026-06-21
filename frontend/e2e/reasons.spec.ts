@@ -113,7 +113,7 @@ test.describe('Arova Reasons Flow', () => {
 
     // Grid displays reasons
     await expect(page.locator('.reasons-grid').getByRole('heading', { name: 'Seeded Reason One' })).toBeVisible();
-    await expect(page.getByText('Seeded body description detailing second reason.')).toBeVisible();
+    await expect(page.locator('.reasons-grid').getByText('Seeded body description detailing second reason.')).toBeVisible();
 
     // Filter by Trust category
     await page.getByRole('button', { name: 'Trust', exact: true }).click();

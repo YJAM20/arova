@@ -11,6 +11,7 @@ import {
 } from '../../../../core/services/auth-api.service';
 import { SetupStatusApiService } from '../../../../core/services/setup-status-api.service';
 import { TranslationService } from '../../../../core/services/translation.service';
+import { AuthService } from '../../../../core/services/auth.service';
 
 type AuthMode = 'login' | 'register';
 
@@ -53,7 +54,8 @@ export class PublicAuthComponent implements OnInit {
     private authApi: AuthApiService,
     private setupStatus: SetupStatusApiService,
     private router: Router,
-    private translation: TranslationService
+    private translation: TranslationService,
+    private auth: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -94,7 +96,17 @@ export class PublicAuthComponent implements OnInit {
     this.authApi.loginAndStoreToken(this.loginRequest)
       .pipe(timeout(10000))
       .subscribe({
-        next: () => this.routeAfterAuth(),
+        next: (response) => {
+          this.auth.setCurrentUser({
+            id: response.user.id,
+            username: response.user.username,
+            passcode: '',
+            displayName: response.user.displayName,
+            role: response.user.role === 'admin' ? 'admin' : 'partner',
+            avatarUrl: response.user.avatarUrl || undefined,
+          });
+          this.routeAfterAuth();
+        },
         error: (err) => {
           this.fail(this.getReadableErrorMessage(err, 'login'));
         },
@@ -170,7 +182,17 @@ export class PublicAuthComponent implements OnInit {
     this.authApi.registerAndStoreToken(this.registerRequest)
       .pipe(timeout(10000))
       .subscribe({
-        next: () => this.routeAfterAuth(),
+        next: (response) => {
+          this.auth.setCurrentUser({
+            id: response.user.id,
+            username: response.user.username,
+            passcode: '',
+            displayName: response.user.displayName,
+            role: response.user.role === 'admin' ? 'admin' : 'partner',
+            avatarUrl: response.user.avatarUrl || undefined,
+          });
+          this.routeAfterAuth();
+        },
         error: (err) => {
           this.fail(this.getReadableErrorMessage(err, 'register'));
         },

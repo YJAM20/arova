@@ -48,7 +48,23 @@
 }
 
 .plans-grid {
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  padding: 0 24px 80px;
+
+  @media (max-width: 968px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+    max-width: 420px;
+  }
 }
 
 .glass {
@@ -57,7 +73,7 @@
   -webkit-backdrop-filter: blur(24px) !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-  border-radius: var(--arova-radius-md, 16px);
+  border-radius: 16px;
   transition: transform var(--arova-transition-base), border-color var(--arova-transition-base), box-shadow var(--arova-transition-base);
 
   &:hover {
@@ -67,6 +83,11 @@
 }
 
 .plan-card {
+  min-height: 520px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
   transition: transform var(--arova-transition-base), border-color var(--arova-transition-base), box-shadow var(--arova-transition-base);
 
   &.highlighted-card {
@@ -80,7 +101,15 @@
   }
 
   .cta-btn {
-    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    display: block;
+    width: 100%;
+    padding: 12px 20px !important;
+    border-radius: 8px !important;
+    font-size: 0.8rem !important;
+    font-weight: 700 !important;
+    text-align: center;
+    box-sizing: border-box;
+    transition: all 0.2s ease-in-out;
     cursor: pointer;
 
     &--monthly {
@@ -90,30 +119,29 @@
       box-shadow: 0px 0px 10px rgba(129, 140, 248, 0.15);
 
       &:hover {
-        transform: scale(1.02);
-        box-shadow: 0px 0px 20px rgba(129, 140, 248, 0.3);
+        background: #fff !important;
+        box-shadow: 0px 0px 20px rgba(129, 140, 248, 0.25);
       }
     }
 
     &--yearly {
-      background: rgba(255, 255, 255, 0.04) !important;
+      background: rgba(255, 255, 255, 0.03) !important;
       border: 1px solid rgba(255, 255, 255, 0.08) !important;
       color: #dfe0ff !important;
 
       &:hover {
-        background: rgba(255, 255, 255, 0.08) !important;
+        background: rgba(255, 255, 255, 0.06) !important;
         border-color: rgba(255, 255, 255, 0.15) !important;
-        transform: scale(1.02);
       }
     }
 
     &--free {
-      background: rgba(255, 255, 255, 0.03) !important;
+      background: rgba(255, 255, 255, 0.02) !important;
       border: 1px solid rgba(255, 255, 255, 0.06) !important;
       color: #c6c5d5 !important;
 
       &:hover {
-        background: rgba(255, 255, 255, 0.07) !important;
+        background: rgba(255, 255, 255, 0.05) !important;
         border-color: rgba(255, 255, 255, 0.12) !important;
         color: #fff !important;
       }
@@ -122,35 +150,52 @@
 
   .plan-disclaimer {
     color: #7a7a7a !important;
+    margin-top: 4px;
   }
 }
 
 // ── Comparison Table ──────────────────────────────────────
 .comparison-section {
+  padding: 80px 24px;
+
+  .comparison-container {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+
   .comparison-title {
     font-family: 'Playfair Display', serif;
+    font-size: 1.75rem;
+    margin-bottom: 32px;
   }
 
   .comparison-table {
+    width: 100%;
     border-collapse: collapse;
+    font-size: 0.8rem;
 
     th, td {
       border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      padding: 12px 16px !important;
     }
 
     thead th {
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 14px 16px !important;
+      font-weight: 600;
     }
 
     .highlighted-col {
-      background: rgba(255, 255, 255, 0.015);
+      background: rgba(255, 255, 255, 0.01);
     }
 
     tbody tr:hover {
       background: rgba(255, 255, 255, 0.02) !important;
       
       .highlighted-col {
-        background: rgba(255, 255, 255, 0.035) !important;
+        background: rgba(255, 255, 255, 0.03) !important;
       }
     }
   }
@@ -158,6 +203,10 @@
   .table-disclaimer {
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 16px;
+    box-sizing: border-box;
+    margin-top: 24px;
 
     .disclaimer-label {
       color: #ffc640 !important;
@@ -167,13 +216,25 @@
 
 // ── FAQ Section ───────────────────────────────────────────
 .faq-section {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  padding: 80px 24px;
+
   h2 {
     font-family: 'Playfair Display', serif;
+    font-size: 1.75rem;
+    margin-bottom: 32px;
   }
 
   .faq-item {
-    background: rgba(15, 23, 42, 0.4) ;
+    background: rgba(15, 23, 42, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 12px;
+    padding: 24px;
+    box-sizing: border-box;
+    margin-bottom: 16px;
   }
 }
 
@@ -182,19 +243,25 @@
   .plans-grid {
     grid-template-columns: 1fr;
     padding: 0 16px 40px;
+    gap: 24px;
   }
 
   .comparison-section {
+    padding: 60px 16px;
+    
     .table-scroll-wrapper {
-      margin-left: -16px;
-      margin-right: -16px;
-      border-radius: 0;
-      border-left: none;
-      border-right: none;
+      overflow-x: auto;
+      margin-left: 0;
+      margin-right: 0;
+      border-radius: 12px;
     }
     
     .comparison-table {
-      min-width: 600px;
+      min-width: 540px;
     }
+  }
+
+  .faq-section {
+    padding: 60px 16px;
   }
 }

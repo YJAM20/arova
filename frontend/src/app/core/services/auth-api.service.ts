@@ -26,6 +26,8 @@ export interface UserResponse {
   email: string;
   avatarUrl?: string | null;
   createdAt?: string;
+  isSystemAdmin?: boolean;
+  role?: string;
 }
 
 export interface AuthResponse {

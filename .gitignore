@@ -65,3 +65,5 @@ backend/**/local-backups/
 # =========================
 .vscode/
 .idea/
+docs/design/stitch/export/
+docs/design/stitch/*.zip

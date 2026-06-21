@@ -26,7 +26,7 @@
       <span class="brand-text font-semibold text-xl tracking-tight text-white">Arova</span>
     </a>
     
-    <div class="hidden md:flex items-center gap-8">
+    <div class="nav-links">
       <a routerLink="/auth" class="nav-link text-on-surface-variant hover:text-white transition-colors duration-300 font-label-caps text-xs tracking-wider uppercase">Universe</a>
       <a routerLink="/plans" class="nav-link text-on-surface-variant hover:text-white transition-colors duration-300 font-label-caps text-xs tracking-wider uppercase">Plans</a>
       <a routerLink="/auth" class="nav-link text-on-surface-variant hover:text-white transition-colors duration-300 font-label-caps text-xs tracking-wider uppercase">Demo</a>
@@ -157,37 +157,39 @@
   </div>
 
   <!-- Section 4: Sanctuary Protocol (Security Section) -->
-  <section class="security-section py-24 px-4 md:px-16 max-w-[1200px] mx-auto flex flex-col md:flex-row items-center gap-12 text-left relative z-10">
-    <div class="flex-1 space-y-6">
-      <span class="text-xs uppercase tracking-[0.2em] text-primary opacity-80 block">Security & privacy</span>
-      <h2 class="text-white text-3xl font-semibold">Sanctuary Protocol</h2>
-      <p class="text-neutral-300 leading-relaxed text-sm">
-        Your world is for two, and two only. We employ end-to-end quantum-resistant encryption that ensures your memories, conversations, and data remain invisible to the outside universe. No metadata, no tracking, no exceptions.
-      </p>
+  <section class="security-section relative z-10">
+    <div class="security-container">
+      <div class="flex-1 space-y-6">
+        <span class="text-xs uppercase tracking-[0.2em] text-primary opacity-80 block">Security & privacy</span>
+        <h2 class="text-white text-3xl font-semibold">Sanctuary Protocol</h2>
+        <p class="text-neutral-300 leading-relaxed text-sm">
+          Your world is for two, and two only. We employ end-to-end quantum-resistant encryption that ensures your memories, conversations, and data remain invisible to the outside universe. No metadata, no tracking, no exceptions.
+        </p>
+        
+        <ul class="space-y-4 text-xs">
+          <li class="flex gap-3">
+            <span class="text-secondary">✦</span>
+            <div>
+              <strong class="text-white block font-semibold">Zero-Knowledge Architecture</strong>
+              <span class="text-neutral-400">We hold no keys. Only you and your partner possess the access nodes to decipher your space.</span>
+            </div>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-secondary">✦</span>
+            <div>
+              <strong class="text-white block font-semibold">Encrypted Temporal Streams</strong>
+              <span class="text-neutral-400">Data in transit is wrapped in rotating cryptographic layers that expire regularly.</span>
+            </div>
+          </li>
+        </ul>
+      </div>
       
-      <ul class="space-y-4 text-xs">
-        <li class="flex gap-3">
-          <span class="text-secondary">✦</span>
-          <div>
-            <strong class="text-white block font-semibold">Zero-Knowledge Architecture</strong>
-            <span class="text-neutral-400">We hold no keys. Only you and your partner possess the access nodes to decipher your space.</span>
+      <div class="flex-1 relative">
+        <div class="glass-module p-1 aspect-square max-w-[400px] mx-auto rounded-full flex items-center justify-center relative border border-white/10">
+          <div class="absolute inset-0 bg-primary/10 rounded-full blur-2xl animate-pulse"></div>
+          <div class="w-full h-full rounded-full border border-white/10 flex items-center justify-center overflow-hidden">
+            <img alt="Security core" class="w-full h-full object-cover mix-blend-screen opacity-60" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaXUE_ywhRjNSRti-50A6Rv3HJIsDXYbqRsmWf77TTJfeC_-M7NmJowvvqo-VntMXLcg-O9KPfFrCmI3NEw4tiFl8uHlaZbK2Cirj2AYuGoPAPrIYH_W1QA7qpHQSmGdoRhIVBzYTlqDgpSOTfUnblhluUtc8Em_OO5XvkJTXcZaRq_aP3e6vX_2FEGX341Q9R_zybIllYdewcK9UpLRmqVRb44TkZNuvIIeVuMFp9J7tQ6hiNGusDrDZQJaYoJYGnLG5aw60hyFKG" />
           </div>
-        </li>
-        <li class="flex gap-3">
-          <span class="text-secondary">✦</span>
-          <div>
-            <strong class="text-white block font-semibold">Encrypted Temporal Streams</strong>
-            <span class="text-neutral-400">Data in transit is wrapped in rotating cryptographic layers that expire regularly.</span>
-          </div>
-        </li>
-      </ul>
-    </div>
-    
-    <div class="flex-1 relative">
-      <div class="glass-module p-1 aspect-square max-w-[400px] mx-auto rounded-full flex items-center justify-center relative border border-white/10">
-        <div class="absolute inset-0 bg-primary/10 rounded-full blur-2xl animate-pulse"></div>
-        <div class="w-full h-full rounded-full border border-white/10 flex items-center justify-center overflow-hidden">
-          <img alt="Security core" class="w-full h-full object-cover mix-blend-screen opacity-60" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaXUE_ywhRjNSRti-50A6Rv3HJIsDXYbqRsmWf77TTJfeC_-M7NmJowvvqo-VntMXLcg-O9KPfFrCmI3NEw4tiFl8uHlaZbK2Cirj2AYuGoPAPrIYH_W1QA7qpHQSmGdoRhIVBzYTlqDgpSOTfUnblhluUtc8Em_OO5XvkJTXcZaRq_aP3e6vX_2FEGX341Q9R_zybIllYdewcK9UpLRmqVRb44TkZNuvIIeVuMFp9J7tQ6hiNGusDrDZQJaYoJYGnLG5aw60hyFKG" />
         </div>
       </div>
     </div>

@@ -37,20 +37,16 @@ A full-stack relationship companion web application — a calm, cinematic, share
 
 <table>
   <tr>
-    <td align="center"><strong>Landing</strong><br/><img src="docs/screenshots/landing.png" alt="Landing Page" width="340"/></td>
-    <td align="center"><strong>Auth</strong><br/><img src="docs/screenshots/auth.png" alt="Authentication" width="340"/></td>
+    <td align="center"><strong>Landing</strong><br/><img src="docs/screenshots/01-landing.png" alt="Landing Page" width="340"/></td>
+    <td align="center"><strong>Universe Dashboard</strong><br/><img src="docs/screenshots/02-universe.png" alt="Universe Dashboard" width="340"/></td>
   </tr>
   <tr>
-    <td align="center"><strong>Universe Dashboard</strong><br/><img src="docs/screenshots/universe.png" alt="Universe Dashboard" width="340"/></td>
-    <td align="center"><strong>Planets</strong><br/><img src="docs/screenshots/planets.png" alt="Planets" width="340"/></td>
+    <td align="center"><strong>Planets</strong><br/><img src="docs/screenshots/03-planets.png" alt="Planets" width="340"/></td>
+    <td align="center"><strong>Profile Setup</strong><br/><img src="docs/screenshots/04-profile.png" alt="Profile Setup" width="340"/></td>
   </tr>
   <tr>
-    <td align="center"><strong>Live Chat</strong><br/><img src="docs/screenshots/chat.png" alt="Chat" width="340"/></td>
-    <td align="center"><strong>Music Room</strong><br/><img src="docs/screenshots/music.png" alt="Music Room" width="340"/></td>
-  </tr>
-  <tr>
-    <td align="center"><strong>Admin Dashboard</strong><br/><img src="docs/screenshots/admin.png" alt="Admin Dashboard" width="340"/></td>
-    <td align="center"><strong>Settings</strong><br/><img src="docs/screenshots/settings.png" alt="Settings" width="340"/></td>
+    <td align="center"><strong>Custom Sections</strong><br/><img src="docs/screenshots/05-custom-sections.png" alt="Custom Sections" width="340"/></td>
+    <td align="center"><strong>Admin Dashboard</strong><br/><img src="docs/screenshots/06-admin.png" alt="Admin Dashboard" width="340"/></td>
   </tr>
 </table>
 
@@ -288,14 +284,19 @@ Arova is designed with a **dual-storage architecture** that separates the demo e
 - Session managed via `love-universe-session-v1`
 - Full UI accessible with preset credentials
 - No backend, no database required
+- **Works seamlessly on static hosting platforms like Netlify without any backend.**
 
 **API Mode (full-stack)**
-- Frontend connects to `http://localhost:5036`
+- Frontend connects to `http://localhost:5036` (in development)
 - JWT Bearer token authentication (`love-universe-api-token`)
 - Entity Framework Core + SQLite persistence
 - Real-time chat via SignalR `CoupleHub`
 
 Switch between modes in the frontend configuration or via environment settings.
+
+> [!IMPORTANT]
+> **Production API Mode Configuration**:
+> The production frontend build uses an explicit placeholder for the API URL (`apiBaseUrl: 'https://YOUR_BACKEND_URL_HERE'`). Running in production API Mode requires deploying the ASP.NET Core backend to a cloud hosting provider, and updating `frontend/src/environments/environment.production.ts` with your actual backend URL.
 
 ---
 

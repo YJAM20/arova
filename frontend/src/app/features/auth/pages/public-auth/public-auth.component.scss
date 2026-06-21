@@ -72,14 +72,109 @@
   background: rgba(5, 20, 36, 0.7);
 }
 
+// ── Layout Grid & Content ──────────────────────────────────
+.auth-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 48px;
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  align-items: center;
+  box-sizing: border-box;
+
+  @media (min-width: 868px) {
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 64px;
+  }
+}
+
+.auth-intro {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  box-sizing: border-box;
+
+  :host-context([dir="rtl"]) & {
+    text-align: right;
+  }
+
+  .brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #dfe0ff;
+    text-shadow: 0 0 20px rgba(223, 224, 255, 0.2);
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.2;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+  }
+
+  .intro-copy {
+    color: #c6c5d5;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .value-points {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    li {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      
+      .text-secondary {
+        color: #f6be38;
+        font-size: 1.25rem;
+        line-height: 1;
+      }
+    }
+  }
+
+  .honest-note {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 16px;
+    box-sizing: border-box;
+    margin-top: 12px;
+  }
+}
+
+.auth-card-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
 // ── Right Glass Card ───────────────────────────────────────
 .glass-card {
   width: 100%;
+  max-width: 480px;
   background: rgba(15, 23, 42, 0.6) !important;
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+  border-radius: 16px;
+  padding: 40px !important;
+  box-sizing: border-box;
   transition: border-color var(--arova-transition-base), box-shadow var(--arova-transition-base);
 
   &:hover {
@@ -89,21 +184,35 @@
 
 // ── Tabs ───────────────────────────────────────────────────
 .tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 24px;
+  width: 100%;
+  box-sizing: border-box;
+
   button {
-    background: transparent;
-    border: none;
-    color: rgba(255, 255, 255, 0.4);
+    flex: 1;
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 2px solid transparent !important;
+    color: rgba(223, 224, 255, 0.4) !important;
+    padding: 12px 16px !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.12em !important;
     cursor: pointer;
-    border-bottom: 2px solid transparent;
-    border-radius: 0;
+    transition: all 0.2s ease !important;
+    border-radius: 0 !important;
 
     &:hover:not(.active):not(:disabled) {
-      color: #fff;
+      color: #fff !important;
+      border-bottom-color: rgba(255, 255, 255, 0.2) !important;
     }
 
     &.active {
-      color: #dfe0ff;
-      border-bottom: 2px solid #dfe0ff;
+      color: #dfe0ff !important;
+      border-bottom-color: #dfe0ff !important;
     }
   }
 }
@@ -115,20 +224,21 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(5, 20, 36, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(5, 20, 36, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   z-index: 30;
   gap: 16px;
+  border-radius: 16px;
 
   .orbital-ring-spinner {
     width: 48px;
     height: 48px;
-    border: 2px dashed rgba(255, 255, 255, 0.1);
+    border: 2px dashed rgba(255, 255, 255, 0.15);
     border-radius: 50%;
     position: relative;
     animation: rotate 4s linear infinite;
@@ -163,27 +273,67 @@
 
 // ── Form Styles ───────────────────────────────────────────
 .input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  box-sizing: border-box;
+
+  label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #dfe0ff;
+  }
+
   input,
   select {
-    background: rgba(5, 20, 36, 0.4) !important;
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    width: 100%;
+    background: rgba(5, 20, 36, 0.5) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
     color: #fff !important;
+    padding: 12px 16px !important;
+    border-radius: 8px !important;
+    font-size: 0.875rem !important;
+    box-sizing: border-box;
     transition: border-color var(--arova-transition-fast), box-shadow var(--arova-transition-fast);
+
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.22);
+    }
 
     &:focus {
       outline: none !important;
       border-color: #dfe0ff !important;
-      box-shadow: 0 0 0 2px rgba(189, 194, 255, 0.25) !important;
+      box-shadow: 0 0 0 3px rgba(223, 224, 255, 0.15) !important;
+    }
+    
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
   }
 
+  .phone-input-row {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
   .country-code-select {
+    width: 120px !important;
     padding: 0 8px !important;
     cursor: pointer;
   }
 }
 
 // ── Password Strength Visualizer ──────────────────────────
+.strength-container {
+  margin-top: -4px;
+}
+
 .strength-meter-bar {
   &.score-1 .fill { background: #f03e3e !important; }
   &.score-2 .fill { background: #fcc419 !important; }
@@ -192,32 +342,50 @@
 }
 
 .submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px 24px !important;
   background: #dfe0ff !important;
   color: #051424 !important;
   border: 1px solid #dfe0ff !important;
+  border-radius: 8px !important;
+  font-weight: 700 !important;
+  font-size: 0.875rem !important;
   box-shadow: 0 4px 15px rgba(129, 140, 248, 0.15);
   cursor: pointer;
-  transition: all 0.2s ease !important;
+  transition: all 0.2s ease-in-out !important;
 
   &:hover:not(:disabled) {
-    transform: scale(1.01);
-    box-shadow: 0 4px 20px rgba(129, 140, 248, 0.3);
+    background: #fff !important;
+    box-shadow: 0 6px 20px rgba(129, 140, 248, 0.25);
   }
 
   &:disabled {
-    opacity: 0.5;
+    opacity: 0.4;
     cursor: not-allowed;
-    transform: none !important;
     box-shadow: none !important;
   }
 }
 
 // ── Planned Social Provider buttons ───────────────────────
 .providers {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
+
   button {
-    background: rgba(255, 255, 255, 0.02) !important;
+    background: rgba(255, 255, 255, 0.03) !important;
     border: 1px solid rgba(255, 255, 255, 0.08) !important;
     color: #c6c5d5 !important;
+    padding: 11px 16px !important;
+    border-radius: 8px !important;
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
     cursor: pointer;
     transition: all 0.2s ease;
 
@@ -232,10 +400,17 @@
 // ── Demo Access Area ───────────────────────────────────────
 .demo-wrapper {
   border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 16px;
+  width: 100%;
   
   .local-demo {
     color: #dfe0ff !important;
+    font-weight: 700;
     text-shadow: 0 0 10px rgba(223, 224, 255, 0.2);
+    
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }
 
@@ -243,6 +418,8 @@
 .fallback-actions {
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 16px;
 
   .fallback-links a {
     color: #ffc640 !important;
@@ -259,9 +436,11 @@
 // ── Utility Redirect links ──────────────────────────────────
 .utility-links {
   border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 16px;
   
   a {
-    color: #7a7a7a !important;
+    color: rgba(255, 255, 255, 0.4) !important;
+    transition: color 0.2s ease;
     
     &:hover {
       color: #dfe0ff !important;
@@ -270,6 +449,26 @@
 }
 
 // ── Responsive collapse rules ──────────────────────────────
+@media (max-width: 868px) {
+  .auth-container {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding: 0 16px;
+  }
+  .auth-intro {
+    text-align: center;
+    align-items: center;
+    
+    :host-context([dir="rtl"]) & {
+      text-align: center;
+    }
+    
+    .value-points {
+      align-items: center;
+    }
+  }
+}
+
 @media (max-width: 480px) {
   .glass-card {
     padding: 32px 20px !important;

@@ -128,7 +128,9 @@ public sealed class AuthService : IAuthService
             AvatarUrl = user.AvatarUrl,
             IsVerified = user.IsVerified,
             CreatedAt = user.CreatedAt,
-            LastLoginAt = user.LastLoginAt
+            LastLoginAt = user.LastLoginAt,
+            IsSystemAdmin = user.IsSystemAdmin,
+            Role = user.IsSystemAdmin ? "admin" : "partner"
         };
     }
 

@@ -53,7 +53,7 @@ public sealed class SetupStatusService : ISetupStatusService
         return new SetupStatusResponse
         {
             IsVerified = user.IsVerified,
-            HasCompletedQuickOnboarding = quickRequiredKeys.Count > 0 && answeredQuickKeys.Count == quickRequiredKeys.Count,
+            HasCompletedQuickOnboarding = quickRequiredKeys.Count == 0 || answeredQuickKeys.Count == quickRequiredKeys.Count,
             HasCompletedProfile = profile is not null
                 && !string.IsNullOrWhiteSpace(profile.DisplayName)
                 && !string.IsNullOrWhiteSpace(profile.PreferredLanguage),

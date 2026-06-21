@@ -63,7 +63,7 @@ input, textarea {
 ::-webkit-scrollbar-thumb { background: $dark-green; border-radius: 3px; }
 
 // Stars background utility
-body, .stars-bg {
+.stars-bg {
   position: relative;
   overflow-x: hidden;
   background: 

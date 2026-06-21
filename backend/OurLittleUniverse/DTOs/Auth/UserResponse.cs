@@ -17,4 +17,8 @@ public sealed class UserResponse
     public DateTime CreatedAt { get; set; }
 
     public DateTime? LastLoginAt { get; set; }
+
+    public bool IsSystemAdmin { get; set; }
+
+    public string? Role { get; set; }
 }

@@ -13,6 +13,7 @@ import {
   UserResponse,
 } from '../../../../core/services/auth-api.service';
 import { TokenStorageService } from '../../../../core/services/token-storage.service';
+import { AuthService } from '../../../../core/services/auth.service';
 
 type ApiAuthTab = 'register' | 'login' | 'me';
 
@@ -46,7 +47,8 @@ export class ApiAuthComponent implements OnInit {
   constructor(
     private appMode: AppModeService,
     private authApi: AuthApiService,
-    private tokenStorage: TokenStorageService
+    private tokenStorage: TokenStorageService,
+    private auth: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -89,6 +91,14 @@ export class ApiAuthComponent implements OnInit {
         this.busyAction = '';
         this.errorMessage = '';
         this.message = showMessage ? 'Loaded current API user.' : '';
+        this.auth.setCurrentUser({
+          id: user.id,
+          username: user.username,
+          passcode: '',
+          displayName: user.displayName,
+          role: user.role === 'admin' ? 'admin' : 'partner',
+          avatarUrl: user.avatarUrl || undefined,
+        });
       },
       error: error => this.handleError(error),
     });
@@ -97,6 +107,7 @@ export class ApiAuthComponent implements OnInit {
   apiLogout(): void {
     this.tokenStorage.clearToken();
     this.currentUser = null;
+    this.auth.setCurrentUser(null);
     this.message = 'API token cleared. Local app session was not changed.';
     this.errorMessage = '';
   }
@@ -114,6 +125,14 @@ export class ApiAuthComponent implements OnInit {
     this.errorMessage = '';
     this.message = `${message} App Mode is now API Mode.`;
     this.activeTab = 'me';
+    this.auth.setCurrentUser({
+      id: response.user.id,
+      username: response.user.username,
+      passcode: '',
+      displayName: response.user.displayName,
+      role: response.user.role === 'admin' ? 'admin' : 'partner',
+      avatarUrl: response.user.avatarUrl || undefined,
+    });
   }
 
   private handleError(error: unknown): void {

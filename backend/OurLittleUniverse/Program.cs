@@ -177,4 +177,36 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapHub<CoupleHub>("/hubs/couple");
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var environment = app.Environment;
+    var configuration = app.Configuration;
+    var logger = services.GetRequiredService<ILogger<Program>>();
+
+    bool isDevelopment = environment.IsDevelopment();
+    bool autoMigrateConfig = configuration.GetValue<bool>("Database:AutoMigrate") || configuration.GetValue<bool>("Database__AutoMigrate");
+
+    if (isDevelopment || autoMigrateConfig)
+    {
+        logger.LogInformation("Database auto-migration starting. Environment: {Env}, Config Flag: {Flag}", 
+            environment.EnvironmentName, autoMigrateConfig);
+
+        try
+        {
+            var db = services.GetRequiredService<AppDbContext>();
+            db.Database.Migrate();
+            logger.LogInformation("Database auto-migration completed successfully.");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Database auto-migration encountered a critical failure.");
+            if (!isDevelopment)
+            {
+                throw new InvalidOperationException("Critical failure: Production database migration failed. Application startup aborted.", ex);
+            }
+        }
+    }
+}
+
 app.Run();

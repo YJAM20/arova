@@ -49,6 +49,21 @@
   -webkit-backdrop-filter: blur(24px) !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
 
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px;
+    height: 80px;
+    box-sizing: border-box;
+
+    @media (max-width: 768px) {
+      padding: 0 16px;
+    }
+  }
+
   .nav-brand {
     transition: transform var(--arova-transition-fast);
     text-shadow: 0 0 15px rgba(223, 224, 255, 0.25);
@@ -58,8 +73,20 @@
     }
   }
 
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+
   .nav-link {
     transition: color var(--arova-transition-fast), transform var(--arova-transition-fast);
+    font-weight: 600;
+    color: #c6c5d5 !important;
     &:hover {
       color: #fff !important;
       transform: translateY(-1px);
@@ -151,28 +178,35 @@
   .cta-btn {
     text-decoration: none;
     cursor: pointer;
+    padding: 14px 32px !important;
+    border-radius: 9999px !important;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease-in-out;
+    display: inline-block;
 
     &.primary-cta {
       background: #dfe0ff !important;
       color: #051424 !important;
       border: 1px solid #dfe0ff !important;
-      box-shadow: 0px 0px 15px rgba(129, 140, 248, 0.25);
+      box-shadow: 0px 4px 15px rgba(129, 140, 248, 0.15);
 
       &:hover {
-        transform: scale(1.03);
-        box-shadow: 0px 0px 25px rgba(129, 140, 248, 0.4);
+        transform: translateY(-2px) !important;
+        background: #fff !important;
+        box-shadow: 0px 6px 25px rgba(129, 140, 248, 0.3);
       }
     }
 
     &.secondary-cta {
       background: rgba(255, 255, 255, 0.04) !important;
-      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
       color: #dfe0ff !important;
 
       &:hover {
         background: rgba(255, 255, 255, 0.08) !important;
-        border-color: rgba(255, 255, 255, 0.15) !important;
-        transform: scale(1.03);
+        border-color: rgba(255, 255, 255, 0.2) !important;
+        transform: translateY(-2px) !important;
       }
     }
   }
@@ -202,7 +236,8 @@
 // ── Fixed Revealed Cards Section ──────────────────────────
 .fixed-cards {
   position: fixed;
-  inset-x: 0;
+  left: 0;
+  right: 0;
   bottom: 0;
   height: 100vh;
   height: 100dvh;
@@ -222,7 +257,7 @@
 
   .cards-header {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 32px;
 
     .cards-eyebrow {
       color: #dfe0ff !important;
@@ -287,14 +322,90 @@
       padding: 12px 6px;
     }
   }
+
+  .glass-module,
+  .product-card {
+    h3 {
+      font-size: 1.2rem !important;
+      font-weight: 600;
+      color: #fff !important;
+      margin-bottom: 8px;
+    }
+
+    p {
+      font-size: 0.85rem !important;
+      line-height: 1.5;
+      color: #c6c5d5 !important;
+    }
+  }
 }
 
 // ── Security Section ──────────────────────────────────────
 .security-section {
   background: rgba(1, 15, 31, 0.4);
-  border-top: 1px solid rgba(255, 255, 255, 0.02);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  padding: 100px 40px;
+  box-sizing: border-box;
+  width: 100%;
   
+  .security-container {
+    max-width: 1120px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 64px;
+    width: 100%;
+    box-sizing: border-box;
+
+    @media (max-width: 868px) {
+      flex-direction: column;
+      gap: 40px;
+      text-align: center;
+    }
+  }
+
+  .flex-1 {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    color: #fff;
+    margin: 0;
+  }
+
+  p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #c6c5d5;
+    margin: 0;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    li {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      text-align: left;
+      
+      .text-secondary {
+        color: #f6be38;
+        font-size: 1.1rem;
+      }
+    }
+  }
+
   .glass-module {
     background: rgba(15, 23, 42, 0.6) !important;
     backdrop-filter: blur(24px) !important;
@@ -432,7 +543,8 @@
   .fixed-cards {
     position: relative;
     height: auto;
-    inset-x: auto;
+    left: auto;
+    right: auto;
     bottom: auto;
     z-index: 10;
     opacity: 1 !important;
