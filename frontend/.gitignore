@@ -79,4 +79,7 @@ test-results/
 *.sqlite
 *.sqlite3
 
+# Visual audit temporary files
+/visual-audit-temp/
+
 

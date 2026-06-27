@@ -1,36 +1,36 @@
 // Color Palette
-$bg-deep: #07130F;
-$bg-surface: #0D1F18;
-$dark-green: #37583F;
-$soft-green: #738C76;
-$soft-pink: #E7A6B6;
-$cream: #F7EBDD;
-$gold: #D6B76A;
-$text-primary: #FFF8EF;
-$text-muted: #B8B8B8;
-$text-dim: #7A7A7A;
+$bg-deep: var(--arova-bg, #07130F);
+$bg-surface: var(--arova-surface, #0D1F18);
+$dark-green: var(--arova-accent-soft, #37583F);
+$soft-green: var(--arova-accent-soft, #738C76);
+$soft-pink: var(--arova-accent, #E7A6B6);
+$cream: var(--arova-text, #F7EBDD);
+$gold: var(--arova-gold, #D6B76A);
+$text-primary: var(--arova-text, #FFF8EF);
+$text-muted: var(--arova-text-secondary, #B8B8B8);
+$text-dim: var(--arova-text-soft, #7A7A7A);
 
 // Glass
-$glass-bg: rgba(55, 88, 63, 0.12);
-$glass-border: rgba(231, 166, 182, 0.15);
-$glass-hover: rgba(55, 88, 63, 0.22);
+$glass-bg: var(--arova-surface, rgba(55, 88, 63, 0.12));
+$glass-border: var(--arova-border, rgba(231, 166, 182, 0.15));
+$glass-hover: var(--arova-surface-strong, rgba(55, 88, 63, 0.22));
 
 // Glow
-$glow-pink: rgba(231, 166, 182, 0.35);
-$glow-green: rgba(115, 140, 118, 0.35);
-$glow-gold: rgba(214, 183, 106, 0.35);
+$glow-pink: var(--arova-shadow-glow, rgba(231, 166, 182, 0.35));
+$glow-green: var(--arova-shadow-glow, rgba(115, 140, 118, 0.35));
+$glow-gold: var(--arova-shadow-glow, rgba(214, 183, 106, 0.35));
 
 // Typography
-$font-display: 'Playfair Display', serif;
-$font-body: 'Geist', sans-serif;
+$font-display: var(--font-display, 'Playfair Display', serif);
+$font-body: var(--font-body, 'Geist', sans-serif);
 
 // Spacing
-$radius-sm: 8px;
-$radius-md: 16px;
-$radius-lg: 24px;
-$radius-xl: 36px;
+$radius-sm: var(--arova-radius-sm, 14px);
+$radius-md: var(--arova-radius-md, 20px);
+$radius-lg: var(--arova-radius-lg, 28px);
+$radius-xl: var(--arova-radius-xl, 36px);
 
 // Transitions
-$transition-fast: 0.15s ease;
-$transition-base: 0.3s ease;
-$transition-slow: 0.6s ease;
+$transition-fast: var(--arova-transition-fast, 0.15s ease);
+$transition-base: var(--arova-transition-normal, 0.3s ease);
+$transition-slow: var(--arova-transition-normal, 0.6s ease);
