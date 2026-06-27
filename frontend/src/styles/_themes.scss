@@ -38,25 +38,54 @@
   --z-nav: 50;
   --z-modal: 100;
 
-  // Arova Design Tokens v1 mappings
+  // Arova Design Tokens v1 and v2.1 mappings
+  --arova-bg: var(--theme-bg);
   --arova-background: var(--theme-bg);
-  --arova-surface: var(--theme-surface);
+  --arova-surface: var(--theme-card);
   --arova-surface-elevated: color-mix(in srgb, var(--theme-surface) 88%, #ffffff 12%);
+  --arova-surface-strong: color-mix(in srgb, var(--theme-surface) 80%, #ffffff 20%);
+  
+  --arova-border: var(--theme-border);
+  --arova-border-strong: color-mix(in srgb, var(--theme-border) 60%, #ffffff 40%);
+
+  --arova-text: var(--theme-text);
   --arova-text-primary: var(--theme-text);
   --arova-text-secondary: var(--theme-muted);
+  --arova-text-muted: var(--theme-muted);
+  --arova-text-soft: var(--theme-dim);
   --arova-muted: var(--theme-dim);
-  --arova-border: var(--theme-border);
+
   --arova-accent: var(--theme-accent);
+  --arova-accent-2: var(--theme-accent-2);
   --arova-accent-soft: var(--theme-soft);
-  --arova-danger: #f03e3e;
-  --arova-success: #37b24d;
+  --arova-gold: var(--theme-accent-2);
+  --arova-danger: #ff6b8a;
+  --arova-success: #89f7c2;
   --arova-warning: #fcc419;
-  --arova-radius-sm: 8px;
-  --arova-radius-md: 16px;
-  --arova-radius-lg: 24px;
+
+  --arova-radius-sm: 14px;
+  --arova-radius-md: 20px;
+  --arova-radius-lg: 28px;
   --arova-radius-xl: 36px;
-  --arova-shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.12);
-  --arova-shadow-card: 0 8px 30px rgba(0, 0, 0, 0.18);
+
+  --arova-shadow-soft: 0 20px 60px rgba(0, 0, 0, 0.28);
+  --arova-shadow-glow: 0 0 40px rgba(240, 183, 255, 0.16);
+
+  --arova-page-x: clamp(1rem, 3vw, 2.5rem);
+  --arova-page-y: clamp(1.25rem, 4vw, 3rem);
+
+  /* Typography scale */
+  --text-xs: clamp(0.72rem, 0.7rem + 0.1vw, 0.78rem);
+  --text-sm: clamp(0.84rem, 0.82rem + 0.12vw, 0.94rem);
+  --text-md: clamp(0.98rem, 0.95rem + 0.16vw, 1.08rem);
+  --text-lg: clamp(1.12rem, 1.05rem + 0.3vw, 1.32rem);
+  --text-xl: clamp(1.35rem, 1.2rem + 0.7vw, 1.85rem);
+  --text-2xl: clamp(1.75rem, 1.45rem + 1.4vw, 2.8rem);
+  --text-3xl: clamp(2.2rem, 1.8rem + 2vw, 4rem);
+
+  --font-body: "Geist", "Inter", "Segoe UI", system-ui, sans-serif;
+  --font-display: "Playfair Display", Georgia, "Times New Roman", serif;
+
   --arova-transition-fast: 0.15s ease;
   --arova-transition-normal: 0.3s ease;
 }

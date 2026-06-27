@@ -39,7 +39,7 @@ import { RouterModule } from '@angular/router';
       margin-bottom: 8px;
     }
     .title {
-      font-family: 'Cormorant Garamond', 'Georgia', serif;
+      font-family: var(--font-display, 'Playfair Display', serif);
       font-size: 2.2rem;
       font-weight: 400;
       color: var(--arova-text-primary);

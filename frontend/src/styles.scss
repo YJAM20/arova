@@ -5,7 +5,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Geist:wght@300;400;600&display=swap');
 
 * {
-  font-family: 'Geist', sans-serif;
+  font-family: var(--font-body, 'Geist', sans-serif);
 }
 
 .font-serif-accent,
@@ -15,7 +15,7 @@ h3 em,
 h1 i,
 h2 i,
 h3 i {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-display, 'Playfair Display', serif);
 }
 
 *, *::before, *::after {
@@ -26,9 +26,9 @@ h3 i {
 
 html, body {
   height: 100%;
-  background-color: $bg-deep;
-  color: $text-primary;
-  font-family: $font-body;
+  background-color: var(--arova-bg, #070812);
+  color: var(--arova-text, #f8f4ff);
+  font-family: var(--font-body, "Geist", sans-serif);
   font-size: 16px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
@@ -36,7 +36,7 @@ html, body {
 }
 
 h1, h2, h3, h4 {
-  font-family: $font-display;
+  font-family: var(--font-display, "Playfair Display", serif);
   font-weight: 400;
   line-height: 1.2;
 }
@@ -439,5 +439,30 @@ input, textarea {
 .badge-warning { background: rgba(245, 158, 11, 0.1); color: #fde047; border: 1px solid rgba(245, 158, 11, 0.2); }
 .badge-safety { background: rgba(239, 68, 68, 0.1); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.2); }
 .badge-success { background: rgba(16, 185, 129, 0.1); color: #a7f3d0; border: 1px solid rgba(16, 185, 129, 0.2); }
+
+// ── Global Focus Styling ───────────────────────────────────────
+:where(a, button, input, textarea, select, [tabindex]):focus-visible {
+  outline: 2px solid var(--arova-gold, #f7d58a);
+  outline-offset: 3px;
+}
+
+// ── Arabic RTL support ──────────────────────────────────────────
+:lang(ar) {
+  direction: rtl;
+  font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+}
+
+// ── Prefers Reduced Motion ───────────────────────────────────────
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
 
 

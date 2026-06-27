@@ -167,18 +167,18 @@
 .glass-card {
   width: 100%;
   max-width: 480px;
-  background: rgba(15, 23, 42, 0.6) !important;
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
-  border-radius: 16px;
+  background: var(--arova-surface, rgba(15, 23, 42, 0.6)) !important;
+  backdrop-filter: blur(var(--arova-glass-blur, 24px));
+  -webkit-backdrop-filter: blur(var(--arova-glass-blur, 24px));
+  border: 1px solid var(--arova-border, rgba(255, 255, 255, 0.08)) !important;
+  box-shadow: var(--arova-shadow-soft);
+  border-radius: var(--arova-radius-md, 20px);
   padding: 40px !important;
   box-sizing: border-box;
   transition: border-color var(--arova-transition-base), box-shadow var(--arova-transition-base);
 
   &:hover {
-    border-color: rgba(255, 255, 255, 0.12) !important;
+    border-color: var(--arova-border-strong, rgba(255, 255, 255, 0.12)) !important;
   }
 }
 

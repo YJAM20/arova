@@ -20,7 +20,7 @@ import { CommonModule } from '@angular/common';
     }
     
     .title {
-      font-family: 'Cormorant Garamond', 'Georgia', serif;
+      font-family: var(--font-display, 'Playfair Display', serif);
       font-size: 1.5rem;
       font-weight: 400;
       color: var(--arova-text-primary);

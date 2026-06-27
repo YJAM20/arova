@@ -256,7 +256,7 @@ table {
     transition: background 0.2s;
     
     &:hover {
-      background: darken(#ec4899, 10%);
+      background: color-mix(in srgb, var(--accent-color, #ec4899) 90%, black 10%);
     }
   }
 }

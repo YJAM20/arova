@@ -296,7 +296,7 @@
 }
 
 .mobile-title {
-  font-family: var(--font-display, 'Cormorant Garamond', serif);
+  font-family: var(--font-display, 'Playfair Display', serif);
   font-size: 1.15rem;
   color: var(--arova-text-primary);
   flex: 1;
@@ -315,7 +315,7 @@
   justify-content: center;
   font-size: 0.88rem;
   color: var(--arova-text-primary);
-  font-family: var(--font-display, 'Cormorant Garamond', serif);
+  font-family: var(--font-display, 'Playfair Display', serif);
 }
 
 .mobile-overlay {
@@ -370,7 +370,7 @@
 
       .sidebar-title {
         display: block; /* Show title on mobile */
-        font-family: var(--font-display, 'Cormorant Garamond', serif);
+        font-family: var(--font-display, 'Playfair Display', serif);
         font-size: 1.35rem;
         color: var(--arova-text-primary);
         font-weight: 500;

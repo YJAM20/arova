@@ -59,7 +59,7 @@ import { CommonModule } from '@angular/common';
     }
 
     .brand-name {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: var(--font-display, 'Playfair Display', serif);
       text-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
     }
 

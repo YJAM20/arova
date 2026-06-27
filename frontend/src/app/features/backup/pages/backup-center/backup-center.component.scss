@@ -29,7 +29,7 @@
   .backup-date {
     font-size: 1.3rem;
     color: var(--arova-text-primary);
-    font-family: 'Cormorant Garamond', 'Georgia', serif;
+    font-family: var(--font-display, 'Playfair Display', serif);
     font-weight: 400;
   }
 }
@@ -69,7 +69,7 @@
 
   .summary-count {
     color: var(--arova-warning);
-    font-family: 'Cormorant Garamond', 'Georgia', serif;
+    font-family: var(--font-display, 'Playfair Display', serif);
     font-size: 1.8rem;
     font-weight: 400;
     margin-top: 4px;
