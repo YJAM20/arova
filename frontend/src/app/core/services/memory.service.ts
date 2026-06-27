@@ -3,7 +3,7 @@ import { Memory } from '../../shared/models/memory.model';
 import { AuthService } from './auth.service';
 import { StorageService } from './storage.service';
 
-import { RelationshipPointsService } from './relationship-points.service';
+import { GamificationService } from './gamification.service';
 
 export type MemoryInput = Omit<Memory, 'id' | 'createdAt' | 'updatedAt' | 'createdBy'>;
 
@@ -12,7 +12,7 @@ export class MemoryService {
   constructor(
     private storage: StorageService,
     private auth: AuthService,
-    private pointsService: RelationshipPointsService
+    private gamification: GamificationService
   ) {}
 
   getMemories(): Memory[] {
@@ -32,7 +32,7 @@ export class MemoryService {
 
   addMemory(input: MemoryInput): Memory {
     const memory = this.storage.addMemory({ ...input, createdBy: this.currentUserId() });
-    this.pointsService.rewardMemoryCreated();
+    this.gamification.rewardMemoryCreated();
     return memory;
   }
 

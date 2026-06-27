@@ -25,14 +25,14 @@ test.describe('Admin Showcase Page', () => {
   test('should display the Showcase mode badge', async ({ page }) => {
     const badge = page.locator('.showcase-badge');
     await expect(badge).toBeVisible();
-    await expect(badge).toContainText(/showcase mode/i);
+    await expect(badge).toContainText(/Showcase Mode — sample data only/i);
   });
 
   test('should display the Developer Note disclaimer alert', async ({ page }) => {
     const alert = page.locator('.disclaimer-alert');
     await expect(alert).toBeVisible();
-    await expect(alert).toContainText(/developer note/i);
-    await expect(alert).toContainText(/local sample data/i);
+    await expect(alert).toContainText(/demonstrates the admin design/i);
+    await expect(alert).toContainText(/not connected to private couple data/i);
   });
 
   // ── Sidebar Navigation ────────────────────────────────────────────────────

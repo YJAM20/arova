@@ -4,6 +4,8 @@ using LoveUniverse.Api.Data;
 using LoveUniverse.Api.Hubs;
 using LoveUniverse.Api.Options;
 using LoveUniverse.Api.Services;
+using LoveUniverse.Api.Services.Email;
+using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -62,6 +64,7 @@ builder.Services.AddScoped<ISongService, SongService>();
 builder.Services.AddScoped<ISettingsService, SettingsService>();
 builder.Services.AddScoped<IChallengeService, ChallengeService>();
 builder.Services.AddScoped<IFuturePlanService, FuturePlanService>();
+builder.Services.AddScoped<ICoupleGoalService, CoupleGoalService>();
 builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<IBackupService, BackupService>();
 builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
@@ -71,8 +74,32 @@ builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddScoped<IPlanetService, PlanetService>();
 builder.Services.AddScoped<IRelationshipScoreService, RelationshipScoreService>();
 builder.Services.AddScoped<ICustomSectionService, CustomSectionService>();
+builder.Services.AddScoped<IDailyQuestionService, DailyQuestionService>();
+builder.Services.AddScoped<ICheckInService, CheckInService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
-builder.Services.AddScoped<IEmailSender, ConsoleEmailSender>();
+builder.Services.AddScoped<IDailyDigestService, DailyDigestService>();
+builder.Services.AddScoped<IImportantDateService, ImportantDateService>();
+builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection("Email"));
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<ConsoleEmailSender>();
+builder.Services.AddScoped<ResendEmailSender>();
+builder.Services.AddScoped<IEmailSender>(sp =>
+{
+    var options = sp.GetRequiredService<IOptions<EmailOptions>>().Value;
+    var logger = sp.GetRequiredService<ILogger<Program>>();
+
+    if (string.Equals(options.Provider, "Resend", StringComparison.OrdinalIgnoreCase))
+    {
+        if (string.IsNullOrWhiteSpace(options.ResendApiKey))
+        {
+            logger.LogWarning("Email provider is configured as Resend, but ResendApiKey is missing. Falling back to ConsoleEmailSender.");
+            return sp.GetRequiredService<ConsoleEmailSender>();
+        }
+        return sp.GetRequiredService<ResendEmailSender>();
+    }
+
+    return sp.GetRequiredService<ConsoleEmailSender>();
+});
 builder.Services.AddScoped<ISmsSender, ConsoleSmsSender>();
 builder.Services.AddScoped<IAccountVerificationService, AccountVerificationService>();
 builder.Services.AddScoped<IExternalAuthVerifier, GoogleExternalAuthVerifier>();

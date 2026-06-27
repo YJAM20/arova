@@ -19,4 +19,16 @@ public sealed class ConsoleEmailSender : IEmailSender
 
         return Task.CompletedTask;
     }
+
+    public Task SendEmailAsync(string toEmail, string subject, string plainTextBody, string htmlBody, CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation(
+            "ConsoleEmailSender: Sending Email to {ToEmail}\nSubject: {Subject}\nPlainText: {PlainText}\nHtmlText: {HtmlText}",
+            toEmail,
+            subject,
+            plainTextBody,
+            htmlBody);
+
+        return Task.CompletedTask;
+    }
 }

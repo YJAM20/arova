@@ -3,6 +3,8 @@ using LoveUniverse.Api.DTOs.RelationshipScore;
 using LoveUniverse.Api.Entities;
 using LoveUniverse.Api.Entities.Enums;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.SignalR;
+using LoveUniverse.Api.Hubs;
 
 namespace LoveUniverse.Api.Services;
 
@@ -10,6 +12,7 @@ public sealed class RelationshipScoreService : IRelationshipScoreService
 {
     private readonly AppDbContext _dbContext;
     private readonly IPermissionService _permissionService;
+    private readonly IHubContext<CoupleHub> _hubContext;
 
     private static readonly (string Rank, int Threshold)[] Ranks = new[]
     {
@@ -42,10 +45,14 @@ public sealed class RelationshipScoreService : IRelationshipScoreService
         ("celebrate_win", "Celebrate a small win together", "Acknowledge and celebrate a recent success or milestone.", 10)
     };
 
-    public RelationshipScoreService(AppDbContext dbContext, IPermissionService permissionService)
+    public RelationshipScoreService(
+        AppDbContext dbContext,
+        IPermissionService permissionService,
+        IHubContext<CoupleHub> hubContext)
     {
         _dbContext = dbContext;
         _permissionService = permissionService;
+        _hubContext = hubContext;
     }
 
     public async Task<ContentServiceResult<RelationshipScoreResponse>> GetScoreAsync(CancellationToken cancellationToken = default)
@@ -93,13 +100,48 @@ public sealed class RelationshipScoreService : IRelationshipScoreService
             progressPercent = range > 0 ? (double)progress / range * 100.0 : 100.0;
         }
 
+        // Compute streak: consecutive calendar days (UTC) with at least one ledger entry, ending today or yesterday
+        var distinctDates = await _dbContext.Set<RelationshipPointLedger>()
+            .AsNoTracking()
+            .Where(ledger => ledger.CoupleId == context.CoupleId)
+            .Select(ledger => ledger.CreatedAt.Date)
+            .Distinct()
+            .OrderByDescending(d => d)
+            .ToListAsync(cancellationToken);
+
+        int streak = 0;
+        if (distinctDates.Count > 0)
+        {
+            var today = DateTime.UtcNow.Date;
+            var yesterday = today.AddDays(-1);
+            // Streak is valid if the most recent active day is today or yesterday
+            var mostRecent = distinctDates[0];
+            if (mostRecent == today || mostRecent == yesterday)
+            {
+                var expected = mostRecent;
+                foreach (var date in distinctDates)
+                {
+                    if (date == expected)
+                    {
+                        streak++;
+                        expected = expected.AddDays(-1);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
         return ContentServiceResult<RelationshipScoreResponse>.Success(new RelationshipScoreResponse
         {
             TotalPoints = totalPoints,
             CurrentRank = currentRank,
             NextRank = nextRank,
             NextRankThreshold = nextRankThreshold,
-            ProgressPercent = Math.Round(progressPercent, 2)
+            ProgressPercent = Math.Round(progressPercent, 2),
+            Streak = streak
         });
     }
 
@@ -164,6 +206,8 @@ public sealed class RelationshipScoreService : IRelationshipScoreService
             return ContentServiceResult<DailyTaskResponse>.Failure(ContentServiceStatus.BadRequest, "Daily task already completed.");
         }
 
+        var oldState = await GetScoreStateAsync(context.CoupleId!.Value, cancellationToken);
+
         var now = DateTime.UtcNow;
         task.IsCompleted = true;
         task.CompletedByUserId = context.UserId;
@@ -185,7 +229,83 @@ public sealed class RelationshipScoreService : IRelationshipScoreService
         _dbContext.Set<RelationshipPointLedger>().Add(ledgerEntry);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
+        var newState = await GetScoreStateAsync(context.CoupleId!.Value, cancellationToken);
+
+        string userDisplayName = "Partner";
+        var user = await _dbContext.AppUsers.FindAsync(new object[] { context.UserId!.Value }, cancellationToken);
+        if (user != null)
+        {
+            userDisplayName = user.DisplayName ?? user.Username;
+        }
+
+        await EmitGamificationEventsAsync(context.CoupleId!.Value, userDisplayName, ledgerEntry.Reason, ledgerEntry.Points, oldState, newState, cancellationToken);
+
         return ContentServiceResult<DailyTaskResponse>.Success(MapDailyTask(task));
+    }
+
+    public async Task<ContentServiceResult<AwardPointsResponse>> AwardPointsAsync(AwardPointsRequest request, CancellationToken cancellationToken = default)
+    {
+        var context = await GetAccessContextAsync(cancellationToken);
+        if (!context.Succeeded)
+        {
+            return ContentServiceResult<AwardPointsResponse>.Failure(context.Status, context.ErrorMessage);
+        }
+
+        if (string.IsNullOrWhiteSpace(request.ActionType))
+        {
+            return ContentServiceResult<AwardPointsResponse>.Failure(ContentServiceStatus.BadRequest, "ActionType is required.");
+        }
+
+        if (request.Points <= 0)
+        {
+            return ContentServiceResult<AwardPointsResponse>.Failure(ContentServiceStatus.BadRequest, "Points must be greater than zero.");
+        }
+
+        if (request.Points > 500)
+        {
+            return ContentServiceResult<AwardPointsResponse>.Failure(ContentServiceStatus.BadRequest, "Points per award cannot exceed 500.");
+        }
+
+        var oldState = await GetScoreStateAsync(context.CoupleId!.Value, cancellationToken);
+
+        var now = DateTime.UtcNow;
+        var ledgerEntry = new RelationshipPointLedger
+        {
+            Id = Guid.NewGuid(),
+            CoupleId = context.CoupleId!.Value,
+            UserId = context.UserId!.Value,
+            ActionType = request.ActionType.Trim(),
+            Points = request.Points,
+            Reason = (request.Reason ?? string.Empty).Trim(),
+            SourceType = request.SourceType?.Trim(),
+            CreatedAt = now
+        };
+
+        _dbContext.Set<RelationshipPointLedger>().Add(ledgerEntry);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        var newState = await GetScoreStateAsync(context.CoupleId!.Value, cancellationToken);
+
+        string userDisplayName = "Partner";
+        var user = await _dbContext.AppUsers.FindAsync(new object[] { context.UserId!.Value }, cancellationToken);
+        if (user != null)
+        {
+            userDisplayName = user.DisplayName ?? user.Username;
+        }
+
+        await EmitGamificationEventsAsync(context.CoupleId!.Value, userDisplayName, ledgerEntry.ActionType, ledgerEntry.Points, oldState, newState, cancellationToken);
+
+        return ContentServiceResult<AwardPointsResponse>.Success(new AwardPointsResponse
+        {
+            Id = ledgerEntry.Id,
+            UserId = ledgerEntry.UserId,
+            ActionType = ledgerEntry.ActionType,
+            Points = ledgerEntry.Points,
+            Reason = ledgerEntry.Reason,
+            SourceType = ledgerEntry.SourceType,
+            CreatedAt = ledgerEntry.CreatedAt,
+            NewTotalPoints = newState.Points
+        });
     }
 
     private async Task EnsureDailyTasksAsync(Guid coupleId, DateOnly date, CancellationToken cancellationToken)
@@ -303,6 +423,97 @@ public sealed class RelationshipScoreService : IRelationshipScoreService
         public static AccessContext Failure(ContentServiceStatus status, string errorMessage)
         {
             return new AccessContext(false, null, null, null, status, errorMessage);
+        }
+    }
+
+    private async Task<(int Points, int Streak, string Rank)> GetScoreStateAsync(Guid coupleId, CancellationToken cancellationToken)
+    {
+        var totalPoints = await _dbContext.Set<RelationshipPointLedger>()
+            .AsNoTracking()
+            .Where(ledger => ledger.CoupleId == coupleId)
+            .SumAsync(ledger => ledger.Points, cancellationToken);
+
+        string currentRank = "Spark";
+        for (int i = 0; i < Ranks.Length; i++)
+        {
+            if (totalPoints >= Ranks[i].Threshold)
+            {
+                currentRank = Ranks[i].Rank;
+            }
+        }
+
+        var distinctDates = await _dbContext.Set<RelationshipPointLedger>()
+            .AsNoTracking()
+            .Where(ledger => ledger.CoupleId == coupleId)
+            .Select(ledger => ledger.CreatedAt.Date)
+            .Distinct()
+            .OrderByDescending(d => d)
+            .ToListAsync(cancellationToken);
+
+        int streak = 0;
+        if (distinctDates.Count > 0)
+        {
+            var today = DateTime.UtcNow.Date;
+            var yesterday = today.AddDays(-1);
+            var mostRecent = distinctDates[0];
+            if (mostRecent == today || mostRecent == yesterday)
+            {
+                var expected = mostRecent;
+                foreach (var date in distinctDates)
+                {
+                    if (date == expected)
+                    {
+                        streak++;
+                        expected = expected.AddDays(-1);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
+        return (totalPoints, streak, currentRank);
+    }
+
+    private async Task EmitGamificationEventsAsync(
+        Guid coupleId,
+        string userDisplayName,
+        string actionType,
+        int points,
+        (int Points, int Streak, string Rank) oldState,
+        (int Points, int Streak, string Rank) newState,
+        CancellationToken cancellationToken)
+    {
+        var groupName = $"couple-{coupleId}";
+
+        await _hubContext.Clients.Group(groupName).SendAsync("pointsAwarded", new
+        {
+            userDisplayName,
+            actionType,
+            points,
+            newTotal = newState.Points,
+            rank = newState.Rank
+        }, cancellationToken);
+
+        if (newState.Streak > oldState.Streak)
+        {
+            await _hubContext.Clients.Group(groupName).SendAsync("streakMilestone", new
+            {
+                userDisplayName,
+                streak = newState.Streak
+            }, cancellationToken);
+        }
+
+        if (newState.Rank != oldState.Rank)
+        {
+            await _hubContext.Clients.Group(groupName).SendAsync("rankChanged", new
+            {
+                userDisplayName,
+                rank = newState.Rank,
+                newTotal = newState.Points
+            }, cancellationToken);
         }
     }
 }

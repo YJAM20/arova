@@ -212,6 +212,42 @@ test.describe('Arova Settings Page Flow', () => {
     expect(backendCalled).toBe(false);
   });
 
+  test('should display language switcher buttons, select Arabic, and save settings', async ({ page }) => {
+    await openSettingsInLocalMode(page);
+
+    // 1. Language section headings/descriptions
+    await expect(page.locator('#language-heading')).toContainText(/language & direction/i);
+    await expect(page.getByText(/Arabic includes RTL layout support/i)).toBeVisible();
+
+    // 2. Buttons visible
+    const langSwitcher = page.locator('#settings-lang-switcher');
+    await expect(langSwitcher).toBeVisible();
+    
+    const enBtn = page.locator('#lang-btn-en');
+    const arBtn = page.locator('#lang-btn-ar');
+    const esBtn = page.locator('#lang-btn-es');
+
+    await expect(enBtn).toBeVisible();
+    await expect(arBtn).toBeVisible();
+    await expect(esBtn).toBeVisible();
+
+    // English active by default
+    await expect(enBtn).toHaveClass(/active/);
+
+    // Select Arabic
+    await arBtn.click();
+    await expect(arBtn).toHaveClass(/active/);
+    await expect(enBtn).not.toHaveClass(/active/);
+
+    // Save settings
+    await page.locator('#settings-save-btn').click();
+    await expect(page.locator('.success-message')).toBeVisible();
+
+    // Check that dir="rtl" is applied dynamically
+    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'ar');
+  });
+
   test('has no horizontal overflow at 320px viewport', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 720 });
     await openSettingsInLocalMode(page);
@@ -220,5 +256,28 @@ test.describe('Arova Settings Page Flow', () => {
       () => document.documentElement.scrollWidth > document.documentElement.clientWidth
     );
     expect(hasHorizontalOverflow).toBe(false);
+  });
+
+  test('shows email notification toggles and honesty copy in Local Mode', async ({ page }) => {
+    await openSettingsInLocalMode(page);
+
+    // Section header and copy should be visible
+    await expect(page.locator('#email-heading')).toBeVisible();
+    await expect(page.locator('#email-heading')).toContainText(/email notifications/i);
+    await expect(page.getByText(/Email notifications require API Mode and a configured backend email provider/i)).toBeVisible();
+
+    // Checkboxes should be present
+    const emailNotifCheckbox = page.locator('input[name="emailNotificationsEnabled"]');
+    const dailyDigestCheckbox = page.locator('input[name="dailyDigestEnabled"]');
+    const partnerActivityCheckbox = page.locator('input[name="partnerActivityEmailsEnabled"]');
+
+    await expect(emailNotifCheckbox).toBeVisible();
+    await expect(dailyDigestCheckbox).toBeVisible();
+    await expect(partnerActivityCheckbox).toBeVisible();
+
+    // Toggles should not claim production email notifications are active in Local Mode
+    const localText = await page.content();
+    expect(localText).not.toMatch(/email delivery is active/i);
+    expect(localText).not.toMatch(/push notifications/i);
   });
 });

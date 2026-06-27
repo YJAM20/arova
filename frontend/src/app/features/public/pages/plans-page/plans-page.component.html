@@ -10,12 +10,176 @@
   </nav>
 
   <header class="page-hero text-center max-w-2xl mx-auto py-16 px-4 space-y-4">
-    <p class="text-xs uppercase tracking-[0.2em] text-primary opacity-80">✦ Pricing & Plans</p>
-    <h1 class="text-white text-4xl font-bold">Plans for a shared space.</h1>
-    <span class="text-neutral-400 text-sm">One subscription plan covers both partners in your private universe.</span>
+    <p class="text-xs uppercase tracking-[0.2em] text-primary opacity-80">✦ Environment Selection</p>
+    <h1 class="text-white text-4xl font-bold">Choose how your universe runs</h1>
+    <p class="text-neutral-400 text-sm">
+      Start instantly in Local Mode, then connect API Mode when you want backend-backed sync and production-style behavior.
+    </p>
   </header>
 
-  <p class="message text-center text-xs text-yellow-500 max-w-md mx-auto mb-8" *ngIf="message">{{ message }}</p>
+  <!-- Status / Alert Banners -->
+  <div class="active-mode-banner text-center mb-8">
+    <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold bg-white/5 border border-white/10 text-neutral-300">
+      Current Environment: 
+      <strong [ngClass]="isLocalMode ? 'text-primary' : 'text-green-400'">
+        {{ isLocalMode ? 'Local Mode (Demo)' : 'API Mode' }}
+      </strong>
+    </span>
+  </div>
+
+  <p class="message text-center text-xs text-yellow-500 max-w-md mx-auto mb-4" *ngIf="message">{{ message }}</p>
+  <p class="error-message text-center text-xs text-red-500 max-w-md mx-auto mb-4" *ngIf="errorMessage">⚠️ {{ errorMessage }}</p>
+
+  <!-- Environment Mode Options -->
+  <section class="mode-comparison-grid grid grid-cols-1 md:grid-cols-2 gap-8 max-w-[900px] mx-auto px-4 pb-16">
+    
+    <!-- LOCAL MODE CARD -->
+    <article class="mode-card glass p-8 rounded-2xl flex flex-col justify-between border border-white/10 text-left relative overflow-hidden" [class.highlighted-card]="isLocalMode">
+      <div class="space-y-6">
+        <div class="card-header flex justify-between items-start">
+          <div>
+            <span class="mode-badge px-2 py-0.5 rounded text-[10px] uppercase font-bold bg-primary/20 text-primary tracking-wider">Local Mode</span>
+            <h2 class="text-white text-2xl font-bold mt-2">Local Mode</h2>
+            <p class="text-neutral-400 text-xs mt-1">A browser-local demo space for exploring Arova instantly.</p>
+          </div>
+        </div>
+        
+        <div class="luminous-separator h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+
+        <ul class="features-list space-y-3 text-xs text-neutral-300">
+          <li class="flex items-center gap-2">✔ Runs in this browser.</li>
+          <li class="flex items-center gap-2">✔ No backend required.</li>
+          <li class="flex items-center gap-2">✔ Good for demos and testing.</li>
+          <li class="flex items-center gap-2">✔ Data stays in localStorage.</li>
+          <li class="flex items-center gap-2">❌ Does not sync across devices.</li>
+          <li class="flex items-center gap-2">❌ Does not support real partner accounts across devices.</li>
+          <li class="flex items-center gap-2">❌ No real email/SMS/push delivery.</li>
+        </ul>
+      </div>
+
+      <div class="pt-8">
+        <button (click)="selectLocalMode()" class="cta-btn cta-btn--local w-full py-3.5 bg-white/5 border border-white/10 text-white rounded-xl font-bold text-center block text-xs hover:bg-white/10 transition-all duration-300">
+          {{ isLocalMode ? 'Active (Continue with Local Demo)' : 'Continue with Local Demo' }}
+        </button>
+      </div>
+    </article>
+
+    <!-- API MODE CARD -->
+    <article class="mode-card glass p-8 rounded-2xl flex flex-col justify-between border border-white/10 text-left relative overflow-hidden" [class.highlighted-card]="!isLocalMode">
+      <div class="space-y-6">
+        <div class="card-header flex justify-between items-start">
+          <div>
+            <span class="mode-badge px-2 py-0.5 rounded text-[10px] uppercase font-bold bg-green-500/20 text-green-400 tracking-wider">API Mode</span>
+            <h2 class="text-white text-2xl font-bold mt-2">API Mode</h2>
+            <p class="text-neutral-400 text-xs mt-1">A backend-connected mode for real app development and production-style usage (backend required).</p>
+          </div>
+        </div>
+        
+        <div class="luminous-separator h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+
+        <ul class="features-list space-y-3 text-xs text-neutral-300">
+          <li class="flex items-center gap-2">✔ Connects to configured backend.</li>
+          <li class="flex items-center gap-2">✔ Enables database-backed storage.</li>
+          <li class="flex items-center gap-2">✔ Enables real authentication flow if backend configured.</li>
+          <li class="flex items-center gap-2">✔ Enables SignalR/realtime features if backend running.</li>
+          <li class="flex items-center gap-2">✔ Enables future email/reminder integrations if configured.</li>
+          <li class="flex items-center gap-2">⚠ Requires backend setup.</li>
+          <li class="flex items-center gap-2">❌ Does not work if backend is offline.</li>
+        </ul>
+      </div>
+
+      <div class="pt-8">
+        <button (click)="selectApiMode()" class="cta-btn cta-btn--api w-full py-3.5 bg-primary text-black rounded-xl font-bold text-center block text-xs hover:scale-[1.02] transition-transform duration-300">
+          {{ !isLocalMode ? 'Active (Use API Mode)' : 'Configure API Mode' }}
+        </button>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- Comparison Section -->
+  <section class="comparison-section py-20 px-4 border-t border-white/5 bg-black/25" aria-labelledby="comparison-title">
+    <div class="comparison-container max-w-[900px] mx-auto">
+      <h2 id="comparison-title" class="comparison-title text-center text-white text-2xl font-bold mb-12">Feature Matrix</h2>
+      
+      <div class="table-scroll-wrapper glass p-1 rounded-2xl border border-white/10 overflow-hidden">
+        <table class="comparison-table w-full text-left text-xs border-collapse">
+          <caption class="sr-only">Detailed feature comparison between Local Mode and API Mode</caption>
+          <thead>
+            <tr class="border-b border-white/10">
+              <th scope="col" class="feature-col p-4 font-semibold text-neutral-300">Feature</th>
+              <th scope="col" class="local-col p-4 font-semibold text-neutral-300 text-center">Local Mode</th>
+              <th scope="col" class="api-col p-4 font-semibold text-neutral-300 text-center">API Mode</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+              <th scope="row" class="feature-name p-4 font-normal text-neutral-200">Instant browser demo</th>
+              <td class="p-4 text-center text-primary font-semibold">Yes</td>
+              <td class="p-4 text-center text-neutral-400">No, requires backend</td>
+            </tr>
+            <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+              <th scope="row" class="feature-name p-4 font-normal text-neutral-200">Backend database sync</th>
+              <td class="p-4 text-center text-neutral-500">No</td>
+              <td class="p-4 text-center text-green-400 font-semibold">Yes, if backend configured</td>
+            </tr>
+            <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+              <th scope="row" class="feature-name p-4 font-normal text-neutral-200">Cross-device persistence</th>
+              <td class="p-4 text-center text-neutral-500">No</td>
+              <td class="p-4 text-center text-green-400 font-semibold">Yes, if backend deployed</td>
+            </tr>
+            <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+              <th scope="row" class="feature-name p-4 font-normal text-neutral-200">Real partner accounts</th>
+              <td class="p-4 text-center text-yellow-500">Demo only</td>
+              <td class="p-4 text-center text-green-400 font-semibold">Backend-supported if implemented</td>
+            </tr>
+            <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+              <th scope="row" class="feature-name p-4 font-normal text-neutral-200">Realtime chat/presence</th>
+              <td class="p-4 text-center text-yellow-500">Simulated/local only</td>
+              <td class="p-4 text-center text-green-400 font-semibold">Yes, if SignalR backend is running</td>
+            </tr>
+            <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+              <th scope="row" class="feature-name p-4 font-normal text-neutral-200">Email reminders</th>
+              <td class="p-4 text-center text-neutral-500">No</td>
+              <td class="p-4 text-center text-neutral-300">If configured</td>
+            </tr>
+            <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+              <th scope="row" class="feature-name p-4 font-normal text-neutral-200">Push notifications</th>
+              <td class="p-4 text-center text-neutral-500">No</td>
+              <td class="p-4 text-center text-neutral-400">Future roadmap</td>
+            </tr>
+            <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+              <th scope="row" class="feature-name p-4 font-normal text-neutral-200">Production billing</th>
+              <td class="p-4 text-center text-neutral-500">No</td>
+              <td class="p-4 text-center text-neutral-400">Future roadmap</td>
+            </tr>
+            <tr class="hover:bg-white/5 transition-colors">
+              <th scope="row" class="feature-name p-4 font-normal text-neutral-200">True end-to-end encryption</th>
+              <td class="p-4 text-center text-neutral-500">Not yet</td>
+              <td class="p-4 text-center text-neutral-500">Not yet</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Billing Disclaimer -->
+      <footer class="table-disclaimer p-4 rounded-xl mt-6 bg-white/5 border border-white/5 flex gap-3 items-start">
+        <span class="disclaimer-label text-[10px] uppercase font-bold text-neutral-400 tracking-wider pt-0.5">Product Honesty</span>
+        <div class="disclaimer-text text-xs text-neutral-400 leading-relaxed m-0 space-y-1">
+          <p>✦ Local Mode keeps data in this browser only.</p>
+          <p>✦ API Mode requires the configured backend.</p>
+          <p>✦ Real payments are not processed in this demo.</p>
+          <p>✦ True end-to-end encryption is planned, not active in this demo.</p>
+        </div>
+      </footer>
+    </div>
+  </section>
+
+  <!-- Billing Previews -->
+  <header class="page-hero text-center max-w-2xl mx-auto pt-16 pb-6 px-4 space-y-2">
+    <h2 class="text-white text-2xl font-bold">Billing Sandbox Preview</h2>
+    <p class="text-neutral-400 text-xs">Explore how different plan limits behave in the browser sandbox. No real payments are processed.</p>
+  </header>
 
   <!-- Pricing Cards Grid -->
   <section class="plans-grid grid grid-cols-1 md:grid-cols-3 gap-8 max-w-[1200px] mx-auto px-4 pb-20">
@@ -131,111 +295,32 @@
 
   </section>
 
-  <!-- Comparison Section -->
-  <section class="comparison-section py-20 px-4 border-t border-white/5 bg-black/25" aria-labelledby="comparison-title">
-    <div class="comparison-container max-w-[900px] mx-auto">
-      <h2 id="comparison-title" class="comparison-title text-center text-white text-2xl font-bold mb-12">Compare Features</h2>
-      
-      <div class="table-scroll-wrapper glass p-1 rounded-2xl border border-white/10 overflow-hidden">
-        <table class="comparison-table w-full text-left text-xs border-collapse">
-          <caption class="sr-only">Detailed plan comparison across Starter, Pro, and Enterprise tiers</caption>
-          <thead>
-            <tr class="border-b border-white/10">
-              <th scope="col" class="feature-col p-4 font-semibold text-neutral-300">Feature</th>
-              <th scope="col" class="starter-col p-4 font-semibold text-neutral-300 text-center">Starter</th>
-              <th scope="col" class="pro-col highlighted-col p-4 font-semibold text-neutral-300 text-center">Pro</th>
-              <th scope="col" class="enterprise-col p-4 font-semibold text-neutral-300 text-center">Enterprise</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let row of comparisonRows" class="border-b border-white/5 last:border-0 hover:bg-white/5 transition-colors">
-              <th scope="row" class="feature-name p-4 font-normal text-neutral-200">{{ row.name }}</th>
-              
-              <!-- Starter Cell -->
-              <td class="starter-cell p-4 text-center">
-                <ng-container *ngIf="row.starter === true || row.starter === false; else starterText">
-                  <span class="sr-only">{{ row.starter ? 'Yes' : 'No' }}</span>
-                  <svg *ngIf="row.starter" class="table-icon check-icon w-4 h-4 mx-auto text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                  <svg *ngIf="!row.starter" class="table-icon x-icon w-4 h-4 mx-auto text-neutral-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                  </svg>
-                </ng-container>
-                <ng-template #starterText>
-                  <span class="cell-text text-neutral-400 font-medium">{{ row.starter }}</span>
-                </ng-template>
-              </td>
-
-              <!-- Pro Cell -->
-              <td class="pro-cell highlighted-col p-4 text-center">
-                <ng-container *ngIf="row.pro === true || row.pro === false; else proText">
-                  <span class="sr-only">{{ row.pro ? 'Yes' : 'No' }}</span>
-                  <svg *ngIf="row.pro" class="table-icon check-icon w-4 h-4 mx-auto text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                  <svg *ngIf="!row.pro" class="table-icon x-icon w-4 h-4 mx-auto text-neutral-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                  </svg>
-                </ng-container>
-                <ng-template #proText>
-                  <span class="cell-text text-neutral-200 font-bold">{{ row.pro }}</span>
-                </ng-template>
-              </td>
-
-              <!-- Enterprise Cell -->
-              <td class="enterprise-cell p-4 text-center">
-                <ng-container *ngIf="row.enterprise === true || row.enterprise === false; else enterpriseText">
-                  <span class="sr-only">{{ row.enterprise ? 'Yes' : 'No' }}</span>
-                  <svg *ngIf="row.enterprise" class="table-icon check-icon w-4 h-4 mx-auto text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                  <svg *ngIf="!row.enterprise" class="table-icon x-icon w-4 h-4 mx-auto text-neutral-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                  </svg>
-                </ng-container>
-                <ng-template #enterpriseText>
-                  <span class="cell-text text-neutral-400 font-medium">{{ row.enterprise }}</span>
-                </ng-template>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Billing Disclaimer -->
-      <footer class="table-disclaimer p-4 rounded-xl mt-6 bg-white/5 border border-white/5 flex gap-3 items-start">
-        <span class="disclaimer-label text-[10px] uppercase font-bold text-neutral-400 tracking-wider pt-0.5">Billing Note</span>
-        <p class="disclaimer-text text-xs text-neutral-400 leading-relaxed m-0">
-          Billing is currently connected to demo/sandbox flows only. No production payment is active unless explicitly configured. Pricing and subscription features are local demonstrations. No actual payments or billing integrations exist in this application. All options can be unlocked via local configuration or pairing.
-        </p>
-      </footer>
-    </div>
-  </section>
-
   <!-- FAQ Section -->
   <section class="faq-section py-20 px-4 max-w-[800px] mx-auto text-left">
     <h2 class="text-white text-2xl font-bold text-center mb-12">Frequently Asked Questions</h2>
     <div class="space-y-6">
       <div class="faq-item p-6 rounded-xl bg-white/5 border border-white/5">
-        <h3 class="text-white font-semibold text-sm mb-2">How do subscription plans work?</h3>
+        <h3 class="text-white font-semibold text-sm mb-2">Does Local Mode sync across devices?</h3>
         <p class="text-neutral-300 text-xs leading-relaxed">
-          Arova plans cover both partners in a shared space. Only one partner needs to upgrade to Pro or Platinum for the upgrade to apply to both profiles.
+          No. Local Mode keeps data in this browser only.
         </p>
       </div>
       <div class="faq-item p-6 rounded-xl bg-white/5 border border-white/5">
-        <h3 class="text-white font-semibold text-sm mb-2">Is my data secure in the Sandbox?</h3>
+        <h3 class="text-white font-semibold text-sm mb-2">Does API Mode require a backend?</h3>
         <p class="text-neutral-300 text-xs leading-relaxed">
-          Yes, your data is stored securely in your local browser sandbox context. The simulated checkout processes pricing configurations locally, and no real billing info is stored or processed.
+          Yes. API Mode needs the configured Arova backend to be running.
         </p>
       </div>
       <div class="faq-item p-6 rounded-xl bg-white/5 border border-white/5">
-        <h3 class="text-white font-semibold text-sm mb-2">Can I switch plans later?</h3>
+        <h3 class="text-white font-semibold text-sm mb-2">Are payments real in this demo?</h3>
         <p class="text-neutral-300 text-xs leading-relaxed">
-          Absolutely. You can change your active tier in local mode settings at any time or upgrade your sandbox demo package using the checkout links.
+          No. Real billing is not active in this demo unless a payment provider is explicitly implemented and configured.
+        </p>
+      </div>
+      <div class="faq-item p-6 rounded-xl bg-white/5 border border-white/5">
+        <h3 class="text-white font-semibold text-sm mb-2">Is Arova end-to-end encrypted?</h3>
+        <p class="text-neutral-300 text-xs leading-relaxed">
+          True production E2EE is planned, but not active in this demo.
         </p>
       </div>
     </div>

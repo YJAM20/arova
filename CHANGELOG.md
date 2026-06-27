@@ -1,5 +1,16 @@
 # Changelog
 
+## v2.1.0 — Checkout Local-vs-API Sprint
+
+### Added
+- Overhauled the plans and checkout experience into a dedicated product comparison space clearly distinguishing between Local Mode and API Mode.
+- Implemented a detailed feature matrix comparing browser-local demo limits against backend-connected API database capabilities.
+- Added FAQs and honest disclaimers to clearly state real payments, OAuth, SMS, push notifications, and E2EE are not active.
+- Refined CTA buttons on the plans page to dynamically toggle between Local Mode and API Mode, with built-in connectivity pings for API Mode.
+- Fixed E2E test timing regressions, stabilized SignalR connection timeouts, and scoped mobile locators.
+- Updated root `README.md` with badges, demo credentials, getting started commands, and testing guidance.
+- Optimized repository hygiene in `.gitignore` to globally exclude Playwright test videos, reports, and IDE configurations.
+
 ## v2.0.0 — Arova Version 2 Upgrade
 
 ### Added

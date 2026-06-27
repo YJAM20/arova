@@ -1,160 +1,240 @@
 import { Injectable } from '@angular/core';
+import { Observable, catchError, map, of, throwError } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 import {
   DailyQuestion,
   DailyQuestionAnswer,
   DailyQuestionCategory,
 } from '../../shared/models/daily-question.model';
-import { AuthService } from './auth.service';
-import { StorageService } from './storage.service';
+import { AppModeService } from './app-mode.service';
+import { DailyQuestionApiService } from './daily-question-api.service';
+import { DailyQuestionDataService } from './daily-question-data.service';
+import type { DailyQuestionHistoryItem } from './daily-question-data.service';
+import { TokenStorageService } from './token-storage.service';
 
-export interface DailyQuestionHistoryItem extends DailyQuestionAnswer {
-  question: DailyQuestion;
-  userName: string;
-}
-
-const QUESTION_BANK: DailyQuestion[] = [
-  {
-    id: 'dq-connection-001',
-    category: 'connection',
-    prompt: 'What helped you feel close to your partner recently?',
-  },
-  {
-    id: 'dq-fun-001',
-    category: 'fun',
-    prompt: 'What small silly thing would make today lighter for both of you?',
-  },
-  {
-    id: 'dq-deep-001',
-    category: 'deep',
-    prompt: 'What is one feeling you want your partner to understand better?',
-  },
-  {
-    id: 'dq-appreciation-001',
-    category: 'appreciation',
-    prompt: 'What is one ordinary thing your partner does that you appreciate?',
-  },
-  {
-    id: 'dq-future-001',
-    category: 'future',
-    prompt: 'What is one simple future moment you would like to share?',
-  },
-  {
-    id: 'dq-conflict-safe-001',
-    category: 'conflict-safe',
-    prompt: 'What helps you feel respected during a hard conversation?',
-  },
-  {
-    id: 'dq-connection-002',
-    category: 'connection',
-    prompt: 'What is one way you can make distance feel smaller this week?',
-  },
-  {
-    id: 'dq-fun-002',
-    category: 'fun',
-    prompt: 'What would be your ideal low-effort date at home?',
-  },
-  {
-    id: 'dq-deep-002',
-    category: 'deep',
-    prompt: 'What is something you are learning about yourself in this relationship?',
-  },
-  {
-    id: 'dq-appreciation-002',
-    category: 'appreciation',
-    prompt: 'What made you feel cared for recently?',
-  },
-  {
-    id: 'dq-future-002',
-    category: 'future',
-    prompt: 'What shared habit would you like to build slowly?',
-  },
-  {
-    id: 'dq-conflict-safe-002',
-    category: 'conflict-safe',
-    prompt: 'What gentle reset would help after a misunderstanding?',
-  },
-];
+export type { DailyQuestionHistoryItem };
 
 @Injectable({ providedIn: 'root' })
 export class DailyQuestionService {
-  constructor(private storage: StorageService, private auth: AuthService) {}
+  constructor(
+    private appMode: AppModeService,
+    private localData: DailyQuestionDataService,
+    private apiService: DailyQuestionApiService,
+    private tokenStorage: TokenStorageService
+  ) {}
 
-  getTodayQuestion(date = new Date()): DailyQuestion {
-    const dateKey = this.toDateKey(date);
-    const seed = Array.from(dateKey).reduce((sum, char) => sum + char.charCodeAt(0), 0);
-    return QUESTION_BANK[seed % QUESTION_BANK.length];
+  getTodayQuestion(): Observable<DailyQuestion> {
+    if (this.appMode.isLocalMode()) {
+      return this.localData.getTodayQuestion();
+    }
+
+    const readyError = this.apiReadinessError();
+    if (readyError) return throwError(() => new Error(readyError));
+
+    return this.apiService.getTodayQuestion().pipe(
+      map(q => this.questionFromApi(q)),
+      catchError(err => this.toFriendlyError(err))
+    );
   }
 
   getTodayDateKey(date = new Date()): string {
-    return this.toDateKey(date);
+    return this.localData.getTodayDateKey(date);
   }
 
   getCategories(): DailyQuestionCategory[] {
-    return ['connection', 'fun', 'deep', 'appreciation', 'future', 'conflict-safe'];
+    return this.localData.getCategories();
   }
 
-  getAnswersForDate(dateKey: string): DailyQuestionHistoryItem[] {
-    return this.toHistoryItems(
-      this.storage.getDailyQuestionAnswers().filter(answer => answer.dateKey === dateKey)
+  getAnswersForDate(dateKey: string): Observable<DailyQuestionHistoryItem[]> {
+    if (this.appMode.isLocalMode()) {
+      return this.localData.getAnswersForDate(dateKey);
+    }
+
+    const readyError = this.apiReadinessError();
+    if (readyError) return throwError(() => new Error(readyError));
+
+    // in API mode, history contains all answers, we can filter today's answers or fetch all
+    return this.apiService.getTodayAnswers().pipe(
+      map(answers => answers.map(a => this.historyItemFromApi(a))),
+      catchError(err => this.toFriendlyError(err))
     );
   }
 
-  getCurrentUserAnswer(questionId: string, dateKey: string): DailyQuestionAnswer | null {
-    const user = this.auth.getCurrentUser();
-    if (!user) return null;
+  getCurrentUserAnswer(questionId: string, dateKey: string): Observable<DailyQuestionAnswer | null> {
+    if (this.appMode.isLocalMode()) {
+      return this.localData.getCurrentUserAnswer(questionId, dateKey);
+    }
 
-    return (
-      this.storage
-        .getDailyQuestionAnswers()
-        .find(
-          answer =>
-            answer.userId === user.id &&
-            answer.questionId === questionId &&
-            answer.dateKey === dateKey
-        ) ?? null
+    const readyError = this.apiReadinessError();
+    if (readyError) return throwError(() => new Error(readyError));
+
+    const apiUserId = this.currentApiUserId();
+    return this.apiService.getTodayAnswers().pipe(
+      map(answers => {
+        const found = answers.find(a => a.userId === apiUserId);
+        return found ? this.answerFromApi(found) : null;
+      }),
+      catchError(err => this.toFriendlyError(err))
     );
   }
 
-  saveAnswer(questionId: string, dateKey: string, answer: string): DailyQuestionAnswer | null {
-    const user = this.auth.getCurrentUser();
-    const trimmed = answer.trim();
-    if (!user || !trimmed) return null;
+  saveAnswer(questionId: string, dateKey: string, answer: string): Observable<DailyQuestionAnswer | null> {
+    if (this.appMode.isLocalMode()) {
+      return this.localData.saveAnswer(questionId, dateKey, answer);
+    }
 
-    return this.storage.upsertDailyQuestionAnswer({
-      questionId,
-      dateKey,
-      userId: user.id,
-      answer: trimmed,
-    });
+    const readyError = this.apiReadinessError();
+    if (readyError) return throwError(() => new Error(readyError));
+
+    return this.apiService.answerTodayQuestion({ answer: answer.trim() }).pipe(
+      map(a => this.answerFromApi(a)),
+      catchError(err => this.toFriendlyError(err))
+    );
   }
 
-  getHistory(limit = 18): DailyQuestionHistoryItem[] {
-    return this.toHistoryItems(this.storage.getDailyQuestionAnswers())
-      .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
-      .slice(0, limit);
+  getHistory(limit = 18): Observable<DailyQuestionHistoryItem[]> {
+    if (this.appMode.isLocalMode()) {
+      return this.localData.getHistory(limit);
+    }
+
+    const readyError = this.apiReadinessError();
+    if (readyError) return throwError(() => new Error(readyError));
+
+    return this.apiService.getHistoryAnswers().pipe(
+      map(answers => answers.map(a => this.historyItemFromApi(a)).slice(0, limit)),
+      catchError(err => this.toFriendlyError(err))
+    );
   }
 
-  getQuestionById(id: string): DailyQuestion {
-    return QUESTION_BANK.find(question => question.id === id) ?? QUESTION_BANK[0];
+  isApiMode(): boolean {
+    return this.appMode.isApiMode();
   }
 
-  getUserName(userId: string): string {
-    return this.storage.getUsers().find(user => user.id === userId)?.displayName ?? 'Partner';
+  getApiModeMissingMessage(): string | null {
+    return this.apiReadinessError();
   }
 
-  private toHistoryItems(answers: DailyQuestionAnswer[]): DailyQuestionHistoryItem[] {
-    return answers.map(answer => ({
-      ...answer,
-      question: this.getQuestionById(answer.questionId),
-      userName: this.getUserName(answer.userId),
-    }));
+  private questionFromApi(q: any): DailyQuestion {
+    return {
+      id: q.id,
+      prompt: q.prompt,
+      category: q.category as DailyQuestionCategory,
+    };
   }
 
-  private toDateKey(date: Date): string {
-    return [
-      date.getFullYear(),
-      String(date.getMonth() + 1).padStart(2, '0'),
-      String(date.getDate()).padStart(2, '0'),
-    ].join('-');
+  private answerFromApi(a: any): DailyQuestionAnswer {
+    return {
+      id: a.id,
+      questionId: a.questionId,
+      dateKey: a.dateKey,
+      userId: a.userId,
+      answer: a.answer,
+      createdAt: a.createdAt,
+      updatedAt: a.updatedAt || a.createdAt,
+    };
+  }
+
+  private historyItemFromApi(a: any): DailyQuestionHistoryItem {
+    return {
+      ...this.answerFromApi(a),
+      userName: a.userDisplayName || 'Partner',
+      question: {
+        id: a.questionId,
+        prompt: this.localData.getQuestionById(a.questionId)?.prompt || 'Daily Question',
+        category: this.localData.getQuestionById(a.questionId)?.category || 'connection',
+      },
+    };
+  }
+
+  private apiReadinessError(): string | null {
+    if (!this.tokenStorage.hasToken()) {
+      return 'Please login in API Mode first.';
+    }
+    return null;
+  }
+
+  private currentApiUserId(): string | null {
+    const token = this.tokenStorage.getToken();
+    if (!token) return null;
+
+    try {
+      const segment = token.split('.')[1];
+      if (!segment) return null;
+
+      const normalized = segment.replace(/-/g, '+').replace(/_/g, '/');
+      const padded = normalized.padEnd(Math.ceil(normalized.length / 4) * 4, '=');
+      const payload = JSON.parse(atob(padded)) as Record<string, unknown>;
+      return this.asString(payload['sub'])
+        ?? this.asString(payload['nameid'])
+        ?? this.asString(payload['userId'])
+        ?? this.asString(payload['id'])
+        ?? this.asString(
+          payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
+        )
+        ?? null;
+    } catch {
+      return null;
+    }
+  }
+
+  private asString(value: unknown): string | null {
+    return typeof value === 'string' && value.trim() ? value : null;
+  }
+
+  private toFriendlyError(error: unknown): Observable<never> {
+    console.log('toFriendlyError caught error:', error);
+    if (!(error instanceof HttpErrorResponse)) {
+      console.log('Error is NOT HttpErrorResponse. Prototype:', Object.getPrototypeOf(error));
+      return throwError(() => new Error('Daily question request failed. Please try again.'));
+    }
+
+    if (error.status === 0) {
+      console.log('Error status is 0. Offline backend!');
+      return throwError(
+        () =>
+          new Error(
+            `Backend is not reachable. Make sure ${environment.apiBaseUrl} is running.`
+          )
+      );
+    }
+
+    if (error.status === 401) {
+      return throwError(() => new Error('Please login in API Mode first.'));
+    }
+
+    if (error.status === 403) {
+      return throwError(() => new Error('You do not have permission for this action.'));
+    }
+
+    if (error.status === 404) {
+      return throwError(() => new Error('Question not found.'));
+    }
+
+    if (error.status === 400) {
+      return throwError(
+        () =>
+          new Error(
+            this.extractServerMessage(error) ??
+              'The backend rejected this answer. Check required fields.'
+          )
+      );
+    }
+
+    return throwError(
+      () =>
+        new Error(
+          this.extractServerMessage(error) ?? `Request failed with status ${error.status}.`
+        )
+    );
+  }
+
+  private extractServerMessage(error: HttpErrorResponse): string | null {
+    if (typeof error.error === 'string' && error.error.trim()) return error.error;
+    if (typeof error.error === 'object' && error.error) {
+      if ('message' in error.error) return String(error.error.message);
+      if ('title' in error.error) return String(error.error.title);
+    }
+    return null;
   }
 }

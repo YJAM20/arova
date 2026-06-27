@@ -184,6 +184,14 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'memories/timeline',
+        title: 'Arova — Memory Timeline',
+        loadComponent: () =>
+          import('./features/memories/pages/memory-timeline/memory-timeline.component').then(
+            m => m.MemoryTimelineComponent
+          ),
+      },
+      {
         path: 'memories/new',
         loadComponent: () =>
           import('./features/admin/pages/memory-form/memory-form.component').then(
@@ -293,6 +301,22 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/future/pages/future-board/future-board.component').then(
             m => m.FutureBoardComponent
+          ),
+      },
+      {
+        path: 'goals',
+        title: 'Arova — Couple Goals',
+        loadComponent: () =>
+          import('./features/couple-goals/couple-goals-page.component').then(
+            m => m.CoupleGoalsPageComponent
+          ),
+      },
+      {
+        path: 'important-dates',
+        title: 'Arova — Important Dates & Reminders',
+        loadComponent: () =>
+          import('./features/important-dates/pages/important-dates-page/important-dates-page.component').then(
+            m => m.ImportantDatesPageComponent
           ),
       },
       {

@@ -413,7 +413,118 @@
   .add-content-link,
   .memory-card-wrapper,
   .retry-btn,
+  .action-btn,
+  .otd-strip-link,
   .action-link {
     transition: none !important;
   }
 }
+
+// ── Header Actions ─────────────────────────────────────
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 8px 18px;
+  border-radius: $radius-sm;
+  font-size: 0.88rem;
+  font-weight: 600;
+  transition: all $transition-fast;
+  cursor: pointer;
+  text-decoration: none;
+
+  &.timeline-btn {
+    border: 1px solid color-mix(in srgb, var(--theme-border, $glass-border) 60%, transparent);
+    color: var(--theme-muted, $text-muted);
+    background: rgba(255, 255, 255, 0.02);
+
+    &:hover,
+    &:focus-visible {
+      border-color: color-mix(in srgb, var(--theme-accent, $soft-pink) 40%, transparent);
+      color: var(--theme-text, $cream);
+      background: rgba(255, 255, 255, 0.05);
+      outline: none;
+    }
+  }
+}
+
+// ── On This Day Alert Strip ─────────────────────────────
+.otd-strip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  border-radius: $radius-md;
+  border: 1px solid color-mix(in srgb, var(--theme-accent, $soft-pink) 24%, transparent);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--theme-accent, $soft-pink) 4%, transparent), transparent);
+  font-size: 0.88rem;
+  color: var(--theme-text, $cream);
+  animation-delay: 0.05s;
+
+  .otd-strip-icon {
+    font-size: 1.2rem;
+    text-shadow: 0 0 8px color-mix(in srgb, var(--theme-accent, $soft-pink) 50%, transparent);
+  }
+
+  .otd-strip-text {
+    flex-grow: 1;
+    
+    strong {
+      color: var(--theme-accent, $soft-pink);
+    }
+  }
+
+  .otd-strip-link {
+    color: var(--theme-accent-2, $gold);
+    font-weight: 700;
+    text-decoration: none;
+    transition: color $transition-fast;
+
+    &:hover {
+      color: color-mix(in srgb, var(--theme-accent-2, $gold) 80%, #fff);
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .header-actions {
+    width: 100%;
+    
+    .action-btn,
+    .add-content-link {
+      flex: 1;
+      text-align: center;
+    }
+  }
+
+  .otd-strip {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    
+    .otd-strip-link {
+      align-self: flex-end;
+    }
+  }
+}
+
+@media (max-width: 360px) {
+  .header-actions {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    
+    .action-btn,
+    .add-content-link {
+      width: 100%;
+    }
+  }
+}
+

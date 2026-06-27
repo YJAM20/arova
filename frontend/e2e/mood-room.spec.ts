@@ -202,4 +202,104 @@ test.describe('Arova Mood Room Flow', () => {
     );
     expect(hasHorizontalOverflow).toBe(false);
   });
+
+  test('does not make backend API calls for mood state in Local Mode', async ({ page }) => {
+    let apiCalled = false;
+    await page.route('**/api/moods**', async route => {
+      apiCalled = true;
+      await route.continue();
+    });
+
+    await openMoodRoomInLocalMode(page);
+    await expect(page.locator('#mood-title')).toBeVisible();
+    expect(apiCalled).toBe(false);
+  });
+
+  test('displays offline error message in API Mode if backend is unreachable', async ({ page }) => {
+    // Inject API mode and dummy token
+    await page.goto('/');
+    await page.evaluate(() => {
+      localStorage.setItem('love-universe-app-mode', 'api');
+      localStorage.setItem('love-universe-api-token', 'dummy-token-placeholder');
+      localStorage.setItem(
+        'love-universe-data-v1',
+        JSON.stringify({
+          version: '1.0.0',
+          settings: { onboardingCompleted: true }
+        })
+      );
+    });
+
+    // Mock auth me to bypass auth guard check
+    await page.route('**/api/auth/me', async route => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ id: 'user-owner', displayName: 'Partner A' })
+      });
+    });
+
+    // Mock setup status to bypass onboarding checks
+    await page.route('**/api/setup/status', async route => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          isVerified: true,
+          hasCompletedQuickOnboarding: true,
+          hasCompletedProfile: true,
+          hasCouple: true,
+        }),
+      });
+    });
+
+    // Mock API fail on loading moods
+    await page.route('**/api/moods**', async route => {
+      await route.fulfill({
+        status: 500,
+        contentType: 'application/json',
+        body: JSON.stringify({ message: 'Backend is not reachable. Make sure http://localhost:5036 is running.' })
+      });
+    });
+
+    await page.goto('/mood');
+    // Verify error banner is displayed
+    const errorAlert = page.locator('.alert-error');
+    await expect(errorAlert).toBeVisible();
+    await expect(errorAlert).toContainText(/backend is not reachable/i);
+  });
+
+  test('contains product honesty copy in local mode and API mode', async ({ page }) => {
+    await openMoodRoomInLocalMode(page);
+    // Local mode warning
+    await expect(page.locator('#mood-local-warning')).toBeVisible();
+    await expect(page.locator('#mood-local-warning')).toContainText(/Local Mode keeps this room in your browser/i);
+
+    // API Mode warning
+    await page.evaluate(() => {
+      localStorage.setItem('love-universe-app-mode', 'api');
+      localStorage.setItem('love-universe-api-token', 'dummy-token-placeholder');
+      localStorage.setItem(
+        'love-universe-data-v1',
+        JSON.stringify({
+          version: '1.0.0',
+          settings: { onboardingCompleted: true }
+        })
+      );
+    });
+    // Mock auth me to bypass auth guard check on reload
+    await page.route('**/api/auth/me', async route => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ id: 'user-owner', displayName: 'Partner A' })
+      });
+    });
+    await page.route('**/api/moods**', async route => {
+      await route.fulfill({ status: 200, contentType: 'application/json', body: '[]' });
+    });
+    await page.reload();
+    await expect(page.locator('#mood-api-warning')).toBeVisible();
+    await expect(page.locator('#mood-api-warning')).toContainText(/API Mode can sync this room/i);
+  });
 });

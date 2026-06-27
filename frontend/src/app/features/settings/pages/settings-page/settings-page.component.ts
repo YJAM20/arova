@@ -11,6 +11,7 @@ import { TranslationService } from '../../../../core/services/translation.servic
 import { AppSettings } from '../../../../shared/models/app-settings.model';
 import { AppUser } from '../../../../shared/models/user.model';
 import { ArovaStatusPillComponent } from '../../../../shared/components/arova-status-pill/arova-status-pill.component';
+import { SettingsDataService } from '../../../../core/services/settings-data.service';
 
 import { toast } from 'ngx-sonner';
 
@@ -38,6 +39,9 @@ export class SettingsPageComponent implements OnInit {
     animationsEnabled: true,
     musicEnabled: false,
     onboardingCompleted: false,
+    emailNotificationsEnabled: true,
+    dailyDigestEnabled: true,
+    partnerActivityEmailsEnabled: true,
   };
   activeTab: 'general' | 'appearance' | 'account' = 'general';
   message = '';
@@ -93,7 +97,8 @@ export class SettingsPageComponent implements OnInit {
     private auth: AuthService,
     private onboarding: OnboardingService,
     private router: Router,
-    private customSectionsService: CustomSectionsService
+    private customSectionsService: CustomSectionsService,
+    private settingsDataService: SettingsDataService
   ) {}
 
   get activePlan(): string {
@@ -102,21 +107,35 @@ export class SettingsPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentUser = this.auth.getCurrentUser();
-    this.settings = {
-      ...this.settings,
-      ...this.themeService.getSettings(),
-    };
     this.appMode = this.appModeService.getMode();
+    this.settingsDataService.getSettings().subscribe({
+      next: (data) => {
+        this.settings = { ...this.settings, ...data };
+      },
+      error: (err) => {
+        console.error('Failed to load settings', err);
+      }
+    });
   }
 
   saveSettings(): void {
     this.appModeService.setMode(this.appMode);
-    this.settings = this.themeService.updateSettings({ ...this.settings });
-    this.translation.applyLanguageMode(this.settings.languageMode);
-    this.message = 'Settings saved for this browser.';
-    toast.success('Changes saved successfully!', {
-      description: 'Your preferences have been updated.',
-      duration: 4000
+    this.settingsDataService.saveSettings(this.settings).subscribe({
+      next: (data) => {
+        this.settings = { ...this.settings, ...data };
+        this.translation.applyLanguageMode(this.settings.languageMode);
+        this.message = 'Settings saved for this browser.';
+        toast.success('Changes saved successfully!', {
+          description: 'Your preferences have been updated.',
+          duration: 4000
+        });
+      },
+      error: (err) => {
+        console.error('Failed to save settings', err);
+        toast.error('Could not save settings', {
+          description: err.message || 'An error occurred.'
+        });
+      }
     });
   }
 

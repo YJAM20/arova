@@ -59,3 +59,37 @@ public sealed class AdminHealthResponse
 
     public string DatabaseStatus { get; set; } = "Connected";
 }
+
+public sealed class AdminEngagementOverviewDto
+{
+    public int TotalMemories { get; set; }
+
+    public int TotalLetters { get; set; }
+
+    public int TotalReasons { get; set; }
+
+    public int TotalMoodEntries { get; set; }
+
+    public int TotalSongs { get; set; }
+
+    public int TotalGoals { get; set; }
+
+    public int CompletedGoals { get; set; }
+
+    public int ActiveStreak { get; set; }
+
+    public int TotalPoints { get; set; }
+
+    public string CurrentRank { get; set; } = string.Empty;
+
+    public string MostUsedFeature { get; set; } = string.Empty;
+
+    public DateTime? LastActivityAt { get; set; }
+
+    public Dictionary<string, int> ActivityByFeature { get; set; } = [];
+
+    public Dictionary<string, int> ActivityByDay { get; set; } = [];
+
+    public List<string> Limitations { get; set; } = [];
+}
+

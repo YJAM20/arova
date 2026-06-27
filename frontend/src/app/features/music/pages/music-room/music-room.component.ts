@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SongDataService } from '../../../../core/services/song-data.service';
@@ -72,7 +72,8 @@ export class MusicRoomComponent implements OnInit {
 
   constructor(
     private songDataService: SongDataService,
-    private translation: TranslationService
+    private translation: TranslationService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -89,12 +90,14 @@ export class MusicRoomComponent implements OnInit {
         this.applyFilter();
         this.selectedSong = this.filteredSongs[0] ?? null;
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
       error: err => {
         this.errorMessage = err instanceof Error ? err.message : 'Could not load songs right now.';
         this.songs = [];
         this.filteredSongs = [];
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
     });
   }

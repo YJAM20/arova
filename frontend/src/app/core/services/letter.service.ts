@@ -3,7 +3,7 @@ import { Letter } from '../../shared/models/letter.model';
 import { AuthService } from './auth.service';
 import { StorageService } from './storage.service';
 
-import { RelationshipPointsService } from './relationship-points.service';
+import { GamificationService } from './gamification.service';
 
 export type LetterInput = Omit<Letter, 'id' | 'createdAt' | 'updatedAt' | 'createdBy'>;
 
@@ -12,7 +12,7 @@ export class LetterService {
   constructor(
     private storage: StorageService,
     private auth: AuthService,
-    private pointsService: RelationshipPointsService
+    private gamification: GamificationService
   ) {}
 
   getLetters(): Letter[] {
@@ -32,7 +32,7 @@ export class LetterService {
 
   addLetter(input: LetterInput): Letter {
     const letter = this.storage.addLetter({ ...input, createdBy: this.currentUserId() });
-    this.pointsService.rewardLetterWritten();
+    this.gamification.rewardLetterWritten();
     return letter;
   }
 

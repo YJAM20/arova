@@ -312,6 +312,48 @@ namespace OurLittleUniverse.Migrations
                     b.ToTable("ChatMessages");
                 });
 
+            modelBuilder.Entity("LoveUniverse.Api.Entities.CheckIn", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("CoupleId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Energy")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Mood")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Need")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(1000)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CoupleId");
+
+                    b.HasIndex("CreatedAt");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CheckIns");
+                });
+
             modelBuilder.Entity("LoveUniverse.Api.Entities.Couple", b =>
                 {
                     b.Property<Guid>("Id")
@@ -346,6 +388,97 @@ namespace OurLittleUniverse.Migrations
                     b.HasIndex("CreatedByUserId");
 
                     b.ToTable("Couples");
+                });
+
+            modelBuilder.Entity("LoveUniverse.Api.Entities.CoupleGoal", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("CoupleId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsPrivate")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("ProgressPercent")
+                        .HasColumnType("REAL");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("TargetDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CoupleId");
+
+                    b.HasIndex("CreatedByUserId");
+
+                    b.ToTable("CoupleGoals");
+                });
+
+            modelBuilder.Entity("LoveUniverse.Api.Entities.CoupleGoalMilestone", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("GoalId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GoalId");
+
+                    b.ToTable("CoupleGoalMilestones");
                 });
 
             modelBuilder.Entity("LoveUniverse.Api.Entities.CoupleMember", b =>
@@ -411,7 +544,13 @@ namespace OurLittleUniverse.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("DailyDigestEnabled")
+                        .HasColumnType("INTEGER");
+
                     b.Property<bool>("DailyReasonsEnabled")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("EmailNotificationsEnabled")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("LanguageMode")
@@ -423,6 +562,9 @@ namespace OurLittleUniverse.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("MusicEnabled")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("PartnerActivityEmailsEnabled")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("PrivateByDefault")
@@ -627,6 +769,80 @@ namespace OurLittleUniverse.Migrations
                     b.ToTable("DailyPlanetTaskCompletions");
                 });
 
+            modelBuilder.Entity("LoveUniverse.Api.Entities.DailyQuestion", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("CoupleId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Prompt")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CoupleId");
+
+                    b.HasIndex("CreatedAt");
+
+                    b.ToTable("DailyQuestions");
+                });
+
+            modelBuilder.Entity("LoveUniverse.Api.Entities.DailyQuestionAnswer", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Answer")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("CoupleId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CoupleId");
+
+                    b.HasIndex("QuestionId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("CoupleId", "QuestionId", "UserId")
+                        .IsUnique();
+
+                    b.ToTable("DailyQuestionAnswers");
+                });
+
             modelBuilder.Entity("LoveUniverse.Api.Entities.FeedbackEntry", b =>
                 {
                     b.Property<Guid>("Id")
@@ -714,6 +930,64 @@ namespace OurLittleUniverse.Migrations
                     b.HasIndex("CreatedByUserId");
 
                     b.ToTable("FuturePlans");
+                });
+
+            modelBuilder.Entity("LoveUniverse.Api.Entities.ImportantDate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("CoupleId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsPrivate")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Recurrence")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ReminderDaysBefore")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("ReminderEnabled")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(160)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CoupleId");
+
+                    b.HasIndex("CreatedByUserId");
+
+                    b.ToTable("ImportantDates");
                 });
 
             modelBuilder.Entity("LoveUniverse.Api.Entities.Letter", b =>
@@ -2406,6 +2680,25 @@ namespace OurLittleUniverse.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("LoveUniverse.Api.Entities.CheckIn", b =>
+                {
+                    b.HasOne("LoveUniverse.Api.Entities.Couple", "Couple")
+                        .WithMany()
+                        .HasForeignKey("CoupleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LoveUniverse.Api.Entities.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Couple");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("LoveUniverse.Api.Entities.Couple", b =>
                 {
                     b.HasOne("LoveUniverse.Api.Entities.AppUser", "CreatedByUser")
@@ -2415,6 +2708,36 @@ namespace OurLittleUniverse.Migrations
                         .IsRequired();
 
                     b.Navigation("CreatedByUser");
+                });
+
+            modelBuilder.Entity("LoveUniverse.Api.Entities.CoupleGoal", b =>
+                {
+                    b.HasOne("LoveUniverse.Api.Entities.Couple", "Couple")
+                        .WithMany()
+                        .HasForeignKey("CoupleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LoveUniverse.Api.Entities.AppUser", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Couple");
+
+                    b.Navigation("CreatedByUser");
+                });
+
+            modelBuilder.Entity("LoveUniverse.Api.Entities.CoupleGoalMilestone", b =>
+                {
+                    b.HasOne("LoveUniverse.Api.Entities.CoupleGoal", "Goal")
+                        .WithMany("Milestones")
+                        .HasForeignKey("GoalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Goal");
                 });
 
             modelBuilder.Entity("LoveUniverse.Api.Entities.CoupleMember", b =>
@@ -2526,6 +2849,44 @@ namespace OurLittleUniverse.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("LoveUniverse.Api.Entities.DailyQuestion", b =>
+                {
+                    b.HasOne("LoveUniverse.Api.Entities.Couple", "Couple")
+                        .WithMany()
+                        .HasForeignKey("CoupleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Couple");
+                });
+
+            modelBuilder.Entity("LoveUniverse.Api.Entities.DailyQuestionAnswer", b =>
+                {
+                    b.HasOne("LoveUniverse.Api.Entities.Couple", "Couple")
+                        .WithMany()
+                        .HasForeignKey("CoupleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LoveUniverse.Api.Entities.DailyQuestion", "Question")
+                        .WithMany("Answers")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LoveUniverse.Api.Entities.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Couple");
+
+                    b.Navigation("Question");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("LoveUniverse.Api.Entities.FeedbackEntry", b =>
                 {
                     b.HasOne("LoveUniverse.Api.Entities.AppUser", "User")
@@ -2546,6 +2907,25 @@ namespace OurLittleUniverse.Migrations
 
                     b.HasOne("LoveUniverse.Api.Entities.AppUser", "CreatedByUser")
                         .WithMany("FuturePlansCreated")
+                        .HasForeignKey("CreatedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Couple");
+
+                    b.Navigation("CreatedByUser");
+                });
+
+            modelBuilder.Entity("LoveUniverse.Api.Entities.ImportantDate", b =>
+                {
+                    b.HasOne("LoveUniverse.Api.Entities.Couple", "Couple")
+                        .WithMany()
+                        .HasForeignKey("CoupleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LoveUniverse.Api.Entities.AppUser", "CreatedByUser")
+                        .WithMany()
                         .HasForeignKey("CreatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2862,6 +3242,11 @@ namespace OurLittleUniverse.Migrations
                     b.Navigation("Subscription");
                 });
 
+            modelBuilder.Entity("LoveUniverse.Api.Entities.CoupleGoal", b =>
+                {
+                    b.Navigation("Milestones");
+                });
+
             modelBuilder.Entity("LoveUniverse.Api.Entities.CustomSection", b =>
                 {
                     b.Navigation("Items");
@@ -2870,6 +3255,11 @@ namespace OurLittleUniverse.Migrations
             modelBuilder.Entity("LoveUniverse.Api.Entities.DailyCouplePlanet", b =>
                 {
                     b.Navigation("TaskCompletions");
+                });
+
+            modelBuilder.Entity("LoveUniverse.Api.Entities.DailyQuestion", b =>
+                {
+                    b.Navigation("Answers");
                 });
 
             modelBuilder.Entity("LoveUniverse.Api.Entities.PlanetDefinition", b =>

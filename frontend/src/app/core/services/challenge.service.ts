@@ -23,14 +23,14 @@ function todayIndex(length: number): number {
   return length > 0 ? seed % length : 0;
 }
 
-import { RelationshipPointsService } from './relationship-points.service';
+import { GamificationService } from './gamification.service';
 
 @Injectable({ providedIn: 'root' })
 export class ChallengeService {
   constructor(
     private storage: StorageService,
     private auth: AuthService,
-    private pointsService: RelationshipPointsService
+    private gamification: GamificationService
   ) {}
 
   getChallenges(): Challenge[] {
@@ -82,7 +82,7 @@ export class ChallengeService {
     if (!updated) return null;
     this.storage.saveFullAppData(data);
     if (!alreadyCompleted) {
-      this.pointsService.rewardChallengeComplete();
+      this.gamification.rewardChallengeComplete();
     }
     return updated;
   }

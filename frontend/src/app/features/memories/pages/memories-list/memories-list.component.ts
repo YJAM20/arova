@@ -41,6 +41,7 @@ export class MemoriesListComponent implements OnInit {
 
   allMemories: Memory[] = [];
   filtered: Memory[] = [];
+  onThisDayMemories: Memory[] = [];
   activeCategory: MemoryCategory | 'all' = 'all';
   isAdmin = false;
   isApiMode = false;
@@ -80,6 +81,7 @@ export class MemoriesListComponent implements OnInit {
     this.memories.getMemories().subscribe({
       next: memories => {
         this.allMemories = memories;
+        this.onThisDayMemories = this.memories.getOnThisDayMemories(memories);
         this.isLoading = false;
         this.applyFilter();
       },

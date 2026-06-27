@@ -50,7 +50,7 @@
         >
           <button
             type="button"
-            class="mood-card-option"
+            [class]="'mood-card-option mood-card-option--' + option.value"
             *ngFor="let option of moodOptions"
             [class.active]="selectedMood === option.value"
             (click)="selectMood(option.value)"
@@ -58,6 +58,7 @@
             [id]="'mood-option-' + option.value"
             [attr.aria-selected]="selectedMood === option.value"
             [attr.aria-pressed]="selectedMood === option.value ? 'true' : 'false'"
+            [attr.aria-label]="option.label + ' - ' + option.hint"
           >
             <span class="mood-emoji-display" aria-hidden="true">{{ option.icon }}</span>
             <span class="mood-meta">
@@ -268,5 +269,11 @@
   <!-- Product Disclaimer Footer -->
   <footer class="mood-disclaimer" role="contentinfo">
     <p>Mood Room is a private reflection tool, not medical or mental-health advice.</p>
+    <p class="limitations-note-text" *ngIf="isLocalMode" id="mood-local-warning">
+      ⚠️ Local Mode keeps this room in your browser. Progress is not synced across devices.
+    </p>
+    <p class="limitations-note-text" *ngIf="!isLocalMode" id="mood-api-warning">
+      ⚠️ API Mode can sync this room through your configured backend.
+    </p>
   </footer>
 </div>

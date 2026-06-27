@@ -7,7 +7,7 @@ import { AuthService } from '../../../../core/services/auth.service';
 import { MemoryService } from '../../../../core/services/memory.service';
 import { LetterService } from '../../../../core/services/letter.service';
 import { ReasonService } from '../../../../core/services/reason.service';
-import { RelationshipPointsService, RankInfo, PointsLedgerEntry } from '../../../../core/services/relationship-points.service';
+import { GamificationService, GamificationScore } from '../../../../core/services/gamification.service';
 import { StorageService } from '../../../../core/services/storage.service';
 import { Memory } from '../../../../shared/models/memory.model';
 
@@ -33,10 +33,10 @@ export class ProfileViewComponent implements OnInit {
   // Relationship points status
   totalPoints = 0;
   streak = 0;
-  currentRank!: RankInfo;
-  nextRank: RankInfo | null = null;
+  currentRankTitle = 'Spark';
+  nextRankTitle: string | null = null;
   progressPercent = 0;
-  pointsLedger: PointsLedgerEntry[] = [];
+  pointsLedger: { id: string; action: string; points: number; timestamp: string }[] = [];
   
   // Editing state
   isEditing = false;
@@ -64,7 +64,7 @@ export class ProfileViewComponent implements OnInit {
     private memoryService: MemoryService,
     private letterService: LetterService,
     private reasonService: ReasonService,
-    private pointsService: RelationshipPointsService,
+    private gamification: GamificationService,
     private storageService: StorageService
   ) {}
 
@@ -95,12 +95,30 @@ export class ProfileViewComponent implements OnInit {
     this.totalReasons = this.reasonService.getVisibleReasonsForCurrentUser().length;
 
     // Load points details
-    this.totalPoints = this.pointsService.getTotalPoints();
-    this.streak = this.pointsService.getStreak();
-    this.currentRank = this.pointsService.getCurrentRank();
-    this.nextRank = this.pointsService.getNextRank();
-    this.progressPercent = this.pointsService.getProgressPercent();
-    this.pointsLedger = this.pointsService.getLedger();
+    if (this.gamification.isLocalMode()) {
+      const score: GamificationScore = this.gamification.getLocalScore();
+      this.totalPoints = score.totalPoints;
+      this.streak = score.streak;
+      this.currentRankTitle = score.currentRankTitle;
+      this.nextRankTitle = score.nextRankTitle;
+      this.progressPercent = score.progressPercent;
+      this.gamification.getLedger().subscribe(ledger => { this.pointsLedger = ledger; });
+    } else {
+      this.gamification.getScore().subscribe({
+        next: score => {
+          this.totalPoints = score.totalPoints;
+          this.streak = score.streak;
+          this.currentRankTitle = score.currentRankTitle;
+          this.nextRankTitle = score.nextRankTitle;
+          this.progressPercent = score.progressPercent;
+        },
+        error: () => { /* score unavailable — silently skip */ }
+      });
+      this.gamification.getLedger().subscribe({
+        next: ledger => { this.pointsLedger = ledger; },
+        error: () => {}
+      });
+    }
 
     // Calculate relationship length since anniversary date
     const couple = this.storageService.getCoupleProfile();

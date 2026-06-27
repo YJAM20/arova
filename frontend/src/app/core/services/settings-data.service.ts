@@ -61,6 +61,18 @@ export class SettingsDataService {
           ? response.onboardingCompleted
           : current.onboardingCompleted,
       lastBackupAt: response.lastBackupAt ?? current.lastBackupAt,
+      emailNotificationsEnabled:
+        typeof response.emailNotificationsEnabled === 'boolean'
+          ? response.emailNotificationsEnabled
+          : current.emailNotificationsEnabled,
+      dailyDigestEnabled:
+        typeof response.dailyDigestEnabled === 'boolean'
+          ? response.dailyDigestEnabled
+          : current.dailyDigestEnabled,
+      partnerActivityEmailsEnabled:
+        typeof response.partnerActivityEmailsEnabled === 'boolean'
+          ? response.partnerActivityEmailsEnabled
+          : current.partnerActivityEmailsEnabled,
     });
   }
 

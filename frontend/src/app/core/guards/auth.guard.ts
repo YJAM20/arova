@@ -14,6 +14,11 @@ export const authGuard: CanActivateFn = (route, state): Observable<boolean | Url
   const router = inject(Router);
   const setupStatus = inject(SetupStatusApiService);
 
+  const path = state.url.split('?')[0];
+  if (path === '/offline') {
+    return true;
+  }
+
   if (appMode.isApiMode()) {
     if (!tokenStorage.hasToken()) {
       return router.createUrlTree(['/auth']);

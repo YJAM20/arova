@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { StorageService } from './storage.service';
 import { MoodEntry, MoodType } from '../../shared/models/mood.model';
 
-import { RelationshipPointsService } from './relationship-points.service';
+import { GamificationService } from './gamification.service';
 
 const MOOD_MESSAGES: Record<MoodType, string> = {
   happy: 'I love seeing your heart light up. Stay in this softness for a while.',
@@ -27,7 +27,7 @@ export class MoodService {
   constructor(
     private storage: StorageService,
     private auth: AuthService,
-    private pointsService: RelationshipPointsService
+    private gamification: GamificationService
   ) {}
 
   getMoodHistory(): MoodEntry[] {
@@ -61,7 +61,7 @@ export class MoodService {
         note: cleanNote,
         date: today,
       });
-      this.pointsService.rewardMoodCheck();
+      this.gamification.rewardMoodCheck();
       return entry;
     }
 

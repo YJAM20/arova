@@ -611,3 +611,21 @@
     animation: none !important;
   }
 }
+
+.typing-indicator-container {
+  padding: 6px 12px;
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: var(--arova-radius-sm, 6px);
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+
+  .typing-text {
+    font-size: 0.8rem;
+    color: var(--theme-soft, #d6b76a);
+    font-style: italic;
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+}
+

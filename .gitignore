@@ -61,9 +61,23 @@ backend/**/backup-exports/
 backend/**/local-backups/
 
 # =========================
-# IDE
+# IDE & System
 # =========================
 .vscode/
 .idea/
+.gemini/
 docs/design/stitch/export/
 docs/design/stitch/*.zip
+node_modules/
+dist/
+bin/
+obj/
+test-results/
+playwright-report/
+*.user
+*.suo
+
+# Media & Videos
+*.webm
+*.mp4
+

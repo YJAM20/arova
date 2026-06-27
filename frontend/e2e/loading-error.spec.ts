@@ -74,14 +74,14 @@ test.describe('Arova Loading and Error Screen E2E Tests', () => {
     
     // Check that we see the offline card
     await expect(page.locator('.offline-page')).toBeVisible();
-    await expect(page.locator('h1')).toContainText('Space Link Offline');
+    await expect(page.locator('h1')).toContainText('You’re offline.');
     
-    // Verify settings button works
-    const settingsBtn = page.locator('a[routerLink="/settings"]');
-    await expect(settingsBtn).toBeVisible();
-    await settingsBtn.click();
+    // Verify back to home link works
+    const backHomeLink = page.getByRole('link', { name: /back to home/i });
+    await expect(backHomeLink).toBeVisible();
+    await backHomeLink.click();
     
-    await page.waitForURL('**/settings');
-    await expect(page).toHaveURL(/\/settings$/);
+    await page.waitForURL('**/universe');
+    await expect(page).toHaveURL(/\/universe$/);
   });
 });

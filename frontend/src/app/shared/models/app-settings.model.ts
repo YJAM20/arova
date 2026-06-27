@@ -5,4 +5,7 @@ export interface AppSettings {
   musicEnabled: boolean;
   onboardingCompleted: boolean;
   lastBackupAt?: string;
+  emailNotificationsEnabled?: boolean;
+  dailyDigestEnabled?: boolean;
+  partnerActivityEmailsEnabled?: boolean;
 }

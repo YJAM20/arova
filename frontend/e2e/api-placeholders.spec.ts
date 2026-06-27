@@ -98,7 +98,7 @@ test.describe('Arova E2E API & Feature Placeholder Tests', () => {
     await expect(phoneNote.locator('p')).toContainText('Phone verification is not available yet. Please use email verification for now.');
   });
 
-  test('should disable chat composer and show API mode warning in local mode', async ({ page }) => {
+  test('should enable chat composer and show local mode warning in local mode', async ({ page }) => {
     // Seed completed onboarding first at '/'
     await page.goto('/');
     await seedOnboardingCompleted(page);
@@ -114,16 +114,16 @@ test.describe('Arova E2E API & Feature Placeholder Tests', () => {
     await page.goto('/chat');
     await page.waitForURL('**/chat');
 
-    // Verify chat requires API Mode status is shown
+    // Verify local mode chat warning status is shown
     const chatStatus = page.locator('.chat-status');
     await expect(chatStatus).toBeVisible();
-    await expect(chatStatus).toContainText('Chat requires API Mode.');
+    await expect(chatStatus).toContainText('Local Demo Chat. Real partner sync requires API Mode.');
 
-    // Verify textarea is disabled
+    // Verify textarea is enabled
     const textarea = page.locator('textarea');
-    await expect(textarea).toBeDisabled();
+    await expect(textarea).toBeEnabled();
 
-    // Verify send button is disabled
+    // Verify send button is disabled when empty
     const sendBtn = page.getByRole('button', { name: 'Send message' });
     await expect(sendBtn).toBeDisabled();
   });

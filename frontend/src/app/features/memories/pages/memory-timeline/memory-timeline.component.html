@@ -1,0 +1,194 @@
+<div class="memories-page timeline-page">
+  <arova-page-header 
+    title="Memory Timeline" 
+    subtitle="Every saved moment, arranged like stars."
+    eyebrow="Orbit timeline"
+  >
+    <div actions class="header-actions">
+      <a class="action-btn back-btn" routerLink="/memories">Back to memory grid</a>
+      <a class="add-content-link" routerLink="/memories/new">Add memory</a>
+    </div>
+  </arova-page-header>
+
+  <!-- Loading State -->
+  <arova-loading-state 
+    message="Loading your timeline..." 
+    *ngIf="isLoading"
+    aria-live="polite"
+  ></arova-loading-state>
+
+  <!-- Error State -->
+  <div class="empty-state glass error-state animate-fade-in" *ngIf="!isLoading && errorMessage" role="alert">
+    <div class="empty-icon" aria-hidden="true">⚠️</div>
+    <h3>We couldn’t load your timeline right now.</h3>
+    <p class="error-detail">{{ errorMessage }}</p>
+    <div class="error-actions">
+      <button type="button" class="retry-btn" (click)="loadTimelineData()">Retry</button>
+    </div>
+  </div>
+
+  <ng-container *ngIf="!isLoading && !errorMessage">
+    <!-- On This Day Section -->
+    <section class="on-this-day-panel glass animate-fade-in" aria-labelledby="otd-title">
+      <div class="panel-header">
+        <span class="panel-icon" aria-hidden="true">💫</span>
+        <div class="panel-title-group">
+          <h2 id="otd-title" class="panel-title">On This Day</h2>
+          <p class="panel-subtitle">A look back at this day in your shared history</p>
+        </div>
+      </div>
+
+      <div *ngIf="onThisDayItems.length > 0" class="otd-content">
+        <div class="otd-grid">
+          <arova-card
+            class="otd-card-wrapper"
+            *ngFor="let item of onThisDayItems"
+            [routerLink]="['/memories', item.id]"
+            [hoverable]="true"
+            tabindex="0"
+          >
+            <div class="otd-media" *ngIf="item.imageUrl">
+              <img [src]="item.imageUrl" [alt]="item.title" class="otd-image" />
+            </div>
+            <div class="otd-card-body">
+              <div class="otd-meta">
+                <span class="otd-badge">
+                  {{ getYearsAgo(item.date) }} {{ getYearsAgo(item.date) === 1 ? 'year' : 'years' }} ago
+                </span>
+                <span class="otd-date">{{ formatDate(item.date) }}</span>
+              </div>
+              <h3 class="otd-card-title">{{ item.title }}</h3>
+              <p class="otd-desc">{{ item.description }}</p>
+              <div class="otd-footer">
+                <span class="otd-category">✦ {{ getCategoryLabel(item.category) }}</span>
+                <span class="otd-link">Replay moment →</span>
+              </div>
+            </div>
+          </arova-card>
+        </div>
+      </div>
+
+      <div *ngIf="onThisDayItems.length === 0" class="otd-empty">
+        <p class="otd-empty-text">No memory from this day yet. Maybe today becomes one.</p>
+        <a routerLink="/memories/new" class="otd-empty-btn">Save today’s memory</a>
+      </div>
+    </section>
+
+    <!-- Stats Summary Row -->
+    <div class="stats-summary-row glass animate-fade-in" *ngIf="timelineItems.length > 0">
+      <span class="stats-icon" aria-hidden="true">✦</span>
+      <span>{{ allMemories.length }} memories & {{ allImportantDates.length }} dates aligned in your timeline</span>
+    </div>
+
+    <!-- Category Filter Tabs -->
+    <div class="filter-tabs animate-fade-in" style="animation-delay: 0.1s;" *ngIf="timelineItems.length > 0">
+      <button
+        *ngFor="let cat of categories"
+        class="filter-tab"
+        [class.active]="activeCategory === cat.key"
+        [attr.aria-selected]="activeCategory === cat.key"
+        (click)="setCategory(cat.key)"
+      >
+        {{ cat.label }}
+      </button>
+    </div>
+
+    <!-- Vertical Timeline -->
+    <div class="timeline-container animate-fade-in" style="animation-delay: 0.2s;" *ngIf="groupedYears.length > 0">
+      <div class="timeline-spine"></div>
+
+      <div class="timeline-year-group" *ngFor="let yearGroup of groupedYears">
+        <!-- Year Marker -->
+        <div class="year-marker-wrapper">
+          <div class="year-marker">{{ yearGroup.year }}</div>
+        </div>
+
+        <div class="timeline-month-group" *ngFor="let monthGroup of yearGroup.months">
+          <!-- Month Marker -->
+          <div class="month-marker-wrapper">
+            <div class="month-marker">{{ monthGroup.monthName }}</div>
+          </div>
+
+          <!-- Items in Month -->
+          <div class="timeline-items">
+            <div class="timeline-item-wrapper" *ngFor="let item of monthGroup.items; let i = index">
+              <!-- Timeline node point -->
+              <div class="timeline-node" [class.node-date]="item.type === 'important-date'"></div>
+
+              <arova-card
+                class="timeline-card-wrapper"
+                [class.timeline-card-date]="item.type === 'important-date'"
+                [routerLink]="item.type === 'memory' ? ['/memories', item.id] : ['/important-dates']"
+                [hoverable]="true"
+                tabindex="0"
+              >
+                <!-- Media/Image Box for Memory -->
+                <div class="memory-media" *ngIf="item.type === 'memory' && item.imageUrl">
+                  <img [src]="item.imageUrl" [alt]="item.title" class="memory-image" />
+                </div>
+
+                <div class="memory-card-body">
+                  <div class="memory-card-header">
+                    <div class="memory-meta">
+                      <arova-status-pill [type]="item.type === 'important-date' ? 'warning' : 'info'" [showDot]="false">
+                        {{ item.type === 'important-date' ? getDateTypeLabel(item.dateType) : getCategoryLabel(item.category) }}
+                      </arova-status-pill>
+                      <span class="memory-date">{{ formatDate(item.date) }}</span>
+                    </div>
+                    <div class="memory-indicators" *ngIf="item.type === 'memory'">
+                      <span class="mood-indicator" *ngIf="item.mood" [title]="item.mood">
+                        {{ getMoodEmoji(item.mood) }}
+                      </span>
+                      <span class="favorite-star" *ngIf="item.originalItem.isFavorite" title="Favorite">✦</span>
+                    </div>
+                  </div>
+
+                  <h3 class="memory-title">{{ item.title }}</h3>
+                  <p class="memory-desc">{{ item.description }}</p>
+
+                  <div class="private-note" *ngIf="isAdmin && item.type === 'memory' && item.originalItem.privateNote">
+                    <span class="private-note-label">Private note</span>
+                    <p>{{ item.originalItem.privateNote }}</p>
+                  </div>
+
+                  <div class="memory-footer" *ngIf="item.type === 'memory'">
+                    <span class="visibility-tag" *ngIf="isAdmin && !item.originalItem.visibleToPartner">
+                      <arova-status-pill type="warning">Only you can see this</arova-status-pill>
+                    </span>
+                    <span class="memory-owner" *ngIf="item.createdBy">
+                      Preserved by {{ item.createdBy === currentUser?.id ? 'You' : 'Partner' }}
+                    </span>
+                  </div>
+                </div>
+              </arova-card>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <arova-empty-state
+      *ngIf="groupedYears.length === 0"
+      icon="🪐"
+      title="No timeline moments align yet"
+      description="Select another filter category or start adding memories to map out your private orbit timeline."
+      actionText="Add memory"
+      actionLink="/memories/new"
+    ></arova-empty-state>
+
+    <!-- Product Honesty & Disclaimer Banner -->
+    <div class="product-honesty-banner glass animate-fade-in">
+      <div class="banner-title">✦ Platform Connection</div>
+      <p class="banner-text" *ngIf="isApiMode">
+        API Mode syncs your memories through your configured backend.
+      </p>
+      <p class="banner-text" *ngIf="!isApiMode">
+        Local Mode keeps this timeline in your browser.
+      </p>
+      <div class="banner-note">
+        Note: True calendar syncing, Google Photos connection, map integrations, and AI timeline summaries are not active in this demo version.
+      </div>
+    </div>
+  </ng-container>
+</div>

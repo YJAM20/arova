@@ -11,6 +11,9 @@ public sealed class RelationshipScoreResponse
     public int NextRankThreshold { get; set; }
 
     public double ProgressPercent { get; set; }
+
+    /// <summary>Number of consecutive calendar days (UTC) on which points were earned.</summary>
+    public int Streak { get; set; }
 }
 
 public sealed class PointLedgerEntryResponse
@@ -47,4 +50,35 @@ public sealed class DailyTaskResponse
     public bool IsCompleted { get; set; }
 
     public DateTime? CompletedAt { get; set; }
+}
+
+public sealed class AwardPointsRequest
+{
+    public string ActionType { get; set; } = string.Empty;
+
+    public int Points { get; set; }
+
+    public string Reason { get; set; } = string.Empty;
+
+    public string? SourceType { get; set; }
+}
+
+public sealed class AwardPointsResponse
+{
+    public Guid Id { get; set; }
+
+    public Guid UserId { get; set; }
+
+    public string ActionType { get; set; } = string.Empty;
+
+    public int Points { get; set; }
+
+    public string Reason { get; set; } = string.Empty;
+
+    public string? SourceType { get; set; }
+
+    public DateTime CreatedAt { get; set; }
+
+    /// <summary>Updated couple total after awarding these points.</summary>
+    public int NewTotalPoints { get; set; }
 }

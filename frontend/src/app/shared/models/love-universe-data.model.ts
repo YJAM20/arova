@@ -10,6 +10,7 @@ import { FuturePlan } from './future-plan.model';
 import { CoupleProfile } from './couple-profile.model';
 import { DailyQuestionAnswer } from './daily-question.model';
 import { RelationshipCheckIn } from './check-in.model';
+import { ImportantDate } from './important-date.model';
 
 export interface LoveUniverseData {
   users: AppUser[];
@@ -20,6 +21,7 @@ export interface LoveUniverseData {
   songs: Song[];
   challenges: Challenge[];
   futurePlans: FuturePlan[];
+  importantDates: ImportantDate[];
   coupleProfile: CoupleProfile;
   dailyQuestionAnswers: DailyQuestionAnswer[];
   checkIns: RelationshipCheckIn[];

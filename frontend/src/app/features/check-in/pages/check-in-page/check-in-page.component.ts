@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CheckInService, CheckInView } from '../../../../core/services/check-in.service';
 
@@ -21,28 +21,63 @@ export class CheckInPageComponent implements OnInit {
   today: CheckInView[] = [];
   history: CheckInView[] = [];
   message = '';
+  errorMessage = '';
+  isLoading = false;
+  isApiMode = false;
 
-  constructor(private checkIns: CheckInService) {}
+  constructor(private checkIns: CheckInService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    const existing = this.checkIns.getCurrentUserTodayCheckIn();
-    if (existing) {
-      this.draft = {
-        connectionLevel: existing.connectionLevel,
-        energyLevel: existing.energyLevel,
-        communicationFeeling: existing.communicationFeeling,
-        note: existing.note ?? '',
-      };
-    }
-    this.refresh();
+    this.isApiMode = this.checkIns.isApiMode();
+    this.loadTodayDraft();
+  }
+
+  loadTodayDraft(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
+    this.checkIns.getCurrentUserTodayCheckIn().subscribe({
+      next: (existing) => {
+        if (existing) {
+          this.draft = {
+            connectionLevel: existing.connectionLevel,
+            energyLevel: existing.energyLevel,
+            communicationFeeling: existing.communicationFeeling,
+            note: existing.note ?? '',
+          };
+        }
+        this.isLoading = false;
+        this.refresh();
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.errorMessage = err.message || 'Failed to load existing check-in.';
+        this.isLoading = false;
+        this.refresh();
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   save(): void {
-    const saved = this.checkIns.saveTodayCheckIn(this.draft);
-    if (!saved) return;
+    this.isLoading = true;
+    this.errorMessage = '';
+    this.message = '';
 
-    this.message = 'Today\'s check-in was saved locally.';
-    this.refresh();
+    this.checkIns.saveTodayCheckIn(this.draft).subscribe({
+      next: (saved) => {
+        if (saved) {
+          this.message = this.isApiMode
+            ? "Today's check-in was saved and shared in your couple space."
+            : "Today's check-in was saved locally.";
+        }
+        this.isLoading = false;
+        this.refresh();
+      },
+      error: (err) => {
+        this.errorMessage = err.message || 'Failed to save check-in.';
+        this.isLoading = false;
+      }
+    });
   }
 
   levelLabel(level: number): string {
@@ -58,7 +93,22 @@ export class CheckInPageComponent implements OnInit {
   }
 
   private refresh(): void {
-    this.today = this.checkIns.getTodayCheckIns();
-    this.history = this.checkIns.getRecentHistory();
+    this.checkIns.getTodayCheckIns().subscribe({
+      next: (checkIns) => {
+        this.today = checkIns;
+      },
+      error: (err) => {
+        // Handle background errors silently or log
+      }
+    });
+
+    this.checkIns.getRecentHistory().subscribe({
+      next: (historyItems) => {
+        this.history = historyItems;
+      },
+      error: (err) => {
+        // Handle background errors silently
+      }
+    });
   }
 }

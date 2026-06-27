@@ -69,6 +69,50 @@
     <!-- Tab 1: General -->
     <div class="settings-card glass" *ngIf="activeTab === 'general'">
 
+      <!-- Language Section -->
+      <section class="settings-section" aria-labelledby="language-heading">
+        <h2 id="language-heading" class="section-heading">Language &amp; direction</h2>
+        <p class="section-desc">Choose how Arova speaks to both of you. Arabic includes RTL layout support.</p>
+
+        <div class="language-switcher-buttons" id="settings-lang-switcher">
+          <button
+            type="button"
+            class="lang-btn"
+            id="lang-btn-en"
+            [class.active]="settings.languageMode === 'en'"
+            (click)="settings.languageMode = 'en'"
+            [attr.aria-pressed]="settings.languageMode === 'en'"
+          >
+            <span class="lang-code">EN</span>
+            <span class="lang-name">English</span>
+          </button>
+          <button
+            type="button"
+            class="lang-btn"
+            id="lang-btn-ar"
+            [class.active]="settings.languageMode === 'ar'"
+            (click)="settings.languageMode = 'ar'"
+            [attr.aria-pressed]="settings.languageMode === 'ar'"
+          >
+            <span class="lang-code">AR</span>
+            <span class="lang-name">العربية (RTL)</span>
+          </button>
+          <button
+            type="button"
+            class="lang-btn"
+            id="lang-btn-es"
+            [class.active]="settings.languageMode === 'es'"
+            (click)="settings.languageMode = 'es'"
+            [attr.aria-pressed]="settings.languageMode === 'es'"
+          >
+            <span class="lang-code">ES</span>
+            <span class="lang-name">Español</span>
+          </button>
+        </div>
+      </section>
+
+      <div class="section-divider"></div>
+
       <!-- App Mode Section -->
       <section class="settings-section" aria-labelledby="mode-heading">
         <h2 id="mode-heading" class="section-heading">Current app mode</h2>
@@ -91,21 +135,6 @@
           <arova-status-pill type="warning" [showDot]="true">
             API Mode active: Requires ASP.NET Core backend at {{ apiBaseUrl }}
           </arova-status-pill>
-        </div>
-      </section>
-
-      <div class="section-divider"></div>
-
-      <!-- Language Section -->
-      <section class="settings-section" aria-labelledby="language-heading">
-        <h2 id="language-heading" class="section-heading">Language</h2>
-        <p class="section-desc">Select the language preference for Arova interfaces.</p>
-
-        <div class="form-group">
-          <label for="language-select" class="form-label">Interface language</label>
-          <select id="language-select" name="languageMode" [(ngModel)]="settings.languageMode" class="arova-select">
-            <option *ngFor="let language of languageOptions" [value]="language.value">{{ language.label }}</option>
-          </select>
         </div>
       </section>
 
@@ -134,6 +163,50 @@
             </span>
             <div class="checkbox-wrapper">
               <input type="checkbox" name="musicEnabled" [(ngModel)]="settings.musicEnabled" />
+            </div>
+          </label>
+        </div>
+      </section>
+
+      <div class="section-divider"></div>
+
+      <!-- Email Notifications Section -->
+      <section class="settings-section" aria-labelledby="email-heading">
+        <h2 id="email-heading" class="section-heading">Email notifications</h2>
+        <p class="section-desc">Stay updated on your private universe when you're away.</p>
+        
+        <p class="section-text" style="font-size: 0.82rem; color: #B8B8B8; margin-bottom: 16px;">
+          Email notifications require API Mode and a configured backend email provider.
+        </p>
+
+        <div class="toggle-container">
+          <label class="toggle-row">
+            <span class="toggle-label">
+              <strong>Email Notifications</strong>
+              <small>Enable email updates from your space</small>
+            </span>
+            <div class="checkbox-wrapper">
+              <input type="checkbox" name="emailNotificationsEnabled" [(ngModel)]="settings.emailNotificationsEnabled" />
+            </div>
+          </label>
+
+          <label class="toggle-row">
+            <span class="toggle-label">
+              <strong>Daily Digest</strong>
+              <small>Receive a summary of yesterday's activity</small>
+            </span>
+            <div class="checkbox-wrapper">
+              <input type="checkbox" name="dailyDigestEnabled" [(ngModel)]="settings.dailyDigestEnabled" />
+            </div>
+          </label>
+
+          <label class="toggle-row">
+            <span class="toggle-label">
+              <strong>Partner Activity</strong>
+              <small>Get notified when your partner adds memories or reasons</small>
+            </span>
+            <div class="checkbox-wrapper">
+              <input type="checkbox" name="partnerActivityEmailsEnabled" [(ngModel)]="settings.partnerActivityEmailsEnabled" />
             </div>
           </label>
         </div>

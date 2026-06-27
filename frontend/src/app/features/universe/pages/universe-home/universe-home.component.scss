@@ -400,6 +400,8 @@
 .activity-panel,
 .mood-panel,
 .plans-panel,
+.milestones-panel,
+.goals-panel,
 .mode-panel {
   padding: 20px;
   border-radius: $radius-md;
@@ -614,6 +616,127 @@
   }
 }
 
+// ── Upcoming Moments Preview details ─────────────────────
+.milestone-content {
+  display: grid;
+  gap: 12px;
+
+  .milestone-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+
+    .milestone-title-text {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--theme-text, $cream);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .milestone-type-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--theme-accent, $soft-pink);
+      border: 1px solid color-mix(in srgb, var(--theme-accent, $soft-pink) 30%, transparent);
+      background: color-mix(in srgb, var(--theme-accent, $soft-pink) 6%, transparent);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+  }
+
+  .milestone-countdown {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--theme-accent-2, $gold);
+    margin: 0;
+  }
+
+  .milestone-desc-text {
+    font-size: 0.84rem;
+    color: var(--theme-muted, $text-muted);
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  .milestone-target {
+    font-size: 0.74rem;
+    color: var(--theme-muted, $text-muted);
+  }
+}
+
+// ── Shared Goals Preview details ─────────────────────────
+.goal-content {
+  display: grid;
+  gap: 12px;
+
+  .goal-summary-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .goal-active-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--theme-accent, $soft-pink);
+      border: 1px solid color-mix(in srgb, var(--theme-accent, $soft-pink) 30%, transparent);
+      background: color-mix(in srgb, var(--theme-accent, $soft-pink) 6%, transparent);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+  }
+
+  .closest-goal-panel {
+    display: grid;
+    gap: 6px;
+    padding: 12px;
+    border-radius: $radius-sm;
+    background: rgba(0, 0, 0, 0.12);
+    border: 1px solid color-mix(in srgb, var(--theme-border, $glass-border) 40%, transparent);
+
+    .closest-goal-label {
+      font-size: 0.72rem;
+      color: var(--theme-muted, $text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .closest-goal-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--theme-text, $cream);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .closest-goal-progress {
+      display: grid;
+      gap: 2px;
+      margin-top: 4px;
+
+      .progress-info {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.74rem;
+        color: var(--theme-muted, $text-muted);
+      }
+    }
+
+    .goal-target {
+      font-size: 0.74rem;
+      color: var(--theme-accent-2, $gold);
+      margin-top: 2px;
+    }
+  }
+}
+
 // ── Mode Status details ──────────────────────────────────
 .mode-panel {
   display: grid;
@@ -742,6 +865,89 @@
   }
 }
 
+// ── On This Day Dashboard Panel ─────────────────────────
+.otd-panel {
+  padding: 20px;
+  border-radius: $radius-md;
+  display: grid;
+  gap: 14px;
+}
+
+.otd-content {
+  display: grid;
+  gap: 12px;
+}
+
+.otd-item {
+  border-radius: $radius-sm;
+  background: rgba(0, 0, 0, 0.12);
+  border: 1px solid color-mix(in srgb, var(--theme-border, $glass-border) 40%, transparent);
+  transition: background $transition-fast, border-color $transition-fast;
+
+  .otd-link-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 14px;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .otd-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+
+    .otd-year-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--theme-accent-2, $gold);
+      background: color-mix(in srgb, var(--theme-accent-2, $gold) 8%, transparent);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .otd-date {
+      font-size: 0.72rem;
+      color: var(--theme-muted, $text-muted);
+    }
+  }
+
+  .otd-title-text {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--theme-text, $cream);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .otd-desc-text {
+    font-size: 0.84rem;
+    color: var(--theme-muted, $text-muted);
+    line-height: 1.4;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--theme-accent, $soft-pink) 38%, transparent);
+    background: rgba(255, 255, 255, 0.025);
+  }
+}
+
+.otd-item:focus-visible {
+  outline: 2px solid var(--theme-accent, $soft-pink) !important;
+  outline-offset: 3px !important;
+}
+
 @media (max-width: 360px) {
   .arova-page {
     padding-left: 8px !important;
@@ -755,6 +961,7 @@
   .activity-panel,
   .mood-panel,
   .plans-panel,
+  .otd-panel,
   .mode-panel {
     padding: 14px !important;
   }
@@ -781,3 +988,455 @@
     transform: none !important;
   }
 }
+
+// ── Guided Onboarding Checklist Styles ────────────────
+.checklist-card-wrapper {
+  margin-bottom: 8px;
+}
+
+.checklist-panel {
+  padding: 24px;
+  border-radius: $radius-md;
+  background: var(--theme-card, $glass-bg);
+  border: 1px solid var(--theme-border, $glass-border);
+  backdrop-filter: blur(10px);
+}
+
+.checklist-active-state {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.checklist-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+
+  .header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    .checklist-badge {
+      align-self: start;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--theme-accent, $soft-pink);
+      background: color-mix(in srgb, var(--theme-accent, $soft-pink) 8%, transparent);
+      border: 1px solid color-mix(in srgb, var(--theme-accent, $soft-pink) 24%, transparent);
+      padding: 2px 8px;
+      border-radius: 999px;
+      margin-bottom: 4px;
+    }
+
+    .checklist-title {
+      font-family: $font-display;
+      font-size: 1.4rem;
+      font-weight: 400;
+      color: var(--theme-text, $cream);
+      margin: 0;
+
+      &::before {
+        display: none !important;
+      }
+    }
+
+    .checklist-subtitle {
+      font-size: 0.88rem;
+      color: var(--theme-muted, $text-muted);
+      margin: 0;
+    }
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .control-btn {
+      background: transparent;
+      border: none;
+      color: var(--theme-muted, $text-muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: all $transition-fast;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--theme-text, $cream);
+      }
+
+      &--dismiss {
+        font-size: 0.95rem;
+        padding: 4px 6px;
+        color: var(--theme-muted, $text-dim);
+
+        &:hover {
+          color: #ff6b6b;
+          background: rgba(#ff6b6b, 0.1);
+        }
+      }
+    }
+  }
+}
+
+.checklist-progress-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  .progress-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--theme-muted, $text-muted);
+    font-weight: 500;
+
+    .progress-count {
+      color: var(--theme-muted, $text-muted);
+    }
+
+    .progress-percent {
+      color: var(--theme-accent, $soft-pink);
+      font-weight: 700;
+    }
+  }
+
+  .progress-bar-track {
+    height: 8px;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 4px;
+    overflow: hidden;
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--theme-accent, $soft-pink), var(--theme-accent-2, $gold));
+      border-radius: 4px;
+      transition: width $transition-base;
+    }
+  }
+}
+
+.recommended-task-banner {
+  display: flex;
+  gap: 14px;
+  padding: 16px;
+  border-radius: $radius-sm;
+  background: color-mix(in srgb, var(--theme-accent, $soft-pink) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--theme-accent, $soft-pink) 20%, transparent);
+
+  .banner-icon {
+    font-size: 1.5rem;
+    line-height: 1;
+    align-self: flex-start;
+  }
+
+  .banner-body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+
+    strong {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--theme-accent, $soft-pink);
+    }
+
+    p {
+      font-size: 0.88rem;
+      color: var(--theme-text, $cream);
+      line-height: 1.4;
+      margin: 0 0 8px 0;
+    }
+
+    .banner-cta-btn {
+      align-self: flex-start;
+      min-height: 32px;
+      padding: 6px 16px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border: 1px solid var(--theme-accent, $soft-pink);
+      border-radius: $radius-sm;
+      background: var(--theme-accent, $soft-pink);
+      color: var(--bg-deep, #07130F);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background $transition-fast, transform $transition-fast;
+
+      &:hover {
+        background: color-mix(in srgb, var(--theme-accent, $soft-pink) 85%, #fff);
+        transform: translateY(-1px);
+      }
+    }
+  }
+}
+
+.checklist-items-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.checklist-items-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.checklist-item-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  background: rgba(0, 0, 0, 0.12);
+  border: 1px solid color-mix(in srgb, var(--theme-border, $glass-border) 40%, transparent);
+  border-radius: $radius-sm;
+  transition: all $transition-fast;
+
+  .item-status-icon {
+    font-size: 1.15rem;
+    font-weight: bold;
+    color: var(--theme-muted, $text-dim);
+    flex-shrink: 0;
+    width: 20px;
+    text-align: center;
+  }
+
+  .item-text-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+
+    .item-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--theme-text, $cream);
+
+      .badge-optional {
+        font-size: 0.68rem;
+        font-weight: normal;
+        color: var(--theme-muted, $text-dim);
+        margin-left: 4px;
+        font-style: italic;
+      }
+    }
+
+    .item-desc {
+      font-size: 0.8rem;
+      color: var(--theme-muted, $text-muted);
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .item-action-link {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--theme-accent-2, $gold);
+    text-decoration: underline;
+    cursor: pointer;
+    flex-shrink: 0;
+
+    &:hover {
+      color: var(--theme-text, $cream);
+    }
+  }
+
+  .item-completed-text {
+    font-size: 0.78rem;
+    color: var(--theme-accent-3, $soft-green);
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  &--completed {
+    background: rgba(55, 88, 63, 0.05);
+    border-color: color-mix(in srgb, var(--theme-accent-3, $soft-green) 12%, transparent);
+
+    .item-status-icon {
+      color: var(--theme-accent-3, $soft-green);
+    }
+
+    .item-text-details {
+      .item-title {
+        color: var(--theme-muted, $text-muted);
+        text-decoration: line-through;
+      }
+      .item-desc {
+        color: var(--theme-muted, $text-dim);
+        text-decoration: line-through;
+      }
+    }
+  }
+}
+
+.toggle-list-btn {
+  align-self: center;
+  background: transparent;
+  border: none;
+  color: var(--theme-accent-2, $gold);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 4px;
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--theme-text, $cream);
+  }
+}
+
+.honesty-limitations-note {
+  border-top: 1px solid color-mix(in srgb, var(--theme-border, $glass-border) 60%, transparent);
+  padding-top: 12px;
+  margin-top: 6px;
+
+  p {
+    font-size: 0.76rem;
+    color: var(--theme-muted, $text-dim);
+    line-height: 1.5;
+    margin: 0;
+  }
+}
+
+.checklist-complete-state {
+  text-align: center;
+  padding: 16px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+
+  .complete-sparkle {
+    font-size: 2.2rem;
+    line-height: 1;
+    animation: pulsate 2.5s infinite ease-in-out;
+  }
+
+  .complete-title {
+    font-family: $font-display;
+    font-size: 1.35rem;
+    color: var(--theme-text, $cream);
+    margin: 0;
+  }
+
+  .complete-subtitle {
+    font-size: 0.88rem;
+    color: var(--theme-muted, $text-muted);
+    line-height: 1.5;
+    max-width: 440px;
+    margin: 0;
+  }
+
+  .complete-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 4px;
+
+    .btn {
+      min-height: 38px;
+      padding: 8px 16px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-radius: $radius-sm;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all $transition-fast;
+
+      &--primary {
+        border: 1px solid var(--theme-accent, $soft-pink);
+        background: var(--theme-accent, $soft-pink);
+        color: var(--bg-deep, #07130F);
+
+        &:hover {
+          background: color-mix(in srgb, var(--theme-accent, $soft-pink) 85%, #fff);
+        }
+      }
+
+      &--secondary {
+        border: 1px solid color-mix(in srgb, var(--theme-accent-2, $gold) 40%, transparent);
+        background: color-mix(in srgb, var(--theme-accent-2, $gold) 8%, transparent);
+        color: var(--theme-accent-2, $gold);
+
+        &:hover {
+          background: color-mix(in srgb, var(--theme-accent-2, $gold) 16%, transparent);
+          border-color: var(--theme-accent-2, $gold);
+        }
+      }
+    }
+  }
+}
+
+// ── Mobile Responsive adjustments ──
+@media (max-width: 480px) {
+  .checklist-panel {
+    padding: 16px !important;
+  }
+
+  .checklist-card-header {
+    .checklist-title {
+      font-size: 1.2rem;
+    }
+  }
+
+  .checklist-item-row {
+    padding: 10px 12px;
+    gap: 10px;
+
+    .item-text-details {
+      .item-title {
+        font-size: 0.85rem;
+      }
+      .item-desc {
+        font-size: 0.75rem;
+      }
+    }
+  }
+
+  .checklist-complete-state {
+    .complete-title {
+      font-size: 1.15rem;
+    }
+
+    .complete-subtitle {
+      font-size: 0.8rem;
+    }
+
+    .complete-actions {
+      flex-direction: column;
+      width: 100%;
+
+      .btn {
+        width: 100%;
+      }
+    }
+  }
+}
+

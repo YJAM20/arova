@@ -8,7 +8,7 @@ import {
 
 export type FuturePlanInput = Omit<FuturePlan, 'id' | 'createdAt' | 'updatedAt' | 'createdBy'>;
 
-import { RelationshipPointsService } from './relationship-points.service';
+import { GamificationService } from './gamification.service';
 
 function uid(): string {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
@@ -23,7 +23,7 @@ export class FuturePlanService {
   constructor(
     private storage: StorageService,
     private auth: AuthService,
-    private pointsService: RelationshipPointsService
+    private gamification: GamificationService
   ) {}
 
   getFuturePlans(): FuturePlan[] {
@@ -59,7 +59,7 @@ export class FuturePlanService {
 
     data.futurePlans.unshift(plan);
     this.storage.saveFullAppData(data);
-    this.pointsService.rewardFuturePlanCreated();
+    this.gamification.rewardFuturePlanCreated();
     return plan;
   }
 

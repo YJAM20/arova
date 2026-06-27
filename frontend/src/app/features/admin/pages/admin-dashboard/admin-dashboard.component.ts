@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { StorageService } from '../../../../core/services/storage.service';
+import { AdminService, AdminEngagementOverview } from '../../../../core/services/admin.service';
 
 interface DashboardStat {
   label: string;
@@ -56,12 +57,45 @@ export class AdminDashboardComponent implements OnInit {
     { feature: 'Automated Encryption Keys', free: 'AES-128', pro: 'AES-256', platinum: 'Custom Keys' }
   ];
 
-  constructor(private storage: StorageService) {}
+  activeTab: 'overview' | 'engagement' = 'overview';
+  engagementOverview: AdminEngagementOverview | null = null;
+  engagementError = '';
+  engagementLoading = false;
+  coupleIdInput = '';
+
+  constructor(
+    private storage: StorageService,
+    private adminService: AdminService
+  ) {}
 
   ngOnInit(): void {
     this.loadStats();
     this.loadFlags();
     this.loadLogs();
+    this.loadEngagement();
+  }
+
+  loadEngagement(): void {
+    this.engagementLoading = true;
+    this.engagementError = '';
+    this.adminService.getEngagementOverview(this.coupleIdInput || undefined).subscribe({
+      next: (data) => {
+        this.engagementOverview = data;
+        this.engagementLoading = false;
+      },
+      error: (err) => {
+        this.engagementError = err.message || 'Failed to load engagement analytics.';
+        this.engagementLoading = false;
+      }
+    });
+  }
+
+  get isApiMode(): boolean {
+    return this.adminService.isApiMode();
+  }
+
+  getObjectKeys(obj: any): string[] {
+    return obj ? Object.keys(obj) : [];
   }
 
   loadStats(): void {

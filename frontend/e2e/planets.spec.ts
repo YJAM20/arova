@@ -102,6 +102,24 @@ test.describe('Arova Planets E2E Smoke Tests', () => {
     expect(backendCalled).toBe(false);
   });
 
+  test('should display daily planet question and support submission in Local Mode', async ({ page }) => {
+    await page.goto('/planets');
+    await page.waitForURL('**/planets');
+
+    const questionCard = page.locator('.daily-question-card');
+    await expect(questionCard).toBeVisible();
+    await expect(questionCard.locator('h2')).toBeVisible();
+
+    const textarea = questionCard.locator('textarea');
+    await textarea.fill('Testing daily question inside planets.');
+
+    await questionCard.locator('.submit-question-btn').click();
+
+    // Verify success banner is visible
+    await expect(questionCard.locator('.question-success')).toBeVisible();
+    await expect(questionCard.locator('.question-success')).toContainText(/saved/i);
+  });
+
   test('has no horizontal overflow at 320px viewport', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 720 });
     await page.goto('/planets');

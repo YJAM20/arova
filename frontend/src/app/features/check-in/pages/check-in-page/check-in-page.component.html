@@ -2,10 +2,23 @@
   <header class="page-header animate-fade-in">
     <p class="page-eyebrow">Check-In</p>
     <h1>A light emotional snapshot</h1>
-    <p>Use this as simple journaling. It does not diagnose, treat, or replace professional support.</p>
+    <p *ngIf="!isApiMode">Local Mode saves this only in your browser.</p>
+    <p *ngIf="isApiMode">API Mode syncs this through your backend when configured.</p>
   </header>
 
-  <section class="checkin-grid animate-fade-in" style="animation-delay: 0.08s;">
+  <!-- Error alert banner -->
+  <div class="error-banner glass mb-6" *ngIf="errorMessage" role="alert" style="border-left: 4px solid #ef4444; padding: 1rem; color: #f87171;">
+    <strong class="font-bold text-xs block mb-1">Could not connect to backend</strong>
+    <p class="text-xs">{{ errorMessage }}</p>
+  </div>
+
+  <!-- Loading spinner indicator -->
+  <div class="loading-state glass p-8 text-center my-6" *ngIf="isLoading">
+    <div class="spinner animate-spin" style="border: 2px solid rgba(255,255,255,0.1); border-top-color: #fff; border-radius: 50%; width: 24px; height: 24px; display: inline-block;"></div>
+    <p class="text-xs text-neutral-400 mt-2">Connecting to universe...</p>
+  </div>
+
+  <section class="checkin-grid animate-fade-in" style="animation-delay: 0.08s;" *ngIf="!isLoading">
     <form class="checkin-form glass" (ngSubmit)="save()">
       <span class="section-label">Today</span>
 
@@ -59,7 +72,9 @@
         <textarea name="note" rows="4" [(ngModel)]="draft.note"></textarea>
       </label>
 
-      <button type="submit" class="primary-action">Save check-in locally</button>
+      <button type="submit" class="primary-action" [disabled]="isLoading">
+        {{ isApiMode ? 'Save and share check-in' : 'Save check-in locally' }}
+      </button>
       <p class="message" *ngIf="message">{{ message }}</p>
     </form>
 
@@ -83,7 +98,7 @@
     </aside>
   </section>
 
-  <section class="history-section animate-fade-in" style="animation-delay: 0.14s;">
+  <section class="history-section animate-fade-in" style="animation-delay: 0.14s;" *ngIf="!isLoading">
     <span class="section-label">Recent history</span>
     <div class="history-grid" *ngIf="history.length > 0; else emptyHistory">
       <article class="history-card glass" *ngFor="let item of history">

@@ -274,4 +274,134 @@ test.describe('Arova Music Room Flow', () => {
     );
     expect(hasHorizontalOverflow).toBe(false);
   });
+
+  test('does not make backend API calls for music state in Local Mode', async ({ page }) => {
+    let apiCalled = false;
+    await page.route('**/api/songs**', async route => {
+      apiCalled = true;
+      await route.continue();
+    });
+
+    await openMusicRoomInLocalMode(page);
+    await expect(page.locator('#music-disclaimer')).toBeVisible();
+    expect(apiCalled).toBe(false);
+  });
+
+  test('displays offline error message in API Mode if backend is unreachable', async ({ page }) => {
+    // Inject API mode and dummy token
+    await page.goto('/');
+    await page.evaluate(() => {
+      localStorage.setItem('love-universe-app-mode', 'api');
+      localStorage.setItem('love-universe-api-token', 'dummy-token-placeholder');
+      localStorage.setItem(
+        'love-universe-data-v1',
+        JSON.stringify({
+          version: '1.0.0',
+          settings: { onboardingCompleted: true }
+        })
+      );
+    });
+
+    // Mock auth me to bypass auth guard check
+    await page.route('**/api/auth/me', async route => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ id: 'user-owner', displayName: 'Partner A' })
+      });
+    });
+
+    // Mock setup status to bypass onboarding checks
+    await page.route('**/api/setup/status', async route => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          isVerified: true,
+          hasCompletedQuickOnboarding: true,
+          hasCompletedProfile: true,
+          hasCouple: true,
+        }),
+      });
+    });
+
+    // Mock API fail on loading songs
+    await page.route('**/api/songs**', async route => {
+      await route.fulfill({
+        status: 500,
+        contentType: 'application/json',
+        body: JSON.stringify({ message: 'Backend is not reachable. Make sure http://localhost:5036 is running.' })
+      });
+    });
+
+    await page.goto('/music');
+    // Verify error banner is displayed
+    const errorAlert = page.locator('.error-banner');
+    await expect(errorAlert).toBeVisible();
+    await expect(errorAlert).toContainText(/backend is not reachable/i);
+  });
+
+  test('contains external links disclaimers and mode limits copy', async ({ page }) => {
+    await openMusicRoomInLocalMode(page, [
+      {
+        id: 'song-link-test',
+        title: 'Bloom',
+        artist: 'The Paper Kites',
+        mood: 'happy',
+        sourceName: 'YouTube',
+        sourceUrl: 'https://youtube.com/watch?v=dummy',
+        isFavorite: false,
+        createdAt: new Date().toISOString()
+      }
+    ]);
+
+    // Select the song
+    await page.locator('#song-card-song-link-test').click();
+
+    // Verify external link action and disclaimers are visible
+    await expect(page.locator('#player-external-link')).toBeVisible();
+    await expect(page.locator('.external-link-hint')).toContainText(/External links open outside Arova/i);
+
+    // Local mode warning
+    await expect(page.locator('#music-local-warning')).toBeVisible();
+
+    // API Mode warning
+    await page.evaluate(() => {
+      localStorage.setItem('love-universe-app-mode', 'api');
+      localStorage.setItem('love-universe-api-token', 'dummy-token-placeholder');
+      localStorage.setItem(
+        'love-universe-data-v1',
+        JSON.stringify({
+          version: '1.0.0',
+          settings: { onboardingCompleted: true }
+        })
+      );
+    });
+    // Mock auth me to bypass auth guard check on reload
+    await page.route('**/api/auth/me', async route => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ id: 'user-owner', displayName: 'Partner A' })
+      });
+    });
+    // Mock setup status to bypass onboarding checks on reload
+    await page.route('**/api/setup/status', async route => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          isVerified: true,
+          hasCompletedQuickOnboarding: true,
+          hasCompletedProfile: true,
+          hasCouple: true,
+        }),
+      });
+    });
+    await page.route('**/api/songs**', async route => {
+      await route.fulfill({ status: 200, contentType: 'application/json', body: '[]' });
+    });
+    await page.reload();
+    await expect(page.locator('#music-api-warning')).toBeVisible();
+  });
 });

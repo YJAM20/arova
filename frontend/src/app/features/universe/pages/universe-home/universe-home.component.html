@@ -39,6 +39,93 @@
     <div class="dashboard-grid">
       <!-- Left Column: Actions, Sections/Planets -->
       <div class="main-column">
+        <!-- Guided Onboarding Checklist Card -->
+        <section *ngIf="!isChecklistDismissed" class="dashboard-section checklist-card-wrapper" id="checklist-dashboard-card" aria-labelledby="checklist-title">
+          <div class="checklist-panel glass">
+            <!-- Normal checklist card state (uncompleted or complete check) -->
+            <div *ngIf="checklistProgress < 100" class="checklist-active-state" id="checklist-active-state">
+              <header class="checklist-card-header">
+                <div class="header-left">
+                  <span class="checklist-badge">Guided Onboarding</span>
+                  <h3 id="checklist-title" class="checklist-title">{{ t('checklistTitle') }}</h3>
+                  <p class="checklist-subtitle">{{ t('checklistSubtitle') }}</p>
+                </div>
+                <div class="header-right">
+                  <button type="button" class="control-btn control-btn--snooze" id="checklist-snooze-btn" (click)="snoozeChecklist()" title="Snooze for 24h">Snooze</button>
+                  <button type="button" class="control-btn control-btn--dismiss" id="checklist-dismiss-btn" (click)="dismissChecklist()" title="Dismiss checklist">✕</button>
+                </div>
+              </header>
+
+              <!-- Progress Bar -->
+              <div class="checklist-progress-section">
+                <div class="progress-labels">
+                  <span class="progress-count" id="checklist-progress-count">{{ checklistCompletedCount }} / {{ checklistTotalCount }} completed</span>
+                  <span class="progress-percent" id="checklist-progress-percent">{{ checklistProgress }}%</span>
+                </div>
+                <div class="progress-bar-track">
+                  <div class="progress-bar-fill" id="checklist-progress-fill" [style.width.%]="checklistProgress"></div>
+                </div>
+              </div>
+
+              <!-- Next recommended task suggestion -->
+              <div *ngIf="nextChecklistItem" class="recommended-task-banner" id="checklist-recommended-banner">
+                <span class="banner-icon">🎯</span>
+                <div class="banner-body">
+                  <strong>Next Ritual Recommendation</strong>
+                  <p>Try: {{ t(nextChecklistItem.titleKey) }} — {{ t(nextChecklistItem.descKey) }}</p>
+                  <a [routerLink]="nextChecklistItem.route" class="banner-cta-btn" id="checklist-recommended-cta">{{ nextChecklistItem.ctaLabel }}</a>
+                </div>
+              </div>
+
+              <!-- Collapsible Checklist Items list -->
+              <div class="checklist-items-container">
+                <!-- Main Items (Show first 6 items or all items based on showFullChecklist toggle) -->
+                <ul class="checklist-items-list">
+                  <li *ngFor="let item of (showFullChecklist ? checklistItems : checklistItems.slice(0, 6))" 
+                      class="checklist-item-row" 
+                      [class.checklist-item-row--completed]="item.completed"
+                      [id]="'checklist-row-' + item.id">
+                    <span class="item-status-icon">{{ item.completed ? '✓' : '○' }}</span>
+                    <div class="item-text-details">
+                      <strong class="item-title">{{ t(item.titleKey) }} <span *ngIf="item.optional" class="badge-optional">(Optional)</span></strong>
+                      <p class="item-desc">{{ t(item.descKey) }}</p>
+                    </div>
+                    <a *ngIf="!item.completed" [routerLink]="item.route" class="item-action-link" [id]="'checklist-cta-' + item.id">{{ item.ctaLabel }}</a>
+                    <span *ngIf="item.completed" class="item-completed-text">Completed</span>
+                  </li>
+                </ul>
+
+                <!-- Show More / Show Fewer toggle -->
+                <button type="button" class="toggle-list-btn" id="checklist-toggle-items-btn" (click)="toggleFullChecklist()">
+                  {{ showFullChecklist ? 'Show Fewer Rituals ▲' : 'Show More Rituals ▼' }}
+                </button>
+              </div>
+
+              <!-- Honesty Note Card -->
+              <footer class="honesty-limitations-note" id="checklist-honesty-limitations">
+                <p *ngIf="isLocalMode" id="checklist-local-mode-warning">
+                  ⚠️ Local Mode keeps this progress in your browser. Progress is not synced across devices. AI recommendations and push notifications are not active in this sandbox.
+                </p>
+                <p *ngIf="!isLocalMode" id="checklist-api-mode-warning">
+                  ⚠️ API Mode can sync onboarding progress through your configured backend database. Push notifications and calendar sync are not active in this sandbox.
+                </p>
+              </footer>
+            </div>
+
+            <!-- Complete Onboarding celebration state -->
+            <div *ngIf="checklistProgress === 100" class="checklist-complete-state" id="checklist-complete-state">
+              <span class="complete-sparkle" aria-hidden="true">💖 ✨</span>
+              <h3 class="complete-title">Your universe has its first rhythm.</h3>
+              <p class="complete-subtitle">You have completed all guided rituals! This private space is officially yours to grow.</p>
+              
+              <div class="complete-actions">
+                <button type="button" class="btn btn--primary" id="checklist-continue-btn" (click)="dismissChecklist()">Continue building</button>
+                <button type="button" class="btn btn--secondary" id="checklist-view-completed-btn" (click)="restoreChecklist()">View Checklist</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <!-- Today Card -->
         <section class="dashboard-section today-card glass" aria-labelledby="today-title">
           <div class="section-header">
@@ -185,6 +272,40 @@
 
       <!-- Right Column: Activity, Status, Mode info -->
       <div class="sidebar-column">
+        <!-- On This Day Card -->
+        <section class="dashboard-section" aria-labelledby="otd-dashboard-title">
+          <h2 id="otd-dashboard-title" class="section-title">On this day</h2>
+          <div class="otd-panel glass" id="otd-dashboard-card">
+            <!-- If there are matching memories -->
+            <div *ngIf="onThisDayMemories.length > 0" class="otd-content">
+              <div *ngFor="let memory of onThisDayMemories" class="otd-item">
+                <a [routerLink]="['/memories', memory.id]" class="otd-link-wrapper">
+                  <div class="otd-meta">
+                    <span class="otd-year-badge">
+                      {{ getYearsAgo(memory.date) }} {{ getYearsAgo(memory.date) === 1 ? 'year' : 'years' }} ago
+                    </span>
+                    <small class="otd-date">{{ formatDate(memory.date) }}</small>
+                  </div>
+                  <span class="otd-title-text">{{ memory.title }}</span>
+                  <p class="otd-desc-text">{{ memory.description }}</p>
+                </a>
+              </div>
+              <a routerLink="/memories/timeline" class="sidebar-action-btn">View full timeline</a>
+            </div>
+
+            <!-- If no matching memories -->
+            <div *ngIf="onThisDayMemories.length === 0" class="empty-state">
+              <p class="empty-desc">No memory from this day yet. Maybe today becomes one.</p>
+              <a routerLink="/memories/new" class="sidebar-action-btn">Add today’s memory</a>
+            </div>
+          </div>
+        </section>
+
+        <!-- Streak Heatmap -->
+        <section class="dashboard-section" aria-label="Streak Heatmap">
+          <arova-streak-heatmap [compact]="true"></arova-streak-heatmap>
+        </section>
+
         <!-- Recent Activity -->
         <section class="dashboard-section" aria-labelledby="activity-title">
           <h2 id="activity-title" class="section-title">Latest Moments</h2>
@@ -249,6 +370,66 @@
               <p *ngIf="latestFuturePlan.description" class="plan-desc-text">{{ latestFuturePlan.description }}</p>
               <small *ngIf="latestFuturePlan.targetDate" class="plan-target">Target: {{ latestFuturePlan.targetDate | date }}</small>
               <a routerLink="/future" class="sidebar-action-btn">View future board</a>
+            </div>
+          </div>
+        </section>
+
+        <!-- Upcoming Moments Preview -->
+        <section class="dashboard-section" aria-labelledby="milestones-preview-title">
+          <h2 id="milestones-preview-title" class="section-title">Upcoming Moments</h2>
+          <div class="milestones-panel glass" id="milestones-dashboard-card">
+            <div *ngIf="!nextImportantDate" class="empty-state" id="milestone-empty-state">
+              <p class="empty-desc">No important dates recorded yet.</p>
+              <a routerLink="/important-dates" class="sidebar-action-btn" id="add-first-milestone-btn">Add important date</a>
+            </div>
+            
+            <div *ngIf="nextImportantDate" class="milestone-content" id="milestone-active-state">
+              <div class="milestone-info">
+                <span class="milestone-title-text">{{ nextImportantDate.title }}</span>
+                <span class="milestone-type-badge">{{ nextImportantDate.type }}</span>
+              </div>
+              <p class="milestone-countdown" id="milestone-days-remaining">{{ nextImportantDate.daysRemaining }} Days Left</p>
+              <p *ngIf="nextImportantDate.description" class="milestone-desc-text">{{ nextImportantDate.description }}</p>
+              <small class="milestone-target">Next: {{ formatDate(nextImportantDate.nextOccurrenceDate) }}</small>
+              <a routerLink="/important-dates" class="sidebar-action-btn">View special calendar</a>
+            </div>
+          </div>
+        </section>
+
+        <!-- Shared Goals Preview -->
+        <section class="dashboard-section" aria-labelledby="goals-preview-title">
+          <h2 id="goals-preview-title" class="section-title">Shared Goals</h2>
+          <div class="goals-panel glass" id="goals-dashboard-card">
+            <div *ngIf="activeGoalsCount === 0" class="empty-state" id="goals-empty-state">
+              <p class="empty-desc">No active goals right now.</p>
+              <a routerLink="/goals" class="sidebar-action-btn" id="add-first-goal-btn">Set a couple goal</a>
+            </div>
+            
+            <div *ngIf="activeGoalsCount > 0" class="goal-content" id="goals-active-state">
+              <div class="goal-summary-header">
+                <span class="goal-active-badge" id="goals-active-count">{{ activeGoalsCount }} Active {{ activeGoalsCount === 1 ? 'Goal' : 'Goals' }}</span>
+              </div>
+              
+              <div *ngIf="closestGoal" class="closest-goal-panel" id="closest-goal-info">
+                <span class="closest-goal-label">Next focus:</span>
+                <span class="closest-goal-title" id="closest-goal-title">{{ closestGoal.title }}</span>
+                
+                <div class="closest-goal-progress" id="closest-goal-progress">
+                  <div class="progress-info">
+                    <span>Progress</span>
+                    <span>{{ closestGoal.progressPercent }}%</span>
+                  </div>
+                  <div class="progress-bar-container" style="height: 6px; background: rgba(55, 88, 63, 0.12); border-radius: 3px; overflow: hidden; margin-top: 4px; margin-bottom: 4px;">
+                    <div class="progress-bar" [style.width.%]="closestGoal.progressPercent" style="height: 100%; background: linear-gradient(90deg, #E7A6B6, #D6B76A); border-radius: 3px;"></div>
+                  </div>
+                </div>
+                
+                <small *ngIf="closestGoal.targetDate" class="goal-target" id="closest-goal-target">
+                  Target: {{ formatDate(closestGoal.targetDate) }}
+                </small>
+              </div>
+              
+              <a routerLink="/goals" class="sidebar-action-btn" id="goals-board-link">View goals board</a>
             </div>
           </div>
         </section>

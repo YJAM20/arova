@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Reason, ReasonReaction, ReasonReactionType } from '../../shared/models/reason.model';
 import { AuthService } from './auth.service';
 import { StorageService } from './storage.service';
-import { RelationshipPointsService } from './relationship-points.service';
+import { GamificationService } from './gamification.service';
 
 export type ReasonInput = Omit<Reason, 'id' | 'createdAt' | 'updatedAt' | 'reactions' | 'createdBy'> & {
   reactions?: ReasonReaction[];
@@ -13,7 +13,7 @@ export class ReasonService {
   constructor(
     private storage: StorageService,
     private auth: AuthService,
-    private pointsService: RelationshipPointsService
+    private gamification: GamificationService
   ) {}
 
   getReasons(): Reason[] {
@@ -101,7 +101,7 @@ export class ReasonService {
         ];
 
     if (!hasReaction) {
-      this.pointsService.rewardReasonReaction();
+      this.gamification.rewardReasonReaction();
     }
 
     return this.storage.updateReason(id, { reactions: updatedReactions });

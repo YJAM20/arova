@@ -55,6 +55,9 @@ public sealed class SettingsService : ISettingsService
         settings.LanguageMode = CleanLanguage(request.LanguageMode);
         settings.AnimationsEnabled = request.AnimationsEnabled;
         settings.MusicEnabled = request.MusicEnabled;
+        settings.EmailNotificationsEnabled = request.EmailNotificationsEnabled;
+        settings.DailyDigestEnabled = request.DailyDigestEnabled;
+        settings.PartnerActivityEmailsEnabled = request.PartnerActivityEmailsEnabled;
         settings.UpdatedAt = DateTime.UtcNow;
 
         await _dbContext.SaveChangesAsync(cancellationToken);
@@ -84,6 +87,9 @@ public sealed class SettingsService : ISettingsService
             LanguageMode = "en",
             AnimationsEnabled = true,
             MusicEnabled = true,
+            EmailNotificationsEnabled = true,
+            DailyDigestEnabled = true,
+            PartnerActivityEmailsEnabled = true,
             CreatedAt = DateTime.UtcNow
         };
 
@@ -124,6 +130,9 @@ public sealed class SettingsService : ISettingsService
             LanguageMode = settings.LanguageMode,
             AnimationsEnabled = settings.AnimationsEnabled,
             MusicEnabled = settings.MusicEnabled,
+            EmailNotificationsEnabled = settings.EmailNotificationsEnabled,
+            DailyDigestEnabled = settings.DailyDigestEnabled,
+            PartnerActivityEmailsEnabled = settings.PartnerActivityEmailsEnabled,
             CreatedAt = settings.CreatedAt,
             UpdatedAt = settings.UpdatedAt
         };

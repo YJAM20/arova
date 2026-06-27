@@ -16,17 +16,17 @@ import { AppModeService } from '../../../core/services/app-mode.service';
         </div>
 
         <div class="space-y-2">
-          <h1 class="text-2xl font-extrabold text-white">Space Link Offline</h1>
+          <h1 class="text-2xl font-extrabold text-white">You’re offline.</h1>
           <p class="text-sm text-neutral-300">
-            We could not reach Arova’s backend. You can retry the connection or continue with local mode if available.
+            Local Mode can still use data saved in this browser. API Mode needs your backend connection to sync.
           </p>
         </div>
 
         <div class="tips-box p-4 bg-white/3 rounded-xl border border-white/5 text-left text-xs text-neutral-400 space-y-2">
           <strong class="text-neutral-200">Tips to reconnect:</strong>
           <ul class="list-disc pl-4 space-y-1">
-            <li>Verify you have executed <code class="bg-black/30 px-1 py-0.5 rounded font-mono">dotnet run</code> inside the backend folder.</li>
-            <li>If you want to review features without the server, you can switch to local mode.</li>
+            <li>Verify your internet connection.</li>
+            <li>If using API Mode, check that the backend server is running.</li>
           </ul>
         </div>
 
@@ -34,12 +34,12 @@ import { AppModeService } from '../../../core/services/app-mode.service';
           <button (click)="checkConnection()" class="btn-primary px-5 py-2.5 rounded-xl text-sm font-semibold">
             🔄 Retry connection
           </button>
-          <a routerLink="/settings" class="btn-secondary px-5 py-2.5 rounded-xl text-sm font-semibold">
-            ⚙️ Open settings
-          </a>
           <button (click)="continueLocally()" class="btn-secondary px-5 py-2.5 rounded-xl text-sm font-semibold">
-            🏠 Continue locally
+            ✨ Go to Local Demo
           </button>
+          <a routerLink="/" class="btn-secondary px-5 py-2.5 rounded-xl text-sm font-semibold">
+            🏠 Back to home
+          </a>
         </div>
       </div>
     </div>

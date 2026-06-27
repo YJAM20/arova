@@ -27,6 +27,18 @@ public sealed class AdminController : ControllerBase
         return ToActionResult(result, Ok);
     }
 
+    [HttpGet("engagement")]
+    [ProducesResponseType(typeof(AdminEngagementOverviewDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<AdminEngagementOverviewDto>> GetEngagement(
+        [FromQuery] Guid? coupleId,
+        CancellationToken cancellationToken)
+    {
+        var result = await _adminService.GetEngagementAsync(coupleId, cancellationToken);
+        return ToActionResult(result, Ok);
+    }
+
     [HttpGet("feedback")]
     [ProducesResponseType(typeof(IReadOnlyList<AdminFeedbackResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -45,6 +57,17 @@ public sealed class AdminController : ControllerBase
     {
         var result = await _adminService.GetHealthAsync(cancellationToken);
         return ToActionResult(result, Ok);
+    }
+
+    [HttpPost("daily-digest/send-test")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> SendTestDailyDigest([FromQuery] Guid coupleId, CancellationToken cancellationToken)
+    {
+        var result = await _adminService.SendTestDailyDigestAsync(coupleId, cancellationToken);
+        return ToActionResult(result, _ => Ok(new { message = "Test daily digest sent successfully." }));
     }
 
     private ActionResult ToActionResult<T>(

@@ -192,3 +192,152 @@ table {
     }
   }
 }
+
+// Admin tab styling
+.admin-tabs {
+  display: flex;
+  gap: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 2rem;
+  
+  .tab-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted, #9ca3af);
+    padding: 0.75rem 1.25rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 2px solid transparent;
+    
+    &:hover {
+      color: white;
+    }
+    
+    &.active {
+      color: white;
+      border-bottom-color: var(--accent-color, #ec4899);
+    }
+  }
+}
+
+// Search and error styling
+.couple-search-bar {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  max-width: 500px;
+  
+  input {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 0.6rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.85rem;
+    
+    &:focus {
+      outline: none;
+      border-color: var(--accent-color, #ec4899);
+    }
+  }
+  
+  button {
+    background: var(--accent-color, #ec4899);
+    border: none;
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    
+    &:hover {
+      background: darken(#ec4899, 10%);
+    }
+  }
+}
+
+.privacy-notice {
+  font-size: 0.8rem;
+  color: var(--accent-color, #ec4899);
+  border: 1px dashed rgba(236, 72, 153, 0.3);
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  margin-bottom: 2rem;
+  background: rgba(236, 72, 153, 0.05);
+}
+
+.engagement-limitations {
+  li {
+    margin-bottom: 0.5rem;
+    &:last-child { margin-bottom: 0; }
+  }
+}
+
+// Feature breakdown graph styles
+.feature-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  
+  .feature-bar-row {
+    .feature-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: #d1d5db;
+      margin-bottom: 0.25rem;
+    }
+    
+    .feature-bar-track {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 9999px;
+      overflow: hidden;
+      
+      .feature-bar-fill {
+        height: 100%;
+        border-radius: 9999px;
+      }
+    }
+  }
+}
+
+// Activity By Day visual styling
+.day-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 120px;
+  gap: 0.25rem;
+  padding-top: 1rem;
+  
+  .day-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    justify-content: flex-end;
+    
+    .day-bar {
+      width: 100%;
+      background: linear-gradient(180deg, #ec4899 0%, rgba(236, 72, 153, 0.2) 100%);
+      border-radius: 4px 4px 0 0;
+      transition: height 0.3s ease;
+      min-height: 2px;
+    }
+    
+    .day-label {
+      font-size: 10px;
+      color: #9ca3af;
+      margin-top: 0.5rem;
+      white-space: nowrap;
+    }
+  }
+}
+

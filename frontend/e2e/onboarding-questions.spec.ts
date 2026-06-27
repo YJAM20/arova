@@ -147,7 +147,7 @@ test.describe('Arova Onboarding Questions', () => {
   test('shows loading state while API questions are preparing', async ({ page }) => {
     await page.route('**/api/onboarding/questions**', async route => {
       if (route.request().method() !== 'OPTIONS') {
-        await new Promise(resolve => setTimeout(resolve, 300));
+        await new Promise(resolve => setTimeout(resolve, 2000));
       }
 
       await fulfillApiJson(route, 200, [

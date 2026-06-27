@@ -143,6 +143,8 @@
   text-align: left;
   transition: all $transition-base;
   cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 
   .mood-emoji-display {
     font-size: 2rem;
@@ -173,8 +175,6 @@
   }
 
   &:hover {
-    border-color: rgba(231, 166, 182, 0.3);
-    background: rgba(231, 166, 182, 0.05);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 
@@ -184,19 +184,53 @@
   }
 
   &.active {
-    border-color: $soft-pink;
-    background: rgba(231, 166, 182, 0.12);
     box-shadow: 0 0 16px rgba(231, 166, 182, 0.15);
     transform: translateY(-2px);
 
     .mood-emoji-display {
       transform: scale(1.2);
     }
+  }
 
-    .mood-label-name {
-      color: $soft-pink;
-      font-weight: 600;
-    }
+  &--happy {
+    &:hover { border-color: rgba(214, 183, 106, 0.4); background: rgba(214, 183, 106, 0.05); }
+    &.active { border-color: rgb(214, 183, 106); background: rgba(214, 183, 106, 0.12); .mood-label-name { color: rgb(214, 183, 106); } }
+  }
+  &--silent {
+    &:hover { border-color: rgba(115, 140, 118, 0.4); background: rgba(115, 140, 118, 0.05); }
+    &.active { border-color: rgb(115, 140, 118); background: rgba(115, 140, 118, 0.12); .mood-label-name { color: rgb(115, 140, 118); } }
+  }
+  &--tired {
+    &:hover { border-color: rgba(128, 179, 196, 0.4); background: rgba(128, 179, 196, 0.05); }
+    &.active { border-color: rgb(128, 179, 196); background: rgba(128, 179, 196, 0.12); .mood-label-name { color: rgb(128, 179, 196); } }
+  }
+  &--missing-you {
+    &:hover { border-color: rgba(231, 166, 182, 0.4); background: rgba(231, 166, 182, 0.05); }
+    &.active { border-color: $soft-pink; background: rgba(231, 166, 182, 0.12); .mood-label-name { color: $soft-pink; } }
+  }
+  &--need-reassurance {
+    &:hover { border-color: rgba(156, 137, 184, 0.4); background: rgba(156, 137, 184, 0.05); }
+    &.active { border-color: rgb(156, 137, 184); background: rgba(156, 137, 184, 0.12); .mood-label-name { color: rgb(156, 137, 184); } }
+  }
+  &--excited {
+    &:hover { border-color: rgba(230, 126, 34, 0.4); background: rgba(230, 126, 34, 0.05); }
+    &.active { border-color: rgb(230, 126, 34); background: rgba(230, 126, 34, 0.12); .mood-label-name { color: rgb(230, 126, 34); } }
+  }
+  &--overthinking {
+    &:hover { border-color: rgba(149, 165, 166, 0.4); background: rgba(149, 165, 166, 0.05); }
+    &.active { border-color: rgb(149, 165, 166); background: rgba(149, 165, 166, 0.12); .mood-label-name { color: rgb(149, 165, 166); } }
+  }
+  &--need-attention {
+    &:hover { border-color: rgba(241, 196, 15, 0.4); background: rgba(241, 196, 15, 0.05); }
+    &.active { border-color: rgb(241, 196, 15); background: rgba(241, 196, 15, 0.12); .mood-label-name { color: rgb(241, 196, 15); } }
+  }
+  &--sad {
+    &:hover { border-color: rgba(52, 152, 219, 0.4); background: rgba(52, 152, 219, 0.05); }
+    &.active { border-color: rgb(52, 152, 219); background: rgba(52, 152, 219, 0.12); .mood-label-name { color: rgb(52, 152, 219); } }
+  }
+  &--angry-but-soft {
+    &:hover { border-color: rgba(231, 76, 60, 0.4); background: rgba(231, 76, 60, 0.05); }
+    &.active { border-color: rgb(231, 76, 60); background: rgba(231, 76, 60, 0.12); .mood-label-name { color: rgb(231, 76, 60); } }
   }
 }
 
@@ -888,6 +922,13 @@
     font-size: 0.78rem;
     margin: 0;
     line-height: 1.5;
+  }
+
+  .limitations-note-text {
+    margin-top: 8px;
+    color: $soft-pink;
+    opacity: 0.85;
+    font-size: 0.78rem;
   }
 }
 

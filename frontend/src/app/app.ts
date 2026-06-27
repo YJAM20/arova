@@ -51,10 +51,12 @@ export class App implements OnInit {
           });
         }
       },
-      error: () => {
-        this.tokenStorage.clearToken();
-        this.auth.setCurrentUser(null);
-        this.router.navigate(['/auth']);
+      error: (err: any) => {
+        if (err && (err.status === 400 || err.status === 401 || err.status === 403)) {
+          this.tokenStorage.clearToken();
+          this.auth.setCurrentUser(null);
+          this.router.navigate(['/auth']);
+        }
       }
     });
   }

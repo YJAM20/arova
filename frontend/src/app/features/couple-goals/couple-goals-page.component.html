@@ -1,0 +1,369 @@
+<div class="arova-page arova-page--wide goals-page animate-fade-in">
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container glass" aria-live="polite">
+    <div class="spinner"></div>
+    <p>Loading your goals space...</p>
+  </div>
+
+  <div *ngIf="!isLoading">
+    <!-- Hero Header -->
+    <header class="goals-hero glass">
+      <div class="hero-left">
+        <p class="hero-eyebrow" id="goals-eyebrow">✦ {{ t('goalsTitle') }}</p>
+        <h1 class="hero-title">{{ t('goalsTitle') }}</h1>
+        <p class="hero-subtitle">
+          {{ t('goalsSubtitle') }}
+        </p>
+
+        <!-- Stats Summary -->
+        <div class="stats-grid" id="goals-summary-cards">
+          <div class="stat-card">
+            <span class="stat-num" id="total-goals-count">{{ getTotalGoals() }}</span>
+            <span class="stat-label">Total Goals</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-num" id="active-goals-count">{{ getActiveGoals() }}</span>
+            <span class="stat-label">Active</span>
+          </div>
+          <div class="stat-card text-success">
+            <span class="stat-num" id="completed-goals-count">{{ getCompletedGoals() }}</span>
+            <span class="stat-label">Completed</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <button class="btn btn--primary" id="toggle-add-goal-form" (click)="toggleAddForm()">
+          {{ showAddForm ? 'Close Form' : 'Add New Goal' }}
+        </button>
+      </div>
+    </header>
+
+    <!-- Error/Success Alerts -->
+    <div *ngIf="saveSuccess" class="alert alert--success animate-slide-in" id="goal-save-success" role="alert">
+      ✨ Goal saved successfully to your shared space!
+    </div>
+    <div *ngIf="errorMessage" class="alert alert--danger animate-slide-in" role="alert">
+      ⚠️ {{ errorMessage }}
+    </div>
+
+    <!-- Add/Edit Form Section -->
+    <section *ngIf="showAddForm" class="form-section glass animate-slide-in" id="goals-form-section">
+      <h2 class="section-title">{{ editingGoal ? 'Edit Goal' : 'Create New Goal' }}</h2>
+      <form (submit)="saveGoal(); $event.preventDefault()" class="goals-form">
+        <div class="form-grid">
+          <!-- Title -->
+          <div class="form-group">
+            <label for="goal-title-input">Goal Title *</label>
+            <input
+              type="text"
+              id="goal-title-input"
+              [(ngModel)]="draft.title"
+              name="title"
+              placeholder="e.g., Save for weekend road trip"
+              required
+              class="form-control"
+            />
+          </div>
+
+          <!-- Description -->
+          <div class="form-group">
+            <label for="goal-description-input">Description</label>
+            <textarea
+              id="goal-description-input"
+              [(ngModel)]="draft.description"
+              name="description"
+              placeholder="e.g., Details, budgets, or special plans we want to keep in mind..."
+              class="form-control"
+              rows="3"
+            ></textarea>
+          </div>
+
+          <!-- Category -->
+          <div class="form-group">
+            <label for="goal-category-select">Category</label>
+            <select id="goal-category-select" [(ngModel)]="draft.category" name="category" class="form-control">
+              <option *ngFor="let cat of categories" [value]="cat">
+                {{ getCategoryIcon(cat) }} {{ getCategoryLabel(cat) }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Status -->
+          <div class="form-group">
+            <label for="goal-status-select">Status</label>
+            <select id="goal-status-select" [(ngModel)]="draft.status" name="status" class="form-control">
+              <option *ngFor="let stat of statuses" [value]="stat">
+                {{ getStatusLabel(stat) }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Target Date -->
+          <div class="form-group">
+            <label for="goal-target-date-input">Target Date</label>
+            <input
+              type="date"
+              id="goal-target-date-input"
+              [(ngModel)]="draft.targetDate"
+              name="targetDate"
+              class="form-control"
+            />
+          </div>
+
+          <!-- Private Toggle -->
+          <div class="form-group checkbox-group">
+            <label class="checkbox-label" for="goal-is-private-checkbox">
+              <input
+                type="checkbox"
+                id="goal-is-private-checkbox"
+                [(ngModel)]="draft.isPrivate"
+                name="isPrivate"
+              />
+              <span>🔒 Keep Private (Only visible to you)</span>
+            </label>
+          </div>
+
+          <!-- Manual Progress (only if no milestones exist or when editing empty milestones) -->
+          <div class="form-group" *ngIf="!editingGoal || editingGoal.milestones.length === 0">
+            <label for="goal-progress-input">Manual Progress ({{ draft.progressPercent }}%)</label>
+            <input
+              type="range"
+              id="goal-progress-input"
+              min="0"
+              max="100"
+              step="5"
+              [(ngModel)]="draft.progressPercent"
+              name="progressPercent"
+              class="form-control range-input"
+            />
+          </div>
+        </div>
+
+        <div *ngIf="saveError" class="form-error-text" id="goal-save-error">
+          {{ saveError }}
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn--secondary" (click)="toggleAddForm()">Cancel</button>
+          <button type="submit" class="btn btn--primary" id="goal-submit-btn" [disabled]="!draft.title.trim() || isSaving">
+            {{ isSaving ? 'Saving...' : 'Save Goal' }}
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Filters -->
+    <div class="filters-bar glass">
+      <div class="filter-group">
+        <label>Category:</label>
+        <div class="filter-chips">
+          <button
+            class="chip"
+            [class.active]="categoryFilter === 'all'"
+            (click)="categoryFilter = 'all'"
+            id="filter-cat-all"
+          >
+            All
+          </button>
+          <button
+            *ngFor="let cat of categories"
+            class="chip"
+            [class.active]="categoryFilter === cat"
+            (click)="categoryFilter = cat"
+            [id]="'filter-cat-' + cat"
+          >
+            {{ getCategoryIcon(cat) }} {{ getCategoryLabel(cat) }}
+          </button>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label>Status:</label>
+        <div class="filter-chips">
+          <button
+            class="chip"
+            [class.active]="statusFilter === 'all'"
+            (click)="statusFilter = 'all'"
+            id="filter-status-all"
+          >
+            All
+          </button>
+          <button
+            *ngFor="let stat of statuses"
+            class="chip"
+            [class.active]="statusFilter === stat"
+            (click)="statusFilter = stat"
+            [id]="'filter-status-' + stat"
+          >
+            {{ getStatusLabel(stat) }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="getFilteredGoals().length === 0" class="empty-state glass" id="goals-empty-state">
+      <span class="empty-icon" aria-hidden="true">🎯</span>
+      <h3>{{ t('goalsEmpty') }}</h3>
+      <p>Arova couple goals help you align on milestones, track shared task lists, and celebrate together.</p>
+      <button class="btn btn--primary" id="empty-add-goal-btn" (click)="showAddForm = true">
+        {{ t('goalsCTA') }}
+      </button>
+    </div>
+
+    <!-- Goals Grid Board -->
+    <div *ngIf="getFilteredGoals().length > 0" class="goals-grid" id="goals-board">
+      <article
+        *ngFor="let goal of getFilteredGoals()"
+        class="goal-card glass"
+        [class.goal-card--private]="goal.isPrivate"
+        [class.goal-card--completed]="goal.status === 'completed'"
+        [id]="'goal-card-' + goal.id"
+      >
+        <div class="card-header">
+          <div class="card-badges">
+            <span class="badge badge--category">
+              {{ getCategoryIcon(goal.category) }} {{ getCategoryLabel(goal.category) }}
+            </span>
+            <span class="badge badge--status" [class]="'badge--status-' + goal.status">
+              {{ getStatusLabel(goal.status) }}
+            </span>
+            <span *ngIf="goal.isPrivate" class="badge badge--private" title="Private goal">🔒 Private</span>
+          </div>
+
+          <div class="card-actions">
+            <button
+              *ngIf="goal.status !== 'completed' && canEdit(goal)"
+              class="action-btn action-btn--complete"
+              title="Complete Goal"
+              (click)="completeGoal(goal, $event)"
+              [id]="'complete-goal-' + goal.id"
+            >
+              ✓
+            </button>
+            <button
+              *ngIf="canEdit(goal)"
+              class="action-btn action-btn--edit"
+              title="Edit Goal"
+              (click)="startEdit(goal, $event)"
+              [id]="'edit-goal-' + goal.id"
+            >
+              ✎
+            </button>
+            <button
+              *ngIf="canEdit(goal)"
+              class="action-btn action-btn--delete"
+              title="Delete Goal"
+              (click)="deleteGoal(goal, $event)"
+              [id]="'delete-goal-' + goal.id"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+
+        <h3 class="card-title">{{ goal.title }}</h3>
+        <p *ngIf="goal.description" class="card-desc">{{ goal.description }}</p>
+
+        <!-- Target Date -->
+        <div *ngIf="goal.targetDate" class="card-target-date">
+          📅 Target: <span class="date-text">{{ formatDate(goal.targetDate) }}</span>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="card-progress">
+          <div class="progress-info">
+            <span>Progress</span>
+            <span class="percent-val">{{ goal.progressPercent }}%</span>
+          </div>
+          <div class="progress-bar-container" role="progressbar" [attr.aria-valuenow]="goal.progressPercent" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-bar" [style.width.%]="goal.progressPercent"></div>
+          </div>
+          <small class="milestone-count" *ngIf="goal.milestones.length > 0">
+            {{ goal.milestones.filter($any(milestoneIsCompleted)).length }} / {{ goal.milestones.length }} milestones completed
+          </small>
+        </div>
+
+        <!-- Details Footer -->
+        <div class="card-footer">
+          <span class="creator-label">Created by: {{ goal.createdByDisplayName || 'Partner' }}</span>
+          <button class="expand-toggle-btn" (click)="toggleExpand(goal.id)" [id]="'expand-goal-' + goal.id">
+            {{ expandedGoalId === goal.id ? 'Hide Checklist' : 'Show Checklist' }}
+            <span class="chevron">{{ expandedGoalId === goal.id ? '▲' : '▼' }}</span>
+          </button>
+        </div>
+
+        <!-- Expanded Checklist Details -->
+        <div *ngIf="expandedGoalId === goal.id" class="milestones-section animate-slide-in">
+          <hr class="divider" />
+          <h4 class="section-subtitle">Milestones & Checklist</h4>
+
+          <!-- Milestones Checklist -->
+          <ul class="milestones-list" *ngIf="goal.milestones.length > 0">
+            <li *ngFor="let ms of goal.milestones" class="milestone-item" [class.milestone-item--completed]="ms.isCompleted">
+              <label class="milestone-check">
+                <input
+                  type="checkbox"
+                  [checked]="ms.isCompleted"
+                  (change)="toggleMilestone(goal, ms)"
+                  [disabled]="!canEdit(goal)"
+                  [id]="'milestone-check-' + ms.id"
+                />
+                <span class="milestone-text">{{ ms.title }}</span>
+              </label>
+              <button
+                *ngIf="canEdit(goal)"
+                class="delete-ms-btn"
+                (click)="deleteMilestone(goal.id, ms.id)"
+                [id]="'delete-milestone-' + ms.id"
+                title="Remove milestone"
+              >
+                ×
+              </button>
+            </li>
+          </ul>
+
+          <p class="no-milestones-text" *ngIf="goal.milestones.length === 0">
+            No milestones added yet. Add checklist items to track progress automatically.
+          </p>
+
+          <!-- Add Milestone Input Form -->
+          <div *ngIf="canEdit(goal)" class="add-milestone-box">
+            <input
+              type="text"
+              placeholder="Add checklist item..."
+              [(ngModel)]="milestoneDrafts[goal.id]"
+              (keyup.enter)="addMilestone(goal.id)"
+              class="form-control inline-input"
+              [id]="'new-milestone-input-' + goal.id"
+            />
+            <button
+              class="btn btn--secondary btn--sm"
+              [disabled]="!milestoneDrafts[goal.id]?.trim()"
+              (click)="addMilestone(goal.id)"
+              [id]="'add-milestone-btn-' + goal.id"
+            >
+              Add
+            </button>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <!-- Honest Mode Warning Footer -->
+    <footer class="honesty-note-card glass">
+      <div class="note-icon">📢</div>
+      <div class="note-body">
+        <strong>Arova Mode Info:</strong>
+        <p *ngIf="isLocalMode" id="goals-local-honesty">
+          Local Mode keeps goals in this browser. Points rewards are added to local storage. Calendar sync and push notifications are not supported in this demo.
+        </p>
+        <p *ngIf="!isLocalMode" id="goals-api-honesty">
+          API Mode can sync shared goals through your configured backend. All database and SignalR events are real-time. Calendar sync and push notifications are not supported in this demo.
+        </p>
+      </div>
+    </footer>
+  </div>
+</div>

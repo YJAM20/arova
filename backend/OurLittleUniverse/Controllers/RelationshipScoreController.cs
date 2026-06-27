@@ -51,6 +51,17 @@ public sealed class RelationshipScoreController : ControllerBase
         return ToActionResult(result, Ok);
     }
 
+    [HttpPost("award")]
+    [ProducesResponseType(typeof(AwardPointsResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<AwardPointsResponse>> AwardPoints(
+        [FromBody] AwardPointsRequest request,
+        CancellationToken cancellationToken)
+    {
+        var result = await _relationshipScoreService.AwardPointsAsync(request, cancellationToken);
+        return ToActionResult(result, Ok);
+    }
+
     private ActionResult ToActionResult<T>(
         ContentServiceResult<T> result,
         Func<T, ActionResult> onSuccess)

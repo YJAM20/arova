@@ -192,4 +192,16 @@ export class RelationshipPointsService {
   rewardFuturePlanCreated(): void {
     this.awardPoints('Added future board listing', 15);
   }
+
+  rewardGoalCreated(): void {
+    this.awardPoints('Created couple goal', 15);
+  }
+
+  rewardMilestoneCompleted(): void {
+    this.awardPoints('Completed goal milestone', 5);
+  }
+
+  rewardGoalCompleted(): void {
+    this.awardPoints('Completed couple goal', 30);
+  }
 }

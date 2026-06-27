@@ -1,0 +1,333 @@
+<div class="important-dates-container animate-fade-in">
+  <!-- Page Header -->
+  <header class="dates-header">
+    <span class="eyebrow">✦ Universe Space</span>
+    <h1>Milestones & Reminders</h1>
+    <p class="description">A quiet calendar for two. Save anniversaries, birthdays, and custom milestones with configurable reminders.</p>
+    
+    <div class="header-actions">
+      <button 
+        type="button" 
+        class="btn-primary" 
+        id="toggle-add-form"
+        (click)="toggleAddForm()"
+        [attr.aria-expanded]="showAddForm"
+      >
+        <span class="btn-icon" aria-hidden="true">{{ showAddForm ? '−' : '+' }}</span>
+        <span>{{ showAddForm ? 'Close Form' : 'New Milestone' }}</span>
+      </button>
+      
+      <!-- API Mode Test Button for Admins -->
+      <button 
+        *ngIf="isAdmin && isApiMode()"
+        type="button" 
+        class="btn-outline-admin" 
+        id="btn-send-test-reminders"
+        (click)="sendTestReminders()"
+        [disabled]="isSendingTest"
+      >
+        <span *ngIf="!isSendingTest">⚡ Test Reminders Check</span>
+        <span *ngIf="isSendingTest">Checking...</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Loading State -->
+  <arova-loading-state *ngIf="isLoading" message="Gathering your milestones..."></arova-loading-state>
+
+  <!-- Error Banner -->
+  <div class="error-banner glass" *ngIf="!isLoading && errorMessage" role="alert">
+    <span class="error-icon" aria-hidden="true">⚠</span>
+    <div>
+      <p>{{ errorMessage }}</p>
+      <button type="button" class="retry-btn" (click)="loadDates()">Try again</button>
+    </div>
+  </div>
+
+  <!-- Success Notifications -->
+  <div class="success-toast" *ngIf="saveSuccess" id="date-save-success" role="status" aria-live="polite">
+    ✦ Milestone successfully saved.
+  </div>
+  <div class="success-toast admin-toast" *ngIf="adminSuccessMessage" id="admin-test-success" role="status" aria-live="polite">
+    ✦ {{ adminSuccessMessage }}
+  </div>
+
+  <div class="page-content" *ngIf="!isLoading">
+
+    <!-- Add/Edit Drawer Form -->
+    <section class="form-section animate-slide-down" *ngIf="showAddForm" id="important-date-form">
+      <arova-card [glow]="true" class="form-card">
+        <h2 class="form-title">{{ editingDate ? 'Refine Milestone' : 'Record a Milestone' }}</h2>
+        <p class="form-subtitle">Add a date that matters. Choose visibility and request email reminders if needed.</p>
+
+        <div class="form-grid">
+          <!-- Title -->
+          <div class="form-field full-width">
+            <label for="date-title" class="form-label">Title <span class="req">*</span></label>
+            <input 
+              type="text" 
+              id="date-title" 
+              class="form-input" 
+              placeholder="e.g., The day we met, Partner's Birthday" 
+              [(ngModel)]="draft.title"
+              maxlength="160"
+            />
+          </div>
+
+          <!-- Description -->
+          <div class="form-field full-width">
+            <label for="date-description" class="form-label">Note or Description</label>
+            <textarea 
+              id="date-description" 
+              class="form-textarea" 
+              rows="3" 
+              placeholder="Add some details or a warm memory about this day..." 
+              [(ngModel)]="draft.description"
+              maxlength="1000"
+            ></textarea>
+          </div>
+
+          <!-- Date Selector -->
+          <div class="form-field">
+            <label for="date-value" class="form-label">Date <span class="req">*</span></label>
+            <input 
+              type="date" 
+              id="date-value" 
+              class="form-input" 
+              [(ngModel)]="draft.date"
+            />
+          </div>
+
+          <!-- Category Type -->
+          <div class="form-field">
+            <label for="date-type" class="form-label">Category</label>
+            <select id="date-type" class="form-select" [(ngModel)]="draft.type">
+              <option *ngFor="let t of validTypes" [value]="t">{{ getTypeLabel(t) }}</option>
+            </select>
+          </div>
+
+          <!-- Recurrence Type -->
+          <div class="form-field">
+            <label for="date-recurrence" class="form-label">Recurrence</label>
+            <select id="date-recurrence" class="form-select" [(ngModel)]="draft.recurrence">
+              <option *ngFor="let r of validRecurrences" [value]="r">{{ getRecurrenceLabel(r) }}</option>
+            </select>
+          </div>
+
+          <!-- Reminder Days Before -->
+          <div class="form-field">
+            <label for="date-reminder-days" class="form-label">Reminder (Days Before)</label>
+            <input 
+              type="number" 
+              id="date-reminder-days" 
+              class="form-input" 
+              min="0" 
+              max="30" 
+              [(ngModel)]="draft.reminderDaysBefore"
+            />
+          </div>
+
+          <!-- Toggles: Reminder Enabled & Is Private -->
+          <div class="form-field checkbox-field">
+            <label class="checkbox-container">
+              <input type="checkbox" [(ngModel)]="draft.reminderEnabled" id="date-reminder-enabled" />
+              <span class="checkmark"></span>
+              <span class="checkbox-label">Enable Reminders</span>
+            </label>
+          </div>
+
+          <div class="form-field checkbox-field">
+            <label class="checkbox-container">
+              <input type="checkbox" [(ngModel)]="draft.isPrivate" id="date-is-private" />
+              <span class="checkmark"></span>
+              <span class="checkbox-label">Keep this private (Only me)</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Privacy & Local/API Honesty Info Callout -->
+        <div class="privacy-callout">
+          <span class="callout-icon">🔒</span>
+          <div class="callout-content">
+            <p *ngIf="draft.isPrivate"><strong>Private Milestone</strong>: This date will only show up in your calendar. Your partner will never see it, and reminder emails will only be sent to you.</p>
+            <p *ngIf="!draft.isPrivate"><strong>Shared Milestone</strong>: Visible to both you and your partner. Reminders are sent to both of you.</p>
+            <p class="mode-info" *ngIf="!isApiMode()">💡 <em>Note: You are in Local Mode. Reminders are simulated on the dashboard but email dispatch requires API Mode.</em></p>
+            <p class="mode-info" *ngIf="isApiMode()">✨ <em>Note: In API Mode, email reminders are sent to you and your partner automatically via your profile email.</em></p>
+          </div>
+        </div>
+
+        <!-- Error & Actions -->
+        <div class="form-error" *ngIf="saveError" role="alert">
+          <span>⚠</span> {{ saveError }}
+        </div>
+
+        <div class="form-actions">
+          <button 
+            type="button" 
+            class="btn-secondary" 
+            (click)="toggleAddForm()"
+          >
+            Cancel
+          </button>
+          <button 
+            type="button" 
+            class="btn-primary" 
+            id="date-submit-btn"
+            (click)="saveDate()"
+            [disabled]="isSaving || !draft.title.trim() || !draft.date"
+          >
+            <span *ngIf="!isSaving">{{ editingDate ? 'Save Changes' : 'Record Milestone' }}</span>
+            <span *ngIf="isSaving">Saving...</span>
+          </button>
+        </div>
+      </arova-card>
+    </section>
+
+    <!-- Hero Milestone Card (Next Event) -->
+    <section class="hero-countdown-section" *ngIf="getHeroDate() as hero">
+      <arova-card [glow]="true" class="hero-card">
+        <div class="hero-layout">
+          <div class="hero-days">
+            <span class="days-num">{{ hero.daysRemaining }}</span>
+            <span class="days-label">days remaining</span>
+          </div>
+          
+          <div class="hero-details">
+            <div class="badge-row">
+              <span class="badge category-badge">
+                <span class="badge-icon">{{ getTypeIcon(hero.type) }}</span>
+                {{ getTypeLabel(hero.type) }}
+              </span>
+              <span class="badge recurrence-badge">
+                🔁 {{ getRecurrenceLabel(hero.recurrence) }}
+              </span>
+              <span class="badge private-badge" *ngIf="hero.isPrivate">
+                🔒 Private
+              </span>
+            </div>
+            
+            <h2 class="hero-title">{{ hero.title }}</h2>
+            <p class="hero-desc">{{ hero.description || 'A special moment in your relationship.' }}</p>
+            
+            <div class="hero-date-info">
+              <span class="label">Original Date:</span>
+              <span class="val">{{ formatDate(hero.date) }}</span>
+              <span class="separator">•</span>
+              <span class="label">Next Celebration:</span>
+              <span class="val">{{ formatDate(hero.nextOccurrenceDate) }}</span>
+            </div>
+          </div>
+        </div>
+      </arova-card>
+    </section>
+
+    <!-- Navigation Filters & Lists -->
+    <section class="milestones-list-section" *ngIf="dates.length > 0; else noMilestones">
+      <!-- Filter Chips -->
+      <div class="filters-container">
+        <button 
+          type="button" 
+          class="filter-chip"
+          [class.active]="activeFilter === 'all'"
+          (click)="setFilter('all')"
+        >
+          All Milestones
+        </button>
+        <button 
+          type="button" 
+          *ngFor="let t of validTypes"
+          class="filter-chip"
+          [class.active]="activeFilter === t"
+          (click)="setFilter(t)"
+        >
+          {{ getTypeLabel(t) }}
+        </button>
+      </div>
+
+      <!-- Dates Grid -->
+      <div class="dates-grid" *ngIf="getFilteredDates().length > 0; else emptyFilter">
+        <article 
+          class="date-card glass animate-fade-in"
+          *ngFor="let d of getFilteredDates()"
+          [id]="'date-card-' + d.id"
+        >
+          <div class="card-header-row">
+            <span class="category-indicator">
+              <span class="cat-icon">{{ getTypeIcon(d.type) }}</span>
+              <span class="cat-text">{{ getTypeLabel(d.type) }}</span>
+            </span>
+
+            <div class="meta-badges">
+              <span class="recurrence-pill" title="Recurrence frequency">
+                {{ getRecurrenceLabel(d.recurrence) }}
+              </span>
+              <span class="private-pill" *ngIf="d.isPrivate" title="Visible only to you">
+                🔒 Only Me
+              </span>
+            </div>
+          </div>
+
+          <h3 class="card-title">{{ d.title }}</h3>
+          <p class="card-description">{{ d.description || 'No description provided.' }}</p>
+
+          <div class="card-date-info">
+            <div class="date-row">
+              <span class="date-label">Next Date</span>
+              <span class="date-value">{{ formatDate(d.nextOccurrenceDate) }}</span>
+            </div>
+            <div class="date-row countdown-row">
+              <span class="countdown-value">{{ d.daysRemaining }} Days Left</span>
+            </div>
+          </div>
+
+          <!-- Reminder Info -->
+          <div class="card-reminder-info" *ngIf="d.reminderEnabled">
+            <span class="reminder-bell">🔔</span>
+            <span>Remind me {{ d.reminderDaysBefore }} days before</span>
+          </div>
+
+          <!-- Card Actions -->
+          <div class="card-actions" *ngIf="canEdit(d)">
+            <button 
+              type="button" 
+              class="action-btn edit-btn"
+              [id]="'edit-date-' + d.id"
+              (click)="startEdit(d, $event)"
+            >
+              Edit
+            </button>
+            <button 
+              type="button" 
+              class="action-btn delete-btn"
+              [id]="'delete-date-' + d.id"
+              (click)="deleteDate(d, $event)"
+              [disabled]="isDeleting === d.id"
+            >
+              <span *ngIf="isDeleting !== d.id">Delete</span>
+              <span *ngIf="isDeleting === d.id">...</span>
+            </button>
+          </div>
+        </article>
+      </div>
+
+      <!-- Empty Filter State -->
+      <ng-template #emptyFilter>
+        <arova-empty-state 
+          title="No milestones here" 
+          description="Try switching filters or add a new milestone under this category."
+        ></arova-empty-state>
+      </ng-template>
+    </section>
+
+    <!-- Global Empty State -->
+    <ng-template #noMilestones>
+      <arova-empty-state 
+        title="Your special calendar is empty" 
+        description="Preserve the important dates in your relationship. Anniversaries, birthdays, first encounters, or future milestones."
+        actionText="Record First Milestone"
+        (click)="toggleAddForm()"
+      ></arova-empty-state>
+    </ng-template>
+
+  </div>
+</div>

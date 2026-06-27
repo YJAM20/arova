@@ -44,6 +44,7 @@ export class OnboardingService {
       ...this.storage.getSettings(),
       onboardingCompleted: false,
     });
+    localStorage.removeItem('arova-first-week-checklist-v1');
   }
 
   private saveSetup(input: OnboardingInput, completed: boolean): void {

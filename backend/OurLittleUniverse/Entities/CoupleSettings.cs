@@ -22,6 +22,12 @@ public sealed class CoupleSettings
 
     public bool MusicEnabled { get; set; } = true;
 
+    public bool EmailNotificationsEnabled { get; set; } = true;
+
+    public bool DailyDigestEnabled { get; set; } = true;
+
+    public bool PartnerActivityEmailsEnabled { get; set; } = true;
+
     public DateTime CreatedAt { get; set; }
 
     public DateTime? UpdatedAt { get; set; }

@@ -50,7 +50,7 @@ test.describe('Arova E2E Public Flow Smoke Tests', () => {
 
   test('should load plans page and list pricing plans', async ({ page }) => {
     await page.goto('/plans');
-    await expect(page.locator('h1')).toContainText('Plans for a shared space.');
+    await expect(page.locator('h1')).toContainText('Choose how your universe runs');
     await expect(page.locator('.plan-card')).toHaveCount(3);
     await expect(page.locator('.plan-card').nth(0)).toContainText('Free');
     await expect(page.locator('.plan-card').nth(1)).toContainText('Pro');
@@ -176,27 +176,54 @@ test.describe('Arova E2E Public Flow Smoke Tests', () => {
     // 1. Comparison table assertions
     const comparisonSection = page.locator('.comparison-section');
     await expect(comparisonSection).toBeVisible();
-    await expect(comparisonSection.locator('h2')).toContainText('Compare Features');
+    await expect(comparisonSection.locator('h2')).toContainText('Feature Matrix');
 
     const table = comparisonSection.locator('.comparison-table');
     await expect(table).toBeVisible();
 
-    // Check headers Starter, Pro, Enterprise
+    // Check headers Feature, Local Mode, API Mode
     const headers = table.locator('thead th');
-    await expect(headers).toHaveCount(4); // Feature + 3 plans
-    await expect(headers.nth(1)).toContainText('Starter');
-    await expect(headers.nth(2)).toContainText('Pro');
-    await expect(headers.nth(3)).toContainText('Enterprise');
+    await expect(headers).toHaveCount(3);
+    await expect(headers.nth(1)).toContainText('Local Mode');
+    await expect(headers.nth(2)).toContainText('API Mode');
 
     // Check rows count
     const rows = table.locator('tbody tr');
-    await expect(rows).toHaveCount(8);
+    await expect(rows).toHaveCount(9);
 
     // Check disclaimer is displayed
     const disclaimer = comparisonSection.locator('.table-disclaimer');
     await expect(disclaimer).toBeVisible();
     await expect(disclaimer.locator('.disclaimer-text')).toContainText(
-      'Pricing and subscription features are local demonstrations. No actual payments or billing integrations exist'
+      'Real payments are not processed in this demo'
     );
+  });
+
+  test('should display feature highlights row with correct copy and details', async ({ page }) => {
+    await page.goto('/');
+
+    // Check highlight row is visible
+    const highlightRow = page.locator('.feature-highlights-row');
+    await expect(highlightRow).toBeVisible();
+
+    // Check highlights are present
+    const cards = highlightRow.locator('.highlight-card');
+    await expect(cards).toHaveCount(4);
+
+    await expect(page.locator('#landing-feature-private')).toContainText('Private by design');
+    await expect(page.locator('#landing-feature-private')).toContainText('couple-only');
+
+    await expect(page.locator('#landing-feature-realtime')).toContainText('Realtime-ready');
+    await expect(page.locator('#landing-feature-realtime')).toContainText('API Mode');
+
+    await expect(page.locator('#landing-feature-languages')).toContainText('EN / AR / ES');
+    await expect(page.locator('#landing-feature-languages')).toContainText('RTL');
+
+    await expect(page.locator('#landing-feature-local')).toContainText('Local-first demo');
+    await expect(page.locator('#landing-feature-local')).toContainText('without backend');
+
+    // Ensure no false production E2EE/OAuth/SMS claims exist
+    const pageContent = await page.content();
+    expect(pageContent).not.toMatch(/true end-to-end encryption is (enabled|active|complete)/i);
   });
 });

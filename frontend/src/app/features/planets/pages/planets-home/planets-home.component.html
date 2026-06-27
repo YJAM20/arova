@@ -66,7 +66,7 @@
 
         <!-- Tasks list -->
         <div class="tasks-checklist">
-          <span class="checklist-title">Daily Couple Rituals (+{{ todayPlanet.pointsReward }} Points)</span>
+          <span class="checklist-title">Daily Couple Planet Tasks (+{{ todayPlanet.pointsReward }} Points)</span>
           <div class="task-rows">
             <label class="task-checkbox-row" *ngFor="let task of todayPlanet.tasks; let i = index" tabindex="0" (keydown.space)="$event.preventDefault(); taskInput.click()">
               <div class="checkbox-wrapper">
@@ -118,10 +118,16 @@
       <span class="question-icon" aria-hidden="true">💬</span>
       <div class="question-title-group">
         <span class="question-label">Daily Planet Question</span>
-        <h2>{{ todayPlanet.dailyQuestion }}</h2>
+        <h2>{{ dailyQuestion ? dailyQuestion.prompt : todayPlanet.dailyQuestion }}</h2>
       </div>
     </div>
-    <div class="question-body" *ngIf="!answerSaved">
+
+    <!-- Daily question error banner -->
+    <div class="error-banner glass my-3 text-xs" *ngIf="dailyQuestionError" role="alert" style="border-left: 3px solid #ef4444; padding: 0.5rem 1rem; color: #f87171;">
+      {{ dailyQuestionError }}
+    </div>
+
+    <div class="question-body" *ngIf="!dailyQuestionAnswered">
       <label for="daily-question-answer" class="sr-only">Your gentle, honest response</label>
       <textarea 
         id="daily-question-answer"
@@ -130,11 +136,11 @@
         placeholder="Type a gentle, honest response to share with your partner..."
         class="arova-textarea"
       ></textarea>
-      <button type="button" class="submit-question-btn" (click)="saveQuestionAnswer()" [disabled]="!answerText.trim()">
+      <button type="button" class="submit-question-btn" (click)="saveQuestionAnswer()" [disabled]="!answerText.trim() || !dailyQuestion">
         Share Response (+15 Points)
       </button>
     </div>
-    <div class="question-success" *ngIf="answerSaved" role="alert">
+    <div class="question-success" *ngIf="dailyQuestionAnswered" role="alert">
       <span class="check-icon" aria-hidden="true">✓</span>
       <p>Your response has been saved and shared in your universe space! +15 points awarded.</p>
     </div>
@@ -161,5 +167,14 @@
         </div>
       </article>
     </div>
+  </section>
+
+  <!-- Orbit History Heatmap -->
+  <section class="planets-orbit-history mt-8" aria-label="Orbit History">
+    <arova-streak-heatmap 
+      [compact]="false" 
+      title="Orbit History" 
+      subtitle="A soft record of the rituals you kept together."
+    ></arova-streak-heatmap>
   </section>
 </div>

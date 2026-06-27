@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
@@ -12,11 +12,18 @@ import { AppUser } from '../../../../shared/models/user.model';
 import { AppModeService } from '../../../../core/services/app-mode.service';
 import { CoupleApiService } from '../../../../core/services/couple-api.service';
 import { MoodDataService } from '../../../../core/services/mood-data.service';
+import { ImportantDateDataService } from '../../../../core/services/important-date-data.service';
+import { CoupleGoalDataService } from '../../../../core/services/couple-goal-data.service';
+import { CoupleGoal } from '../../../../shared/models/couple-goal.model';
+import { FirstWeekChecklistService } from '../../../../core/services/first-week-checklist.service';
+import { FirstWeekChecklistItem } from '../../../../shared/models/first-week-checklist.model';
+
+import { ArovaStreakHeatmapComponent } from '../../../../shared/components/arova-streak-heatmap/arova-streak-heatmap.component';
 
 @Component({
   selector: 'app-universe-home',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, ArovaStreakHeatmapComponent],
   templateUrl: './universe-home.component.html',
   styleUrls: ['./universe-home.component.scss'],
 })
@@ -34,7 +41,19 @@ export class UniverseHomeComponent implements OnInit {
 
   latestMood: any = null;
   latestFuturePlan: any = null;
+  nextImportantDate: any = null;
+  activeGoalsCount = 0;
+  nextGoalTargetDate: string | null = null;
+  closestGoal: CoupleGoal | null = null;
+  checklistItems: FirstWeekChecklistItem[] = [];
+  checklistProgress = 0;
+  checklistCompletedCount = 0;
+  checklistTotalCount = 0;
+  nextChecklistItem: FirstWeekChecklistItem | null = null;
+  isChecklistDismissed = false;
+  showFullChecklist = false;
   recentActivities: any[] = [];
+  onThisDayMemories: any[] = [];
   isLoading = true;
   isBackendOffline = false;
   backendError = '';
@@ -55,7 +74,11 @@ export class UniverseHomeComponent implements OnInit {
     private coupleProfile: CoupleProfileService,
     private appMode: AppModeService,
     private couples: CoupleApiService,
-    private moodData: MoodDataService
+    private moodData: MoodDataService,
+    private importantDateData: ImportantDateDataService,
+    private goalsData: CoupleGoalDataService,
+    private checklistService: FirstWeekChecklistService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -119,6 +142,7 @@ export class UniverseHomeComponent implements OnInit {
           this.isBackendOffline = true;
           this.backendError = 'API Mode could not reach the local backend. You can switch to Local Mode for the browser demo.';
           this.isLoading = false;
+          this.cdr.detectChanges();
         }
       });
     }
@@ -126,11 +150,12 @@ export class UniverseHomeComponent implements OnInit {
 
   loadCountsAndFeeds(): void {
     let loadedCalls = 0;
-    const totalCalls = 5;
+    const totalCalls = 8;
     const checkFinish = () => {
       loadedCalls++;
       if (loadedCalls === totalCalls) {
         this.isLoading = false;
+        this.cdr.detectChanges();
       }
     };
 
@@ -138,6 +163,7 @@ export class UniverseHomeComponent implements OnInit {
     this.memoryData.getMemories().subscribe({
       next: memories => {
         this.memoriesCount = memories.length;
+        this.onThisDayMemories = this.memoryData.getOnThisDayMemories(memories).slice(0, 3);
         memories.forEach(m => {
           this.recentActivities.push({
             type: 'memory',
@@ -232,6 +258,92 @@ export class UniverseHomeComponent implements OnInit {
         checkFinish();
       }
     });
+
+    // Fetch Important Dates
+    this.importantDateData.getUpcomingImportantDatesForCurrentUser().subscribe({
+      next: dates => {
+        if (dates && dates.length > 0) {
+          this.nextImportantDate = dates[0];
+        } else {
+          this.nextImportantDate = null;
+        }
+        checkFinish();
+      },
+      error: error => {
+        this.handleApiError(error);
+        checkFinish();
+      }
+    });
+
+    // Fetch Couple Goals
+    this.goalsData.getGoals().subscribe({
+      next: goals => {
+        const activeGoals = goals.filter(g => g.status !== 'completed');
+        this.activeGoalsCount = activeGoals.length;
+        const activeWithTarget = activeGoals.filter(g => !!g.targetDate);
+        if (activeWithTarget.length > 0) {
+          activeWithTarget.sort((a, b) => {
+            return new Date(a.targetDate!).getTime() - new Date(b.targetDate!).getTime();
+          });
+          this.closestGoal = activeWithTarget[0];
+          this.nextGoalTargetDate = this.closestGoal.targetDate || null;
+        } else if (activeGoals.length > 0) {
+          const sortedByProgress = [...activeGoals].sort((a, b) => b.progressPercent - a.progressPercent);
+          this.closestGoal = sortedByProgress[0];
+          this.nextGoalTargetDate = null;
+        } else {
+          this.closestGoal = null;
+          this.nextGoalTargetDate = null;
+        }
+        checkFinish();
+      },
+      error: error => {
+        this.handleApiError(error);
+        checkFinish();
+      }
+    });
+
+    // Fetch Checklist Items
+    this.checklistService.getChecklistItems().subscribe({
+      next: items => {
+        this.checklistItems = items;
+        this.checklistTotalCount = items.length;
+        this.checklistCompletedCount = items.filter(i => i.completed).length;
+        this.checklistProgress = this.checklistTotalCount > 0
+          ? Math.round((this.checklistCompletedCount / this.checklistTotalCount) * 100)
+          : 0;
+        this.nextChecklistItem = items.find(i => !i.completed) || null;
+        this.isChecklistDismissed = this.checklistService.isDismissed();
+        checkFinish();
+      },
+      error: error => {
+        this.handleApiError(error);
+        checkFinish();
+      }
+    });
+  }
+
+  snoozeChecklist(): void {
+    this.checklistService.snoozeChecklist();
+    this.isChecklistDismissed = true;
+    this.cdr.detectChanges();
+  }
+
+  dismissChecklist(): void {
+    this.checklistService.dismissChecklist();
+    this.isChecklistDismissed = true;
+    this.cdr.detectChanges();
+  }
+
+  restoreChecklist(): void {
+    this.checklistService.restoreChecklist();
+    this.isChecklistDismissed = false;
+    this.loadCountsAndFeeds();
+  }
+
+  toggleFullChecklist(): void {
+    this.showFullChecklist = !this.showFullChecklist;
+    this.cdr.detectChanges();
   }
 
   getMoodIcon(mood: string): string {
@@ -270,6 +382,7 @@ export class UniverseHomeComponent implements OnInit {
     if (error && (error.message?.includes('not reachable') || error.status === 0)) {
       this.isBackendOffline = true;
       this.backendError = 'API Mode could not reach the local backend. You can switch to Local Mode for the browser demo.';
+      this.cdr.detectChanges();
     }
   }
 
@@ -286,7 +399,22 @@ export class UniverseHomeComponent implements OnInit {
     }
   }
 
+  formatDate(value?: string): string {
+    if (!value) return '';
+    return new Date(`${value}T00:00:00`).toLocaleDateString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  }
+
   t(key: string): string {
     return this.translation.t(key);
+  }
+
+  getYearsAgo(dateStr: string): number {
+    const dateYear = new Date(dateStr).getFullYear();
+    const currentYear = new Date().getFullYear();
+    return currentYear - dateYear;
   }
 }

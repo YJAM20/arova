@@ -22,6 +22,7 @@ import { AppUser } from '../../shared/models/user.model';
 import { CoupleProfile } from '../../shared/models/couple-profile.model';
 import { DailyQuestionAnswer } from '../../shared/models/daily-question.model';
 import { RelationshipCheckIn } from '../../shared/models/check-in.model';
+import { ImportantDate } from '../../shared/models/important-date.model';
 import { DEFAULT_DATA } from '../constants/default-data';
 
 const STORAGE_KEY = 'love-universe-data-v1';
@@ -170,6 +171,10 @@ export class StorageService {
 
   getFuturePlans(): FuturePlan[] {
     return this.deepClone(this.data.futurePlans);
+  }
+
+  getImportantDates(): ImportantDate[] {
+    return this.deepClone(this.data.importantDates);
   }
 
   getCoupleProfile(): CoupleProfile {
@@ -487,6 +492,7 @@ export class StorageService {
       songs: this.normalizeSongs(record['songs']),
       challenges: this.normalizeChallenges(record['challenges']),
       futurePlans: this.normalizeFuturePlans(record['futurePlans']),
+      importantDates: this.normalizeImportantDates(record['importantDates']),
       coupleProfile: this.normalizeCoupleProfile(record['coupleProfile']),
       dailyQuestionAnswers: this.normalizeDailyQuestionAnswers(record['dailyQuestionAnswers']),
       checkIns: this.normalizeCheckIns(record['checkIns']),
@@ -827,6 +833,43 @@ export class StorageService {
       createdAt,
       updatedAt: this.asString(value['updatedAt'], createdAt),
     };
+  }
+
+  private normalizeImportantDates(value: unknown): ImportantDate[] {
+    if (!Array.isArray(value)) return this.deepClone(DEFAULT_DATA.importantDates);
+    return this.uniqueById(
+      value.filter(item => this.isRecord(item)).map(item => this.normalizeImportantDate(item))
+    );
+  }
+
+  private normalizeImportantDate(value: StoredRecord): ImportantDate {
+    const createdAt = this.asString(value['createdAt'], nowIso());
+    const type = this.isImportantDateType(value['type']) ? value['type'] : 'custom';
+    const recurrence = this.isRecurrenceType(value['recurrence']) ? value['recurrence'] : 'none';
+
+    return {
+      id: this.asString(value['id'], `imp-${uid()}`),
+      coupleId: this.asString(value['coupleId'], 'couple-default'),
+      createdByUserId: this.asString(value['createdByUserId'], 'user-owner'),
+      title: this.asString(value['title'], 'Untitled date'),
+      description: this.optionalString(value['description']),
+      date: this.asString(value['date'], nowIso().slice(0, 10)),
+      type,
+      recurrence,
+      reminderEnabled: this.asBoolean(value['reminderEnabled'], true),
+      reminderDaysBefore: this.asNumber(value['reminderDaysBefore'], 1),
+      isPrivate: this.asBoolean(value['isPrivate'], false),
+      createdAt,
+      updatedAt: this.asString(value['updatedAt'], createdAt),
+    };
+  }
+
+  private isImportantDateType(value: unknown): value is ImportantDate['type'] {
+    return typeof value === 'string' && ['anniversary', 'birthday', 'first-moment', 'future-plan', 'letter-unlock', 'custom'].includes(value);
+  }
+
+  private isRecurrenceType(value: unknown): value is ImportantDate['recurrence'] {
+    return typeof value === 'string' && ['none', 'yearly', 'monthly'].includes(value);
   }
 
   private uniqueById<T extends { id: string }>(items: T[]): T[] {

@@ -122,6 +122,43 @@ export class MemoryDataService {
     );
   }
 
+  getOnThisDayMemories(memories: Memory[], date = new Date()): Memory[] {
+    const targetMonth = date.getMonth();
+    const targetDay = date.getDate();
+    const targetYear = date.getFullYear();
+
+    return memories
+      .filter(memory => {
+        const dateStr = memory.date || memory.createdAt;
+        if (!dateStr) return false;
+
+        const memDate = new Date(dateStr);
+        if (isNaN(memDate.getTime())) return false;
+
+        let mYear: number;
+        let mMonth: number;
+        let mDay: number;
+
+        if (typeof dateStr === 'string' && /^\d{4}-\d{2}-\d{2}/.test(dateStr)) {
+          const parts = dateStr.slice(0, 10).split('-');
+          mYear = parseInt(parts[0], 10);
+          mMonth = parseInt(parts[1], 10) - 1;
+          mDay = parseInt(parts[2], 10);
+        } else {
+          mYear = memDate.getFullYear();
+          mMonth = memDate.getMonth();
+          mDay = memDate.getDate();
+        }
+
+        return mMonth === targetMonth && mDay === targetDay && mYear < targetYear;
+      })
+      .sort((a, b) => {
+        const dateA = new Date(a.date || a.createdAt).getTime();
+        const dateB = new Date(b.date || b.createdAt).getTime();
+        return dateB - dateA;
+      });
+  }
+
   canEditMemory(memory: Memory): boolean {
     return this.appMode.isLocalMode() ? this.localMemories.canEditMemory(memory) : true;
   }

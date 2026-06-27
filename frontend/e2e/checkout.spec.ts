@@ -47,7 +47,7 @@ test.describe('Arova E2E Sandbox Checkout Tests', () => {
     await page.goto('/plans');
     
     // Check main title
-    await expect(page.locator('h1')).toContainText('Plans for a shared space.');
+    await expect(page.locator('h1')).toContainText('Choose how your universe runs');
 
     // Find and check CTA button links for monthly subscriptions
     const proMonthlyBtn = page.locator('a.cta-btn--monthly', { hasText: 'Get Pro Monthly' });

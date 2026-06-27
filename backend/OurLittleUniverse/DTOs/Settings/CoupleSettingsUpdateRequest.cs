@@ -25,4 +25,10 @@ public sealed class CoupleSettingsUpdateRequest
     public bool AnimationsEnabled { get; set; } = true;
 
     public bool MusicEnabled { get; set; } = true;
+
+    public bool EmailNotificationsEnabled { get; set; } = true;
+
+    public bool DailyDigestEnabled { get; set; } = true;
+
+    public bool PartnerActivityEmailsEnabled { get; set; } = true;
 }

@@ -1,0 +1,101 @@
+<div class="heatmap-card glass" [class.heatmap-card--compact]="compact">
+  <!-- Card Header -->
+  <header class="heatmap-header" *ngIf="title">
+    <div class="header-titles">
+      <span class="header-eyebrow">✦ Activity Calendar</span>
+      <h3 class="header-title">{{ title }}</h3>
+      <p class="header-subtitle" *ngIf="subtitle">{{ subtitle }}</p>
+    </div>
+  </header>
+
+  <!-- Loading State -->
+  <div class="heatmap-loading" *ngIf="isLoading" aria-live="polite">
+    <div class="spinner"></div>
+    <p>Mapping your orbit...</p>
+  </div>
+
+  <!-- Offline / Error State -->
+  <div class="heatmap-error" *ngIf="!isLoading && isOffline">
+    <span class="error-icon" aria-hidden="true">⚠️</span>
+    <p>Orbit activity is offline. Connect to check your relationship streak.</p>
+  </div>
+
+  <div class="heatmap-error" *ngIf="!isLoading && !isOffline && errorMessage">
+    <span class="error-icon" aria-hidden="true">⚠️</span>
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <!-- Content when loaded successfully -->
+  <div class="heatmap-content" *ngIf="!isLoading && !isOffline && !errorMessage">
+    <!-- Streak and Stats summary row -->
+    <section class="stats-summary" aria-label="Streak and points summary">
+      <div class="stat-item" id="heatmap-streak-stat">
+        <span class="stat-val">
+          <span class="fire-icon" aria-hidden="true">🔥</span>
+          {{ streak }}
+        </span>
+        <span class="stat-label">Day Streak</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-val">{{ totalActiveDays }}</span>
+        <span class="stat-label">Active Days</span>
+      </div>
+      <div class="stat-item" *ngIf="totalPoints > 0">
+        <span class="stat-val">+{{ totalPoints }}</span>
+        <span class="stat-label">Orbit Points</span>
+      </div>
+    </section>
+
+    <!-- Heatmap Grid -->
+    <div class="grid-container">
+      <div class="heatmap-grid" role="grid" aria-label="Activity cells grid">
+        <div 
+          *ngFor="let cell of heatmapDays" 
+          class="heatmap-cell"
+          [class.is-future]="cell.isFuture"
+          [class.level-0]="cell.level === 0"
+          [class.level-1]="cell.level === 1"
+          [class.level-2]="cell.level === 2"
+          [class.level-3]="cell.level === 3"
+          [class.level-4]="cell.level === 4"
+          [attr.aria-label]="cell.label"
+          [title]="cell.label"
+          role="gridcell"
+        ></div>
+      </div>
+
+      <!-- Warm Empty State if total active days is 0 -->
+      <div class="empty-state-overlay" *ngIf="totalActiveDays === 0">
+        <p class="empty-text">No activity yet. Start with one small ritual today.</p>
+      </div>
+    </div>
+
+    <!-- Legend and Disclaimers Footer -->
+    <footer class="heatmap-footer">
+      <div class="legend" aria-hidden="true">
+        <span class="legend-label">Less</span>
+        <div class="legend-cells">
+          <div class="legend-cell level-0"></div>
+          <div class="legend-cell level-1"></div>
+          <div class="legend-cell level-2"></div>
+          <div class="legend-cell level-3"></div>
+          <div class="legend-cell level-4"></div>
+        </div>
+        <span class="legend-label">More</span>
+      </div>
+
+      <div class="honesty-disclaimers">
+        <p class="disclaimer-text">
+          {{ isLocalMode() ? 'Local Mode keeps this activity in your browser.' : 'API Mode can sync activity through your configured backend.' }}
+        </p>
+        <p class="disclaimer-text privacy-text">
+          This calendar shows activity counts only, not private content.
+        </p>
+      </div>
+
+      <div class="cta-row" *ngIf="compact">
+        <a routerLink="/planets" class="cta-link">View activity →</a>
+      </div>
+    </footer>
+  </div>
+</div>

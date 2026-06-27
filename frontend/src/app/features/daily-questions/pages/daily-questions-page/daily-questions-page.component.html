@@ -1,11 +1,25 @@
 <div class="questions-page">
+  <!-- Top header -->
   <header class="page-header animate-fade-in">
     <p class="page-eyebrow">Daily Questions</p>
     <h1>A small prompt for today</h1>
-    <p>Gentle relationship-friendly journaling for any couple, saved only in this browser.</p>
+    <p *ngIf="!isApiMode">Local Mode saves this only in your browser.</p>
+    <p *ngIf="isApiMode">API Mode syncs this through your backend when configured.</p>
   </header>
 
-  <section class="today-grid animate-fade-in" style="animation-delay: 0.08s;">
+  <!-- Error alert banner -->
+  <div class="error-banner glass mb-6" *ngIf="errorMessage" role="alert" style="border-left: 4px solid #ef4444; padding: 1rem; color: #f87171;">
+    <strong class="font-bold text-xs block mb-1">Could not connect to backend</strong>
+    <p class="text-xs">{{ errorMessage }}</p>
+  </div>
+
+  <!-- Loading spinner indicator -->
+  <div class="loading-state glass p-8 text-center my-6" *ngIf="isLoading">
+    <div class="spinner animate-spin" style="border: 2px solid rgba(255,255,255,0.1); border-top-color: #fff; border-radius: 50%; width: 24px; height: 24px; display: inline-block;"></div>
+    <p class="text-xs text-neutral-400 mt-2">Connecting to universe...</p>
+  </div>
+
+  <section class="today-grid animate-fade-in" style="animation-delay: 0.08s;" *ngIf="!isLoading && question">
     <article class="question-card glass">
       <span class="category">{{ categoryLabel(question.category) }}</span>
       <h2>{{ question.prompt }}</h2>
@@ -14,8 +28,8 @@
       <label for="answer">Your answer</label>
       <textarea id="answer" rows="5" [(ngModel)]="answerDraft" name="answer"></textarea>
 
-      <button type="button" class="primary-action" (click)="saveAnswer()" [disabled]="!answerDraft.trim()">
-        Save answer locally
+      <button type="button" class="primary-action" (click)="saveAnswer()" [disabled]="!answerDraft.trim() || isLoading">
+        {{ isApiMode ? 'Save and share response' : 'Save answer locally' }}
       </button>
       <p class="message" *ngIf="message">{{ message }}</p>
     </article>
@@ -37,10 +51,10 @@
     </aside>
   </section>
 
-  <section class="history-section animate-fade-in" style="animation-delay: 0.14s;">
+  <section class="history-section animate-fade-in" style="animation-delay: 0.14s;" *ngIf="!isLoading">
     <div class="section-heading">
       <span class="section-label">Answer history</span>
-      <p>Recent local answers from this browser.</p>
+      <p>{{ isApiMode ? 'Synced responses from your couple space.' : 'Recent local answers from this browser.' }}</p>
     </div>
 
     <div class="history-grid" *ngIf="history.length > 0; else emptyHistory">

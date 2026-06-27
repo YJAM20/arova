@@ -55,7 +55,7 @@
           {{ profile.displayName || 'Adventurer' }}
         </h1>
         <div class="rank-badge px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
-          🪐 {{ currentRank?.title }}
+          🪐 {{ currentRankTitle }}
         </div>
       </div>
       
@@ -124,9 +124,9 @@
         </div>
 
         <div class="flex justify-between items-center text-xs text-neutral-400">
-          <span>Current: <strong>{{ currentRank?.title }}</strong></span>
-          <span *ngIf="nextRank">Next: <strong>{{ nextRank?.title }}</strong> (requires {{ nextRank?.minPoints }} pts)</span>
-          <span *ngIf="!nextRank">Maximum Rank Achieved!</span>
+          <span>Current: <strong>{{ currentRankTitle }}</strong></span>
+          <span *ngIf="nextRankTitle">Next: <strong>{{ nextRankTitle }}</strong></span>
+          <span *ngIf="!nextRankTitle">Maximum Rank Achieved!</span>
         </div>
       </div>
 

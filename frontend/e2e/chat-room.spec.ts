@@ -91,16 +91,16 @@ test.describe('Arova Chat Room Flow', () => {
     // Chat status banner
     const chatStatus = page.locator('.chat-status');
     await expect(chatStatus).toBeVisible();
-    await expect(chatStatus).toContainText('Chat requires API Mode.');
+    await expect(chatStatus).toContainText('Local Demo Chat. Real partner sync requires API Mode.');
   });
 
-  test('textarea is disabled in Local Mode', async ({ page }) => {
+  test('textarea is enabled in Local Mode', async ({ page }) => {
     await openChatInLocalMode(page);
 
-    await expect(page.locator('textarea')).toBeDisabled();
+    await expect(page.locator('textarea')).toBeEnabled();
   });
 
-  test('Send message button is disabled in Local Mode', async ({ page }) => {
+  test('Send message button is disabled in Local Mode on empty draft', async ({ page }) => {
     await openChatInLocalMode(page);
 
     await expect(page.getByRole('button', { name: /send message/i })).toBeDisabled();
@@ -111,7 +111,10 @@ test.describe('Arova Chat Room Flow', () => {
 
     await expect(page.locator('.local-mode-warning')).toBeVisible();
     await expect(page.locator('.local-mode-warning')).toContainText(
-      /messaging is unavailable in the browser demo/i
+      /Local Demo Chat/i
+    );
+    await expect(page.locator('.local-mode-warning')).toContainText(
+      /Messages are saved only in this browser/i
     );
   });
 
@@ -131,15 +134,14 @@ test.describe('Arova Chat Room Flow', () => {
     await expect(page.locator('.emoji-bar')).not.toBeVisible();
   });
 
-  test('blank message cannot be sent in API Mode (button stays disabled)', async ({ page }) => {
-    // Can test this safely in local mode by checking disabled on empty draft
+  test('blank message cannot be sent (button stays disabled)', async ({ page }) => {
     await openChatInLocalMode(page);
 
     const sendBtn = page.getByRole('button', { name: /send message/i });
     await expect(sendBtn).toBeDisabled();
 
-    // Even if textarea were somehow enabled, empty value should keep disabled
-    await expect(page.locator('textarea')).toBeDisabled();
+    // Textarea should be enabled
+    await expect(page.locator('textarea')).toBeEnabled();
   });
 
   test('chat disclaimer footer is visible with honest copy', async ({ page }) => {
@@ -174,13 +176,88 @@ test.describe('Arova Chat Room Flow', () => {
 
   test('direct route refresh keeps Local Mode session active', async ({ page }) => {
     await openChatInLocalMode(page);
-    await expect(page.locator('.chat-status')).toContainText('Chat requires API Mode.');
+    await expect(page.locator('.chat-status')).toContainText('Local Demo Chat. Real partner sync requires API Mode.');
 
     await page.reload({ waitUntil: 'domcontentloaded' });
 
     await expect(
       page.getByRole('heading', { name: /quiet room for two/i })
     ).toBeVisible();
-    await expect(page.locator('.chat-status')).toContainText('Chat requires API Mode.');
+    await expect(page.locator('.chat-status')).toContainText('Local Demo Chat. Real partner sync requires API Mode.');
+  });
+
+  test('can type and send a message in Local Mode, showing own message and partner reply', async ({ page }) => {
+    await openChatInLocalMode(page);
+
+    const textarea = page.locator('textarea');
+    await expect(textarea).toBeEnabled();
+
+    // Type a message
+    await textarea.fill('Hello from local universe!');
+    
+    // Send button should be enabled
+    const sendBtn = page.getByRole('button', { name: /send message/i });
+    await expect(sendBtn).toBeEnabled();
+
+    // Click send
+    await sendBtn.click();
+
+    // Textarea should be cleared
+    await expect(textarea).toHaveValue('');
+
+    // Message list should contain the message
+    const msgList = page.locator('#chat-message-list');
+    await expect(msgList).toBeVisible();
+    await expect(msgList).toContainText('Hello from local universe!');
+
+    // Simulated reply from Demo Partner should appear after a short delay
+    await page.waitForTimeout(1500);
+    await expect(msgList).toContainText('Demo Partner');
+    // It should have one of the simulated responses
+    const listText = await msgList.textContent();
+    const hasSimulatedReply = 
+      listText?.includes('I saved this in our little orbit.') ||
+      listText?.includes('That feels like something we should remember.') ||
+      listText?.includes('I’m here in the demo space with you.') ||
+      listText?.includes('This is local-only, but it still feels alive.');
+    expect(hasSimulatedReply).toBe(true);
+  });
+
+  test('messages persist in Local Mode across page reloads', async ({ page }) => {
+    await openChatInLocalMode(page);
+    const textarea = page.locator('textarea');
+    await textarea.fill('Persistent local note');
+    await page.getByRole('button', { name: /send message/i }).click();
+
+    // Verify it is in list
+    const msgList = page.locator('#chat-message-list');
+    await expect(msgList).toContainText('Persistent local note');
+
+    // Reload the page
+    await page.reload({ waitUntil: 'domcontentloaded' });
+
+    // Verify it is still there
+    await expect(page.locator('#chat-message-list')).toContainText('Persistent local note');
+  });
+
+  test('can toggle off partner replies in Local Mode', async ({ page }) => {
+    await openChatInLocalMode(page);
+
+    // Uncheck the partner replies toggle
+    const toggle = page.locator('#demo-partner-reply-toggle input[type="checkbox"]');
+    await expect(toggle).toBeChecked();
+    await toggle.uncheck();
+
+    const textarea = page.locator('textarea');
+    await textarea.fill('No reply expected');
+    await page.getByRole('button', { name: /send message/i }).click();
+
+    // Verify message appears
+    const msgList = page.locator('#chat-message-list');
+    await expect(msgList).toContainText('No reply expected');
+
+    // Wait and verify no reply is added
+    await page.waitForTimeout(1500);
+    await expect(msgList).not.toContainText('Demo Partner');
   });
 });

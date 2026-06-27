@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewChecked, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
@@ -9,7 +9,8 @@ import { ChatApiService, ChatMessage } from '../../../../core/services/chat-api.
 import { CoupleHubService } from '../../../../core/services/couple-hub.service';
 import { TokenStorageService } from '../../../../core/services/token-storage.service';
 import { AuthService } from '../../../../core/services/auth.service';
-import { RelationshipPointsService } from '../../../../core/services/relationship-points.service';
+import { GamificationService } from '../../../../core/services/gamification.service';
+import { LocalChatService } from '../../../../core/services/local-chat.service';
 
 @Component({
   selector: 'app-chat-room',
@@ -29,9 +30,13 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
   statusMessage = '';
   apiBaseUrl = environment.apiBaseUrl;
   myUserId: string | null = null;
+  demoRepliesEnabled = true; // For local mode simulated responses
+  partnerTyping = false;
   private subscription?: Subscription;
   private shouldScrollToBottom = false;
   private _apiToken: string | null = null;
+  private typingTimeout: any = null;
+  private isCurrentlyTyping = false;
 
   get canRetry(): boolean {
     return !!this._apiToken;
@@ -43,12 +48,24 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
     private hub: CoupleHubService,
     private tokenStorage: TokenStorageService,
     private auth: AuthService,
-    private pointsService: RelationshipPointsService
+    private gamification: GamificationService,
+    private localChat: LocalChatService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
+    this.subscription = new Subscription();
+
     if (this.appMode.isLocalMode()) {
-      this.statusMessage = 'Chat requires API Mode.';
+      this.myUserId = this.auth.getCurrentUser()?.id ?? 'user-owner';
+      this.statusMessage = 'Local Demo Chat. Real partner sync requires API Mode.';
+      this.subscription.add(
+        this.localChat.messages$.subscribe(messages => {
+          this.messages = messages;
+          this.shouldScrollToBottom = true;
+          this.cdr.detectChanges();
+        })
+      );
       return;
     }
 
@@ -60,10 +77,22 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
 
     this.myUserId = this.currentUserId();
-    this.subscription = this.hub.messageReceived$.subscribe(message => {
-      this.appendMessage(message);
-      this.shouldScrollToBottom = true;
-    });
+
+    this.subscription.add(
+      this.hub.messageReceived$.subscribe(message => {
+        this.appendMessage(message);
+        this.shouldScrollToBottom = true;
+        this.cdr.detectChanges();
+      })
+    );
+
+    this.subscription.add(
+      this.hub.partnerTyping$.subscribe(isTyping => {
+        this.partnerTyping = isTyping;
+        this.cdr.detectChanges();
+      })
+    );
+
     this.loadMessages();
     this.startHub(token);
   }
@@ -76,23 +105,40 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   ngOnDestroy(): void {
-    this.subscription?.unsubscribe();
-    void this.hub.stop();
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+    if (this.typingTimeout) {
+      clearTimeout(this.typingTimeout);
+    }
   }
 
   sendMessage(): void {
     const body = this.draft.trim();
-    if (!body || this.isSending || this.appMode.isLocalMode()) return;
+    if (!body || this.isSending) return;
 
     this.isSending = true;
     this.errorMessage = '';
     this.draft = ''; // Clear input immediately for better UX
     this.shouldScrollToBottom = true;
 
+    if (this.appMode.isLocalMode()) {
+      const myUser = this.auth.getCurrentUser();
+      const senderName = myUser?.displayName ?? 'Partner A';
+      this.localChat.addMessage(body, this.myUserId ?? 'user-owner', senderName);
+      this.isSending = false;
+      this.gamification.rewardChatMessage();
+
+      if (this.demoRepliesEnabled) {
+        this.triggerSimulatedReply();
+      }
+      return;
+    }
+
     this.hub.sendMessage(body)
       .then(() => {
         this.isSending = false;
-        this.pointsService.rewardChatMessage();
+        this.gamification.rewardChatMessage();
       })
       .catch(() => {
         this.chatApi.sendMessage({ message: body }).subscribe({
@@ -100,7 +146,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
             this.appendMessage(this.chatApi.toMessage(response));
             this.isSending = false;
             this.shouldScrollToBottom = true;
-            this.pointsService.rewardChatMessage();
+            this.gamification.rewardChatMessage();
           },
           error: error => {
             this.errorMessage = this.toFriendlyError(error);
@@ -110,6 +156,23 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
           },
         });
       });
+  }
+
+  private triggerSimulatedReply(): void {
+    const replies = [
+      'I saved this in our little orbit.',
+      'That feels like something we should remember.',
+      'I’m here in the demo space with you.',
+      'This is local-only, but it still feels alive.',
+    ];
+
+    const replyIndex = Math.floor(Math.random() * replies.length);
+    const replyBody = replies[replyIndex];
+    const delay = Math.floor(Math.random() * (1200 - 600 + 1)) + 600;
+
+    setTimeout(() => {
+      this.localChat.addMessage(replyBody, 'demo-partner', 'Demo Partner');
+    }, delay);
   }
 
   retryLoad(): void {
@@ -241,5 +304,23 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
 
     return null;
+  }
+
+  onTyping(): void {
+    if (this.appMode.isLocalMode()) return;
+
+    if (!this.isCurrentlyTyping) {
+      this.isCurrentlyTyping = true;
+      this.hub.sendTypingState(true);
+    }
+
+    if (this.typingTimeout) {
+      clearTimeout(this.typingTimeout);
+    }
+
+    this.typingTimeout = setTimeout(() => {
+      this.isCurrentlyTyping = false;
+      this.hub.sendTypingState(false);
+    }, 3000);
   }
 }

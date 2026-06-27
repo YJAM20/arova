@@ -9,202 +9,362 @@
     </p>
   </header>
 
-  <!-- Sanctuary Status Strip -->
-  <section class="status-strip glassmorphism p-4 rounded-xl mb-8 flex flex-wrap items-center justify-between gap-4 animate-fade-in" style="animation-delay: 0.05s;">
-    <div class="flex items-center gap-3">
-      <span class="status-indicator-dot w-3 h-3 rounded-full bg-emerald-400 animate-pulse" style="box-shadow: 0 0 10px #34d399;"></span>
-      <span class="text-xs font-bold text-neutral-200">Sanctuary Health Status: <span class="text-emerald-400 font-extrabold">ONLINE / SECURE</span></span>
-    </div>
-    <div class="flex flex-wrap items-center gap-6 text-2xs text-neutral-400">
-      <span>Database Link: <strong class="text-neutral-200">CONNECTED (SQLite)</strong></span>
-      <span>API Mode Latency: <strong class="text-neutral-200">12ms</strong></span>
-      <span>Sanctuary Sync: <strong class="text-neutral-200">100% (Active)</strong></span>
-    </div>
-  </section>
+  <!-- Navigation Tabs -->
+  <nav class="admin-tabs animate-fade-in" role="tablist" aria-label="Admin Console Tabs">
+    <button class="tab-btn" [class.active]="activeTab === 'overview'" (click)="activeTab = 'overview'" role="tab" [attr.aria-selected]="activeTab === 'overview'">
+      💻 Console Overview
+    </button>
+    <button class="tab-btn" [class.active]="activeTab === 'engagement'" (click)="activeTab = 'engagement'" role="tab" [attr.aria-selected]="activeTab === 'engagement'">
+      📊 Relationship Engagement
+    </button>
+  </nav>
 
-  <!-- Statistics Grid -->
-  <section class="stats-grid grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 animate-fade-in" style="animation-delay: 0.1s;">
-    <article class="stat-card glassmorphism p-5 rounded-2xl flex flex-col justify-between" *ngFor="let stat of stats" [class]="'stat-card--' + stat.accent">
-      <span class="stat-label text-3xs font-semibold text-neutral-400 uppercase tracking-wider block mb-2">{{ stat.label }}</span>
-      <strong class="text-3xl font-extrabold text-white font-mono">{{ stat.value }}</strong>
-    </article>
-  </section>
+  <!-- Sanctuary Status Strip (Console Overview Tab) -->
+  <div *ngIf="activeTab === 'overview'" class="animate-fade-in">
+    <section class="status-strip glassmorphism p-4 rounded-xl mb-8 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <span class="status-indicator-dot w-3 h-3 rounded-full bg-emerald-400 animate-pulse" style="box-shadow: 0 0 10px #34d399;"></span>
+        <span class="text-xs font-bold text-neutral-200">Sanctuary Health Status: <span class="text-emerald-400 font-extrabold">ONLINE / SECURE</span></span>
+      </div>
+      <div class="flex flex-wrap items-center gap-6 text-2xs text-neutral-400">
+        <span>Database Link: <strong class="text-neutral-200">CONNECTED (SQLite)</strong></span>
+        <span>API Mode Latency: <strong class="text-neutral-200">12ms</strong></span>
+        <span>Sanctuary Sync: <strong class="text-neutral-200">100% (Active)</strong></span>
+      </div>
+    </section>
 
-  <!-- Quick Manager Links -->
-  <section class="quick-links grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 animate-fade-in" style="animation-delay: 0.2s;">
-    <a class="quick-link glassmorphism p-5 rounded-xl flex items-center gap-4 hover:scale-102" routerLink="/admin/memories">
-      <span class="icon bg-green-500/10 text-green-400 p-2.5 rounded-full text-xl">📸</span>
-      <div>
-        <strong class="text-sm font-bold text-white block">Manage Memories</strong>
-        <small class="text-xs text-neutral-400">Dates, descriptions, and images</small>
-      </div>
-    </a>
-    <a class="quick-link glassmorphism p-5 rounded-xl flex items-center gap-4 hover:scale-102" routerLink="/admin/reasons">
-      <span class="icon bg-pink-500/10 text-pink-400 p-2.5 rounded-full text-xl">💬</span>
-      <div>
-        <strong class="text-sm font-bold text-white block">Manage Reasons</strong>
-        <small class="text-xs text-neutral-400">Love cards and public orders</small>
-      </div>
-    </a>
-    <a class="quick-link glassmorphism p-5 rounded-xl flex items-center gap-4 hover:scale-102" routerLink="/admin/letters">
-      <span class="icon bg-amber-500/10 text-amber-400 p-2.5 rounded-full text-xl">✉️</span>
-      <div>
-        <strong class="text-sm font-bold text-white block">Manage Letters</strong>
-        <small class="text-xs text-neutral-400">Open triggers and private notes</small>
-      </div>
-    </a>
-  </section>
+    <!-- Statistics Grid -->
+    <section class="stats-grid grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <article class="stat-card glassmorphism p-5 rounded-2xl flex flex-col justify-between" *ngFor="let stat of stats" [class]="'stat-card--' + stat.accent">
+        <span class="stat-label text-3xs font-semibold text-neutral-400 uppercase tracking-wider block mb-2">{{ stat.label }}</span>
+        <strong class="text-3xl font-extrabold text-white font-mono">{{ stat.value }}</strong>
+      </article>
+    </section>
 
-  <!-- Flags & Resources Row -->
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8 animate-fade-in" style="animation-delay: 0.3s;">
-    
-    <!-- Feature Flags Panel -->
-    <div class="lg:col-span-2 glassmorphism p-6 rounded-2xl">
-      <h3 class="section-title text-base font-bold text-neutral-200 mb-4 flex items-center gap-2">⚙️ Developer Feature Flags</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div *ngFor="let flag of featureFlags" 
-             (click)="toggleFlag(flag)" 
-             class="flag-item p-4 rounded-xl flex items-center justify-between gap-4 cursor-pointer transition-all bg-neutral-900/40 border border-neutral-800/40"
-             [class.active]="flag.enabled">
-          <div class="text-left flex-1">
-            <span class="flag-name font-bold text-sm text-white block">{{ flag.name }}</span>
-            <span class="flag-desc text-xs text-neutral-400">{{ flag.description }}</span>
+    <!-- Quick Manager Links -->
+    <section class="quick-links grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+      <a class="quick-link glassmorphism p-5 rounded-xl flex items-center gap-4 hover:scale-102" routerLink="/admin/memories">
+        <span class="icon bg-green-500/10 text-green-400 p-2.5 rounded-full text-xl">📸</span>
+        <div>
+          <strong class="text-sm font-bold text-white block">Manage Memories</strong>
+          <small class="text-xs text-neutral-400">Dates, descriptions, and images</small>
+        </div>
+      </a>
+      <a class="quick-link glassmorphism p-5 rounded-xl flex items-center gap-4 hover:scale-102" routerLink="/admin/reasons">
+        <span class="icon bg-pink-500/10 text-pink-400 p-2.5 rounded-full text-xl">💬</span>
+        <div>
+          <strong class="text-sm font-bold text-white block">Manage Reasons</strong>
+          <small class="text-xs text-neutral-400">Love cards and public orders</small>
+        </div>
+      </a>
+      <a class="quick-link glassmorphism p-5 rounded-xl flex items-center gap-4 hover:scale-102" routerLink="/admin/letters">
+        <span class="icon bg-amber-500/10 text-amber-400 p-2.5 rounded-full text-xl">✉️</span>
+        <div>
+          <strong class="text-sm font-bold text-white block">Manage Letters</strong>
+          <small class="text-xs text-neutral-400">Open triggers and private notes</small>
+        </div>
+      </a>
+    </section>
+
+    <!-- Flags & Resources Row -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+      
+      <!-- Feature Flags Panel -->
+      <div class="lg:col-span-2 glassmorphism p-6 rounded-2xl">
+        <h3 class="section-title text-base font-bold text-neutral-200 mb-4 flex items-center gap-2">⚙️ Developer Feature Flags</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div *ngFor="let flag of featureFlags" 
+               (click)="toggleFlag(flag)" 
+               class="flag-item p-4 rounded-xl flex items-center justify-between gap-4 cursor-pointer transition-all bg-neutral-900/40 border border-neutral-800/40"
+               [class.active]="flag.enabled">
+            <div class="text-left flex-1">
+              <span class="flag-name font-bold text-sm text-white block">{{ flag.name }}</span>
+              <span class="flag-desc text-xs text-neutral-400">{{ flag.description }}</span>
+            </div>
+            <div class="toggle-switch relative w-11 h-6 bg-neutral-700 rounded-full transition-colors flex-shrink-0" [class.enabled]="flag.enabled">
+              <div class="toggle-nob absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform" [class.enabled]="flag.enabled"></div>
+            </div>
           </div>
-          <div class="toggle-switch relative w-11 h-6 bg-neutral-700 rounded-full transition-colors flex-shrink-0" [class.enabled]="flag.enabled">
-            <div class="toggle-nob absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform" [class.enabled]="flag.enabled"></div>
+        </div>
+      </div>
+
+      <!-- Space Resources Card -->
+      <div class="lg:col-span-1 glassmorphism p-6 rounded-2xl flex flex-col justify-between">
+        <div>
+          <h3 class="section-title text-base font-bold text-neutral-200 mb-4 flex items-center gap-2">📊 Space Resources</h3>
+          
+          <!-- Storage usage meter -->
+          <div class="storage-usage mb-6">
+            <div class="flex justify-between text-2xs mb-1">
+              <span class="text-neutral-400 font-semibold font-mono">Cloud Storage Used</span>
+              <span class="text-neutral-200 font-mono font-bold">428 MB / 2.0 GB</span>
+            </div>
+            <div class="w-full h-2 bg-neutral-800 rounded-full overflow-hidden">
+              <div class="h-full bg-gradient-to-r from-amber-400 to-amber-600 rounded-full" style="width: 21.4%;"></div>
+            </div>
+          </div>
+          
+          <!-- Plan Distribution -->
+          <div class="plan-distribution">
+            <span class="text-2xs text-neutral-400 font-semibold block mb-2">Simulated Plan Share</span>
+            <div class="w-full h-3 rounded-full overflow-hidden flex mb-3">
+              <div class="bg-emerald-500 h-full" style="width: 65%;" title="Free (65%)"></div>
+              <div class="bg-purple-500 h-full" style="width: 25%;" title="Pro (25%)"></div>
+              <div class="bg-sky-500 h-full" style="width: 10%;" title="Platinum (10%)"></div>
+            </div>
+            <div class="grid grid-cols-3 gap-1 text-center text-3xs text-neutral-400 font-semibold">
+              <div class="flex flex-col items-center"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 mb-1"></span> Free (65%)</div>
+              <div class="flex flex-col items-center"><span class="w-2.5 h-2.5 rounded-full bg-purple-500 mb-1"></span> Pro (25%)</div>
+              <div class="flex flex-col items-center"><span class="w-2.5 h-2.5 rounded-full bg-sky-500 mb-1"></span> Platinum (10%)</div>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Space Resources Card -->
-    <div class="lg:col-span-1 glassmorphism p-6 rounded-2xl flex flex-col justify-between">
-      <div>
-        <h3 class="section-title text-base font-bold text-neutral-200 mb-4 flex items-center gap-2">📊 Space Resources</h3>
+    <!-- Split Panel: Logs, Checklist, Limits -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      
+      <!-- Moderation Logs Panel -->
+      <section class="logs-card glassmorphism p-6 rounded-2xl flex flex-col justify-between max-h-[460px]">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="section-title text-base font-bold text-neutral-200 flex items-center gap-2">🪵 Moderation & Safety Logs</h3>
+          <div class="flex gap-1.5">
+            <button (click)="simulateActivity()" class="log-action-btn px-2 py-1 rounded text-3xs font-bold uppercase tracking-wider">
+              Sim
+            </button>
+            <button (click)="clearLogs()" class="log-action-btn px-2 py-1 rounded text-3xs font-bold uppercase tracking-wider text-red-400 border border-red-500/10">
+              Clear
+            </button>
+          </div>
+        </div>
+
+        <div class="logs-list overflow-y-auto space-y-2.5 pr-2 flex-1 scrollbar-thin max-h-[320px]">
+          <div *ngFor="let log of logs" class="log-entry p-3 rounded-xl text-2xs flex items-start justify-between gap-3 bg-neutral-900/60 border border-neutral-800/60">
+            <div class="flex-1 text-left">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="log-badge font-bold px-1.5 py-0.5 rounded text-3xs uppercase" [class]="'badge-' + log.type.toLowerCase()">
+                  {{ log.type }}
+                </span>
+                <span class="log-time text-neutral-500 font-mono">{{ log.timestamp | date:'HH:mm:ss' }}</span>
+              </div>
+              <p class="log-message text-neutral-300">{{ log.message }}</p>
+            </div>
+          </div>
+          <div *ngIf="logs.length === 0" class="text-center py-16 text-xs text-neutral-400">
+            No logs captured. Click Sim above to generate records.
+          </div>
+        </div>
+      </section>
+
+      <!-- Security & Integrity Checklist -->
+      <section class="security-card glassmorphism p-6 rounded-2xl flex flex-col justify-between max-h-[460px]">
+        <div>
+          <h3 class="section-title text-base font-bold text-neutral-200 mb-4 flex items-center gap-2">🛡️ Security Checklist</h3>
+          <div class="security-checklist space-y-3 overflow-y-auto max-h-[320px] pr-1 scrollbar-thin">
+            <div class="check-item flex items-center gap-3 p-3 bg-neutral-900/40 border border-neutral-800/40 rounded-xl">
+              <span class="text-emerald-400 font-bold">✓</span>
+              <div class="text-left">
+                <strong class="text-xs font-semibold text-white block">Token Cryptography</strong>
+                <span class="text-3xs text-neutral-400">HMAC-SHA256 signature validation active</span>
+              </div>
+            </div>
+            <div class="check-item flex items-center gap-3 p-3 bg-neutral-900/40 border border-neutral-800/40 rounded-xl">
+              <span class="text-emerald-400 font-bold">✓</span>
+              <div class="text-left">
+                <strong class="text-xs font-semibold text-white block">Database Isolation</strong>
+                <span class="text-3xs text-neutral-400">Session records bounded to current pair index</span>
+              </div>
+            </div>
+            <div class="check-item flex items-center gap-3 p-3 bg-neutral-900/40 border border-neutral-800/40 rounded-xl">
+              <span class="text-emerald-400 font-bold">✓</span>
+              <div class="text-left">
+                <strong class="text-xs font-semibold text-white block">SQL Injection Guards</strong>
+                <span class="text-3xs text-neutral-400">Parametric queries verified on search paths</span>
+              </div>
+            </div>
+            <div class="check-item flex items-center gap-3 p-3 bg-neutral-900/40 border border-neutral-800/40 rounded-xl">
+              <span class="text-emerald-400 font-bold">✓</span>
+              <div class="text-left">
+                <strong class="text-xs font-semibold text-white block">Client Heartbeat Monitoring</strong>
+                <span class="text-3xs text-neutral-400">Partner node connection health loop validated</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Subscription Limits Cards -->
+      <section class="limits-card glassmorphism p-6 rounded-2xl max-h-[460px] flex flex-col justify-between">
+        <div>
+          <h3 class="section-title text-base font-bold text-neutral-200 mb-4 flex items-center gap-2">📋 Subscription Matrix</h3>
+          <div class="limits-grid space-y-3 overflow-y-auto max-h-[300px] pr-2 scrollbar-thin">
+            <div *ngFor="let limit of limits" class="limit-row-card p-3 rounded-xl bg-neutral-900/60 border border-neutral-800/60 flex flex-col justify-between gap-1.5">
+              <strong class="text-xs font-bold text-white block text-left">{{ limit.feature }}</strong>
+              <div class="limit-tiers flex flex-wrap gap-1.5 text-3xs">
+                <span class="px-1.5 py-0.5 rounded bg-neutral-800 text-neutral-400">Free: {{ limit.free }}</span>
+                <span class="px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-300 font-medium">Pro: {{ limit.pro }}</span>
+                <span class="px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-300 font-semibold">Plat: {{ limit.platinum }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
         
-        <!-- Storage usage meter -->
-        <div class="storage-usage mb-6">
-          <div class="flex justify-between text-2xs mb-1">
-            <span class="text-neutral-400 font-semibold font-mono">Cloud Storage Used</span>
-            <span class="text-neutral-200 font-mono font-bold">428 MB / 2.0 GB</span>
-          </div>
-          <div class="w-full h-2 bg-neutral-800 rounded-full overflow-hidden">
-            <div class="h-full bg-gradient-to-r from-amber-400 to-amber-600 rounded-full" style="width: 21.4%;"></div>
-          </div>
+        <div class="last-sync text-right text-3xs text-neutral-400 mt-4">
+          Database Sync: {{ lastUpdated }}
         </div>
-        
-        <!-- Plan Distribution -->
-        <div class="plan-distribution">
-          <span class="text-2xs text-neutral-400 font-semibold block mb-2">Simulated User Plan Share</span>
-          <div class="w-full h-3 rounded-full overflow-hidden flex mb-3">
-            <div class="bg-emerald-500 h-full" style="width: 65%;" title="Free (65%)"></div>
-            <div class="bg-purple-500 h-full" style="width: 25%;" title="Pro (25%)"></div>
-            <div class="bg-sky-500 h-full" style="width: 10%;" title="Platinum (10%)"></div>
-          </div>
-          <div class="grid grid-cols-3 gap-1 text-center text-3xs text-neutral-400 font-semibold">
-            <div class="flex flex-col items-center"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 mb-1"></span> Free (65%)</div>
-            <div class="flex flex-col items-center"><span class="w-2.5 h-2.5 rounded-full bg-purple-500 mb-1"></span> Pro (25%)</div>
-            <div class="flex flex-col items-center"><span class="w-2.5 h-2.5 rounded-full bg-sky-500 mb-1"></span> Platinum (10%)</div>
-          </div>
-        </div>
-      </div>
+      </section>
     </div>
   </div>
 
-  <!-- Split Panel: Logs, Checklist, Limits -->
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-fade-in" style="animation-delay: 0.4s;">
-    
-    <!-- Moderation Logs Panel -->
-    <section class="logs-card glassmorphism p-6 rounded-2xl flex flex-col justify-between max-h-[460px]">
-      <div class="flex items-center justify-between mb-4">
-        <h3 class="section-title text-base font-bold text-neutral-200 flex items-center gap-2">🪵 Moderation & Safety Logs</h3>
-        <div class="flex gap-1.5">
-          <button (click)="simulateActivity()" class="log-action-btn px-2 py-1 rounded text-3xs font-bold uppercase tracking-wider">
-            Sim
-          </button>
-          <button (click)="clearLogs()" class="log-action-btn px-2 py-1 rounded text-3xs font-bold uppercase tracking-wider text-red-400 border border-red-500/10">
-            Clear
-          </button>
-        </div>
-      </div>
+  <!-- Relationship Engagement Dashboard -->
+  <div *ngIf="activeTab === 'engagement'" class="animate-fade-in">
+    <header class="mb-6">
+      <h2 class="text-2xl font-bold text-white mb-1">Relationship Engagement</h2>
+      <p class="text-sm text-neutral-300">A privacy-safe view of how this Arova space is being used.</p>
+    </header>
 
-      <!-- Logs Entries list (Vertical timeline feel) -->
-      <div class="logs-list overflow-y-auto space-y-2.5 pr-2 flex-1 scrollbar-thin max-h-[320px]">
-        <div *ngFor="let log of logs" class="log-entry p-3 rounded-xl text-2xs flex items-start justify-between gap-3 bg-neutral-900/60 border border-neutral-800/60">
-          <div class="flex-1 text-left">
-            <div class="flex items-center gap-2 mb-1">
-              <span class="log-badge font-bold px-1.5 py-0.5 rounded text-3xs uppercase" [class]="'badge-' + log.type.toLowerCase()">
-                {{ log.type }}
-              </span>
-              <span class="log-time text-neutral-500 font-mono">{{ log.timestamp | date:'HH:mm:ss' }}</span>
-            </div>
-            <p class="log-message text-neutral-300">{{ log.message }}</p>
-          </div>
-        </div>
-        <div *ngIf="logs.length === 0" class="text-center py-16 text-xs text-neutral-400">
-          No logs captured. Click Sim above to generate records.
-        </div>
-      </div>
-    </section>
+    <!-- Privacy Notice -->
+    <div class="privacy-notice flex items-center gap-2 mb-6">
+      <span>🔒</span>
+      <span><strong>Privacy Model Active:</strong> This dashboard shows safe activity summaries only, not private content. No notes, ciphers, passcodes, or letter bodies are read or transferred.</span>
+    </div>
 
-    <!-- Security & Integrity Checklist -->
-    <section class="security-card glassmorphism p-6 rounded-2xl flex flex-col justify-between max-h-[460px]">
+    <!-- Mode Banner & Couple Selector for API Mode -->
+    <section class="glassmorphism p-4 rounded-xl mb-6 flex flex-wrap items-center justify-between gap-4">
       <div>
-        <h3 class="section-title text-base font-bold text-neutral-200 mb-4 flex items-center gap-2">🛡️ Security Checklist</h3>
-        <div class="security-checklist space-y-3 overflow-y-auto max-h-[320px] pr-1 scrollbar-thin">
-          <div class="check-item flex items-center gap-3 p-3 bg-neutral-900/40 border border-neutral-800/40 rounded-xl">
-            <span class="text-emerald-400 font-bold">✓</span>
-            <div class="text-left">
-              <strong class="text-xs font-semibold text-white block">Token Cryptography</strong>
-              <span class="text-3xs text-neutral-400">HMAC-SHA256 signature validation active</span>
-            </div>
-          </div>
-          <div class="check-item flex items-center gap-3 p-3 bg-neutral-900/40 border border-neutral-800/40 rounded-xl">
-            <span class="text-emerald-400 font-bold">✓</span>
-            <div class="text-left">
-              <strong class="text-xs font-semibold text-white block">Database Isolation</strong>
-              <span class="text-3xs text-neutral-400">Session records bounded to current pair index</span>
-            </div>
-          </div>
-          <div class="check-item flex items-center gap-3 p-3 bg-neutral-900/40 border border-neutral-800/40 rounded-xl">
-            <span class="text-emerald-400 font-bold">✓</span>
-            <div class="text-left">
-              <strong class="text-xs font-semibold text-white block">SQL Injection Guards</strong>
-              <span class="text-3xs text-neutral-400">Parametric queries verified on search paths</span>
-            </div>
-          </div>
-          <div class="check-item flex items-center gap-3 p-3 bg-neutral-900/40 border border-neutral-800/40 rounded-xl">
-            <span class="text-emerald-400 font-bold">✓</span>
-            <div class="text-left">
-              <strong class="text-xs font-semibold text-white block">Client Heartbeat Monitoring</strong>
-              <span class="text-3xs text-neutral-400">Partner node connection health loop validated</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Subscription Limits Cards -->
-    <section class="limits-card glassmorphism p-6 rounded-2xl max-h-[460px] flex flex-col justify-between">
-      <div>
-        <h3 class="section-title text-base font-bold text-neutral-200 mb-4 flex items-center gap-2">📋 Subscription Matrix</h3>
-        <div class="limits-grid space-y-3 overflow-y-auto max-h-[300px] pr-2 scrollbar-thin">
-          <div *ngFor="let limit of limits" class="limit-row-card p-3 rounded-xl bg-neutral-900/60 border border-neutral-800/60 flex flex-col justify-between gap-1.5">
-            <strong class="text-xs font-bold text-white block text-left">{{ limit.feature }}</strong>
-            <div class="limit-tiers flex flex-wrap gap-1.5 text-3xs">
-              <span class="px-1.5 py-0.5 rounded bg-neutral-800 text-neutral-400">Free: {{ limit.free }}</span>
-              <span class="px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-300 font-medium">Pro: {{ limit.pro }}</span>
-              <span class="px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-300 font-semibold">Plat: {{ limit.platinum }}</span>
-            </div>
-          </div>
+        <span class="text-xs text-neutral-400 font-bold block mb-1">Execution context</span>
+        <div class="flex items-center gap-2">
+          <span class="status-indicator-dot w-2 h-2 rounded-full" [class.bg-emerald-400]="!isApiMode" [class.bg-blue-400]="isApiMode"></span>
+          <span class="text-xs font-bold text-white">{{ isApiMode ? 'API Mode' : 'Local Mode' }}</span>
         </div>
       </div>
       
-      <!-- Last updated sync indicator -->
-      <div class="last-sync text-right text-3xs text-neutral-400 mt-4">
-        Database Sync: {{ lastUpdated }}
+      <!-- API Mode Couple Switcher -->
+      <div class="couple-search-bar flex items-center gap-2" *ngIf="isApiMode">
+        <input type="text" [(ngModel)]="coupleIdInput" placeholder="Enter Couple GUID (leave empty for default)..." class="text-xs px-3 py-1.5 rounded bg-neutral-900 border border-neutral-800 text-white w-[250px]" />
+        <button (click)="loadEngagement()" class="text-xs bg-pink-600 hover:bg-pink-700 text-white font-bold px-3 py-1.5 rounded transition-colors">
+          Search
+        </button>
       </div>
     </section>
 
+    <!-- Error/Loading states -->
+    <div *ngIf="engagementLoading" class="text-center py-12 text-sm text-neutral-400 animate-pulse">
+      ✨ Consulting stars... Reading space records...
+    </div>
+
+    <div *ngIf="engagementError" class="glassmorphism p-4 rounded-xl border border-red-500/20 text-red-400 text-sm mb-6">
+      ⚠️ {{ engagementError }}
+    </div>
+
+    <!-- Dashboard Content Grid -->
+    <div *ngIf="!engagementLoading && !engagementError && engagementOverview" class="space-y-6">
+      
+      <!-- Engagement Stats Cards -->
+      <section class="stats-grid grid grid-cols-2 md:grid-cols-4 gap-4">
+        
+        <!-- Active Streak -->
+        <article class="stat-card glassmorphism p-5 rounded-2xl flex flex-col justify-between stat-card--pink">
+          <span class="stat-label text-3xs font-semibold text-neutral-400 uppercase tracking-wider block mb-2">Active Streak</span>
+          <strong class="text-3xl font-extrabold text-white font-mono">🔥 {{ engagementOverview.activeStreak || 0 }} Days</strong>
+        </article>
+
+        <!-- Total Points -->
+        <article class="stat-card glassmorphism p-5 rounded-2xl flex flex-col justify-between stat-card--gold">
+          <span class="stat-label text-3xs font-semibold text-neutral-400 uppercase tracking-wider block mb-2">Orbit Points</span>
+          <strong class="text-3xl font-extrabold text-white font-mono">✨ {{ engagementOverview.totalPoints || 0 }}</strong>
+        </article>
+
+        <!-- Current Rank -->
+        <article class="stat-card glassmorphism p-5 rounded-2xl flex flex-col justify-between stat-card--blue">
+          <span class="stat-label text-3xs font-semibold text-neutral-400 uppercase tracking-wider block mb-2">Current Rank</span>
+          <strong class="text-2xl font-extrabold text-white font-mono">{{ engagementOverview.currentRank || 'Spark' }}</strong>
+        </article>
+
+        <!-- Most Used Feature -->
+        <article class="stat-card glassmorphism p-5 rounded-2xl flex flex-col justify-between stat-card--purple">
+          <span class="stat-label text-3xs font-semibold text-neutral-400 uppercase tracking-wider block mb-2">Most Used Feature</span>
+          <strong class="text-2xl font-extrabold text-white font-mono">{{ engagementOverview.mostUsedFeature || 'None' }}</strong>
+        </article>
+
+        <!-- Goals progress -->
+        <article class="stat-card glassmorphism p-5 rounded-2xl flex flex-col justify-between stat-card--gold">
+          <span class="stat-label text-3xs font-semibold text-neutral-400 uppercase tracking-wider block mb-2">Goals Progress</span>
+          <strong class="text-2xl font-extrabold text-white font-mono">{{ engagementOverview.completedGoals || 0 }} / {{ engagementOverview.totalGoals || 0 }} Completed</strong>
+        </article>
+
+        <!-- Memories -->
+        <article class="stat-card glassmorphism p-5 rounded-2xl flex flex-col justify-between stat-card--green">
+          <span class="stat-label text-3xs font-semibold text-neutral-400 uppercase tracking-wider block mb-2">Memories Saved</span>
+          <strong class="text-3xl font-extrabold text-white font-mono">📸 {{ engagementOverview.totalMemories || 0 }}</strong>
+        </article>
+
+        <!-- Letters -->
+        <article class="stat-card glassmorphism p-5 rounded-2xl flex flex-col justify-between stat-card--pink">
+          <span class="stat-label text-3xs font-semibold text-neutral-400 uppercase tracking-wider block mb-2">Letters Vaulted</span>
+          <strong class="text-3xl font-extrabold text-white font-mono">✉️ {{ engagementOverview.totalLetters || 0 }}</strong>
+        </article>
+
+        <!-- Last Activity -->
+        <article class="stat-card glassmorphism p-5 rounded-2xl flex flex-col justify-between stat-card--green">
+          <span class="stat-label text-3xs font-semibold text-neutral-400 uppercase tracking-wider block mb-2">Last Activity</span>
+          <span class="text-xs font-semibold text-white font-mono leading-tight mt-1">{{ engagementOverview.lastActivityAt ? (engagementOverview.lastActivityAt | date:'medium') : 'No recent activity' }}</span>
+        </article>
+
+      </section>
+
+      <!-- Charts & Visual analytics rows -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- Feature Usage Breakdown (progress bars) -->
+        <section class="lg:col-span-1 glassmorphism p-6 rounded-2xl flex flex-col justify-between">
+          <div>
+            <h3 class="section-title text-base font-bold text-neutral-200 mb-4">Feature Usage Breakdown</h3>
+            <div class="feature-bars">
+              <div class="feature-bar-row" *ngFor="let key of getObjectKeys(engagementOverview.activityByFeature)">
+                <div class="feature-bar-label flex justify-between text-xs text-neutral-300 mb-1">
+                  <span>{{ key }}</span>
+                  <span class="font-bold font-mono">{{ engagementOverview.activityByFeature[key] }} entries</span>
+                </div>
+                <div class="feature-bar-track w-full h-2 rounded-full bg-neutral-800 overflow-hidden">
+                  <div class="feature-bar-fill h-full bg-pink-500 rounded-full" [style.width.%]="engagementOverview.activityByFeature[key] * 10 > 100 ? 100 : (engagementOverview.activityByFeature[key] * 10 || 2)"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Mood Rhythm & Daily Activity Chart -->
+        <section class="lg:col-span-1 glassmorphism p-6 rounded-2xl flex flex-col justify-between">
+          <div>
+            <h3 class="section-title text-base font-bold text-neutral-200 mb-2">Mood & Check-in Rhythm</h3>
+            <p class="text-2xs text-neutral-400 mb-4">Active mood status entries log: <strong class="text-white">{{ engagementOverview.totalMoodEntries }} check-ins</strong>. Activity points per day over the last 7 days:</p>
+            
+            <!-- Daily Chart bar elements -->
+            <div class="day-chart">
+              <div class="day-col" *ngFor="let key of getObjectKeys(engagementOverview.activityByDay)">
+                <div class="day-bar" [style.height.%]="(engagementOverview.activityByDay[key] * 10) > 100 ? 100 : (engagementOverview.activityByDay[key] * 10) || 4" [title]="key + ': ' + engagementOverview.activityByDay[key] + ' activities'"></div>
+                <div class="day-label">{{ key.slice(5) }}</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Product Transparency Limits & Claims -->
+        <section class="lg:col-span-1 glassmorphism p-6 rounded-2xl flex flex-col justify-between">
+          <div>
+            <h3 class="section-title text-base font-bold text-neutral-200 mb-3">Product Transparencies</h3>
+            <ul class="limitations-list space-y-2 text-2xs text-neutral-300 engagement-limitations">
+              <li *ngFor="let limit of engagementOverview.limitations" class="flex items-start gap-2">
+                <span>✦</span>
+                <span>{{ limit }}</span>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+      </div>
+    </div>
   </div>
 </div>

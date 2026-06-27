@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { CustomSectionsService, CustomSection, PricingTier } from '../../../../core/services/custom-sections.service';
-import { RelationshipPointsService } from '../../../../core/services/relationship-points.service';
+import { GamificationService } from '../../../../core/services/gamification.service';
 
 @Component({
   selector: 'app-custom-sections-home',
@@ -42,7 +42,7 @@ export class CustomSectionsHomeComponent implements OnInit {
 
   constructor(
     private sectionsService: CustomSectionsService,
-    private pointsService: RelationshipPointsService
+    private gamification: GamificationService
   ) {}
 
   ngOnInit(): void {
@@ -170,7 +170,7 @@ export class CustomSectionsHomeComponent implements OnInit {
     if (ok) {
       this.newItemContent = '';
       this.loadData();
-      this.pointsService.awardPoints('Added custom list item', 5);
+      this.gamification.awardPoints('Added custom list item', 5);
     }
   }
 
@@ -183,7 +183,7 @@ export class CustomSectionsHomeComponent implements OnInit {
     if (ok) {
       this.loadData();
       if (completed) {
-        this.pointsService.awardPoints('Completed custom list item', 10);
+        this.gamification.awardPoints('Completed custom list item', 10);
       }
     }
   }

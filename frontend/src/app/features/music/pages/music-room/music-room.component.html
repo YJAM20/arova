@@ -96,6 +96,14 @@
               <span *ngIf="selectedSong.license">License: {{ selectedSong.license }}</span>
               <span *ngIf="selectedSong.attribution">Attribution: {{ selectedSong.attribution }}</span>
             </div>
+            
+            <div class="external-link-action" *ngIf="selectedSong.sourceUrl">
+              <a [href]="selectedSong.sourceUrl" target="_blank" rel="noopener noreferrer" class="external-action-btn" id="player-external-link">
+                <span>Open in {{ getSourceLabel(selectedSong) }}</span>
+                <span class="external-icon">↗</span>
+              </a>
+              <small class="external-link-hint">External links open outside Arova.</small>
+            </div>
           </div>
 
           <ng-template #noSelection>
@@ -207,6 +215,7 @@
               [(ngModel)]="formSourceUrl"
               maxlength="300"
             />
+            <small class="form-field-hint" style="color: #c9ac7f; display: block; margin-top: 4px; font-size: 0.76rem;">Note: Spotify or YouTube links will open in a new tab as external links.</small>
           </div>
 
           <div class="form-field">
@@ -364,6 +373,12 @@
       <p>
         Music Room is a private reflection space for you and your partner, not a streaming platform or music service.
         No audio files are stored or hosted by Arova. All tracks you add are references only.
+      </p>
+      <p class="limitations-note-text" *ngIf="!isApiMode()" id="music-local-warning" style="margin-top: 8px; color: #e7a6b6; opacity: 0.85; font-size: 0.78rem;">
+        ⚠️ Local Mode keeps this room in your browser. Progress is not synced across devices.
+      </p>
+      <p class="limitations-note-text" *ngIf="isApiMode()" id="music-api-warning" style="margin-top: 8px; color: #e7a6b6; opacity: 0.85; font-size: 0.78rem;">
+        ⚠️ API Mode can sync this room through your configured backend.
       </p>
     </footer>
   </div>

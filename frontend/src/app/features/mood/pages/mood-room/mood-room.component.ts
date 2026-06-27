@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
@@ -42,13 +42,13 @@ export class MoodRoomComponent implements OnInit {
   moodOptions: MoodOption[] = [
     { value: 'happy', label: 'Happy', icon: '😊', hint: 'Light and steady' },
     { value: 'silent', label: 'Calm', icon: '😌', hint: 'Quiet but present' },
-    { value: 'tired', label: 'Tired', icon: '🥱', hint: 'Needs rest' },
     { value: 'missing-you', label: 'Missing you', icon: '🥺', hint: 'Close from far away' },
-    { value: 'need-reassurance', label: 'Grateful', icon: '🥰', hint: 'Chosen and warm' },
-    { value: 'overthinking', label: 'Anxious', icon: '😰', hint: 'Needs reassuring thoughts' },
+    { value: 'need-reassurance', label: 'Need reassurance', icon: '🩹', hint: 'You are not a burden' },
+    { value: 'tired', label: 'Tired', icon: '🥱', hint: 'Needs rest' },
     { value: 'excited', label: 'Excited', icon: '🤩', hint: 'Full of sparks' },
+    { value: 'overthinking', label: 'Overthinking', icon: '😰', hint: 'Needs reassuring thoughts' },
+    { value: 'need-attention', label: 'Grateful', icon: '🥰', hint: 'Chosen and warm' },
     { value: 'sad', label: 'Low energy', icon: '😴', hint: 'Quietly recharging' },
-    { value: 'need-attention', label: 'Loved', icon: '❤️', hint: 'Tender and close' },
     { value: 'angry-but-soft', label: 'Distant', icon: '🌫️', hint: 'Processing soft feelings' },
   ];
 
@@ -67,11 +67,16 @@ export class MoodRoomComponent implements OnInit {
     return this.dailyPrompts[day % this.dailyPrompts.length];
   }
 
+  get isLocalMode(): boolean {
+    return !this.moodDataService.isApiMode();
+  }
+
   constructor(
     private moodDataService: MoodDataService,
     private auth: AuthService,
     private storage: StorageService,
-    private translation: TranslationService
+    private translation: TranslationService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -111,6 +116,7 @@ export class MoodRoomComponent implements OnInit {
             this.savedMessage = this.moodDataService.getMoodMessage(this.todayMood.mood);
           }
         }
+        this.cdr.detectChanges();
       },
       error: error => {
         this.history = [];
@@ -118,6 +124,7 @@ export class MoodRoomComponent implements OnInit {
         this.otherTodayMoods = [];
         this.errorMessage = error instanceof Error ? error.message : 'We couldn’t load the mood room right now.';
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
     });
   }

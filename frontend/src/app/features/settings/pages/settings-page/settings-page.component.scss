@@ -347,6 +347,64 @@
   }
 }
 
+.language-switcher-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.lang-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: $radius-sm;
+  background: rgba(255, 255, 255, 0.02);
+  color: $text-muted;
+  cursor: pointer;
+  transition: all $transition-base;
+  outline: none;
+
+  &:hover {
+    border-color: rgba(214, 183, 106, 0.35);
+    background: rgba(255, 255, 255, 0.04);
+    transform: translateY(-1px);
+  }
+
+  &.active {
+    border-color: rgba(214, 183, 106, 0.6);
+    background: rgba(214, 183, 106, 0.07);
+    box-shadow: 0 4px 16px rgba(214, 183, 106, 0.1);
+    color: $gold;
+
+    .lang-code {
+      color: $gold;
+    }
+  }
+
+  .lang-code {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: $cream;
+    transition: color $transition-base;
+  }
+
+  .lang-name {
+    font-size: 0.8rem;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .language-switcher-buttons {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+
 /* ─────────────────────────────────────────
    Toggle Rows
 ───────────────────────────────────────── */

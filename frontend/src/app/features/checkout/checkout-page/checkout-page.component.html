@@ -2,7 +2,7 @@
   <!-- Top header -->
   <header class="checkout-header mb-8">
     <p class="page-eyebrow">✦ Sandbox checkout</p>
-    <h1>Paddle Sandbox Checkout</h1>
+    <h1>Product Checkout Preview</h1>
     <p class="page-sub">Finalize your demo plan upgrade in the simulated billing sandbox.</p>
   </header>
 
@@ -15,7 +15,7 @@
   <!-- Loading indicator -->
   <div *ngIf="isLoading" class="loading-overlay" aria-live="polite">
     <div class="spinner"></div>
-    <p>Opening checkout window...</p>
+    <p>Opening checkout preview window...</p>
   </div>
 
   <!-- Checkout Workspace Container -->
@@ -46,9 +46,15 @@
     <!-- Honesty & Sandbox Warning Panel -->
     <div class="sandbox-disclaimer p-4 rounded-xl flex items-start gap-3">
       <span class="warning-icon text-xl" aria-hidden="true">💡</span>
-      <div class="warning-details text-left">
+      <div class="warning-details text-left space-y-1">
         <strong class="text-accent-2 block mb-1">Paddle Sandbox checkout warnings:</strong>
-        <ul class="text-3xs text-neutral-300 space-y-1">
+        <p class="text-3xs text-neutral-300 leading-relaxed font-semibold">
+          Checkout is a product preview in this demo. Real payments are not processed here.
+        </p>
+        <p class="text-3xs text-neutral-300 leading-relaxed">
+          Billing, subscriptions, and production payment handling are planned production features.
+        </p>
+        <ul class="text-3xs text-neutral-300 space-y-1 mt-1">
           <li>This checkout runs in Paddle Sandbox. No real money is charged.</li>
           <li>Billing is in test mode. Subscription provisioning is not production-active yet.</li>
           <li>Simulate successful checkout directly configures local settings without loading CDN scripts.</li>
@@ -64,7 +70,7 @@
         [disabled]="!isValidSelection || isLoading" 
         class="checkout-btn checkout-btn--paddle py-3 rounded-xl font-bold flex items-center justify-center gap-2"
       >
-        <span>💳</span> Open Paddle Sandbox Checkout
+        <span>💳</span> Preview checkout via Sandbox
       </button>
 
       <button 
@@ -73,7 +79,7 @@
         [disabled]="!isValidSelection" 
         class="checkout-btn checkout-btn--simulate py-3 rounded-xl font-semibold"
       >
-        Simulate successful checkout
+        Preview checkout
       </button>
 
       <a routerLink="/plans" class="checkout-btn checkout-btn--cancel py-3 rounded-xl font-semibold text-center">

@@ -1,4 +1,5 @@
 import { LoveUniverseData } from '../../shared/models/love-universe-data.model';
+import { ImportantDate } from '../../shared/models/important-date.model';
 
 const seededAt = new Date().toISOString();
 
@@ -260,5 +261,37 @@ export const DEFAULT_DATA: LoveUniverseData = {
       createdAt: seededAt,
       updatedAt: seededAt,
     },
+  ],
+  importantDates: [
+    {
+      id: 'imp-001',
+      coupleId: 'couple-default',
+      createdByUserId: 'user-owner',
+      title: 'Our Anniversary',
+      description: 'The day we first met and started our journey together.',
+      date: '2022-06-01',
+      type: 'anniversary',
+      recurrence: 'yearly',
+      reminderEnabled: true,
+      reminderDaysBefore: 7,
+      isPrivate: false,
+      createdAt: seededAt,
+      updatedAt: seededAt,
+    },
+    {
+      id: 'imp-002',
+      coupleId: 'couple-default',
+      createdByUserId: 'user-owner',
+      title: 'Birthday Wishlist Surprise',
+      description: 'Some ideas I have for my birthday. Keep it secret!',
+      date: '2025-10-15',
+      type: 'birthday',
+      recurrence: 'yearly',
+      reminderEnabled: true,
+      reminderDaysBefore: 3,
+      isPrivate: true,
+      createdAt: seededAt,
+      updatedAt: seededAt,
+    }
   ],
 };

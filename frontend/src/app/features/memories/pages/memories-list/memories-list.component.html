@@ -4,8 +4,20 @@
     subtitle="A calm private archive for the photos, notes, dates, and small details that belong to your shared space."
     eyebrow="Memories"
   >
-    <a actions class="add-content-link" routerLink="/memories/new">Add memory</a>
+    <div actions class="header-actions">
+      <a class="action-btn timeline-btn" routerLink="/memories/timeline">View as timeline</a>
+      <a class="add-content-link" routerLink="/memories/new">Add memory</a>
+    </div>
   </arova-page-header>
+
+  <!-- On This Day Strip -->
+  <div class="otd-strip glass animate-fade-in" *ngIf="!isLoading && !errorMessage && onThisDayMemories.length > 0">
+    <span class="otd-strip-icon" aria-hidden="true">💫</span>
+    <span class="otd-strip-text">
+      <strong>On This Day:</strong> You have {{ onThisDayMemories.length }} {{ onThisDayMemories.length === 1 ? 'memory' : 'memories' }} from your orbit, years ago.
+    </span>
+    <a class="otd-strip-link" routerLink="/memories/timeline">View timeline →</a>
+  </div>
 
   <!-- Loading State -->
   <arova-loading-state 

@@ -60,6 +60,12 @@ public sealed class AppDbContext : DbContext
     public DbSet<RelationshipDailyTask> RelationshipDailyTasks => Set<RelationshipDailyTask>();
     public DbSet<CustomSection> CustomSections => Set<CustomSection>();
     public DbSet<CustomSectionItem> CustomSectionItems => Set<CustomSectionItem>();
+    public DbSet<DailyQuestion> DailyQuestions => Set<DailyQuestion>();
+    public DbSet<DailyQuestionAnswer> DailyQuestionAnswers => Set<DailyQuestionAnswer>();
+    public DbSet<CheckIn> CheckIns => Set<CheckIn>();
+    public DbSet<ImportantDate> ImportantDates => Set<ImportantDate>();
+    public DbSet<CoupleGoal> CoupleGoals => Set<CoupleGoal>();
+    public DbSet<CoupleGoalMilestone> CoupleGoalMilestones => Set<CoupleGoalMilestone>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -95,6 +101,13 @@ public sealed class AppDbContext : DbContext
         ConfigureRelationshipDailyTask(modelBuilder);
         ConfigureCustomSection(modelBuilder);
         ConfigureCustomSectionItem(modelBuilder);
+
+        ConfigureDailyQuestion(modelBuilder);
+        ConfigureDailyQuestionAnswer(modelBuilder);
+        ConfigureCheckIn(modelBuilder);
+        ConfigureImportantDate(modelBuilder);
+        ConfigureCoupleGoal(modelBuilder);
+        ConfigureCoupleGoalMilestone(modelBuilder);
     }
 
     private static void ConfigureAppUser(ModelBuilder modelBuilder)
@@ -505,6 +518,9 @@ public sealed class AppDbContext : DbContext
         entity.Property(settings => settings.LanguageMode).HasMaxLength(40).IsRequired();
         entity.Property(settings => settings.AnimationsEnabled).IsRequired();
         entity.Property(settings => settings.MusicEnabled).IsRequired();
+        entity.Property(settings => settings.EmailNotificationsEnabled).IsRequired();
+        entity.Property(settings => settings.DailyDigestEnabled).IsRequired();
+        entity.Property(settings => settings.PartnerActivityEmailsEnabled).IsRequired();
         entity.Property(settings => settings.CreatedAt).IsRequired();
 
         entity.HasIndex(settings => settings.CoupleId).IsUnique();
@@ -911,5 +927,159 @@ public sealed class AppDbContext : DbContext
             .WithMany(creatorCollection)
             .HasForeignKey(createdByUserId)
             .OnDelete(DeleteBehavior.Restrict);
+    }
+
+    private static void ConfigureDailyQuestion(ModelBuilder modelBuilder)
+    {
+        var entity = modelBuilder.Entity<DailyQuestion>();
+
+        entity.HasKey(dq => dq.Id);
+        entity.Property(dq => dq.Prompt).HasMaxLength(2000).IsRequired();
+        entity.Property(dq => dq.Category).HasMaxLength(200).IsRequired();
+        entity.Property(dq => dq.IsActive).IsRequired();
+        entity.Property(dq => dq.CreatedAt).IsRequired();
+
+        entity.HasIndex(dq => dq.CoupleId);
+        entity.HasIndex(dq => dq.CreatedAt);
+
+        entity
+            .HasOne(dq => dq.Couple)
+            .WithMany()
+            .HasForeignKey(dq => dq.CoupleId)
+            .OnDelete(DeleteBehavior.Restrict);
+    }
+
+    private static void ConfigureDailyQuestionAnswer(ModelBuilder modelBuilder)
+    {
+        var entity = modelBuilder.Entity<DailyQuestionAnswer>();
+
+        entity.HasKey(dqa => dqa.Id);
+        entity.Property(dqa => dqa.Answer).HasMaxLength(4000).IsRequired();
+        entity.Property(dqa => dqa.CreatedAt).IsRequired();
+
+        entity.HasIndex(dqa => dqa.CoupleId);
+        entity.HasIndex(dqa => dqa.QuestionId);
+        entity.HasIndex(dqa => dqa.UserId);
+        entity.HasIndex(dqa => new { dqa.CoupleId, dqa.QuestionId, dqa.UserId }).IsUnique();
+
+        entity
+            .HasOne(dqa => dqa.Couple)
+            .WithMany()
+            .HasForeignKey(dqa => dqa.CoupleId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        entity
+            .HasOne(dqa => dqa.Question)
+            .WithMany(dq => dq.Answers)
+            .HasForeignKey(dqa => dqa.QuestionId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        entity
+            .HasOne(dqa => dqa.User)
+            .WithMany()
+            .HasForeignKey(dqa => dqa.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+    }
+
+    private static void ConfigureCheckIn(ModelBuilder modelBuilder)
+    {
+        var entity = modelBuilder.Entity<CheckIn>();
+
+        entity.HasKey(c => c.Id);
+        entity.Property(c => c.Mood).IsRequired();
+        entity.Property(c => c.Energy).IsRequired();
+        entity.Property(c => c.Need).IsRequired();
+        entity.Property(c => c.Note).HasMaxLength(1000);
+        entity.Property(c => c.CreatedAt).IsRequired();
+
+        entity.HasIndex(c => c.CoupleId);
+        entity.HasIndex(c => c.UserId);
+        entity.HasIndex(c => c.CreatedAt);
+
+        entity
+            .HasOne(c => c.Couple)
+            .WithMany()
+            .HasForeignKey(c => c.CoupleId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        entity
+            .HasOne(c => c.User)
+            .WithMany()
+            .HasForeignKey(c => c.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+    }
+
+    private static void ConfigureImportantDate(ModelBuilder modelBuilder)
+    {
+        var entity = modelBuilder.Entity<ImportantDate>();
+
+        entity.HasKey(d => d.Id);
+        entity.Property(d => d.Title).HasMaxLength(160).IsRequired();
+        entity.Property(d => d.Description).HasMaxLength(1000);
+        entity.Property(d => d.Type).HasMaxLength(50).IsRequired();
+        entity.Property(d => d.Recurrence).HasMaxLength(50).IsRequired();
+        entity.Property(d => d.ReminderEnabled).IsRequired();
+        entity.Property(d => d.ReminderDaysBefore).IsRequired();
+        entity.Property(d => d.IsPrivate).IsRequired();
+        entity.Property(d => d.CreatedAt).IsRequired();
+
+        entity.HasIndex(d => d.CoupleId);
+        entity.HasIndex(d => d.CreatedByUserId);
+
+        entity
+            .HasOne(d => d.Couple)
+            .WithMany()
+            .HasForeignKey(d => d.CoupleId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        entity
+            .HasOne(d => d.CreatedByUser)
+            .WithMany()
+            .HasForeignKey(d => d.CreatedByUserId)
+            .OnDelete(DeleteBehavior.Restrict);
+    }
+
+    private static void ConfigureCoupleGoal(ModelBuilder modelBuilder)
+    {
+        var entity = modelBuilder.Entity<CoupleGoal>();
+
+        entity.HasKey(g => g.Id);
+        entity.Property(g => g.Title).HasMaxLength(200).IsRequired();
+        entity.Property(g => g.Description).HasMaxLength(1000);
+        entity.Property(g => g.Category).HasMaxLength(50).IsRequired();
+        entity.Property(g => g.Status).HasMaxLength(50).IsRequired();
+        entity.Property(g => g.ProgressPercent).IsRequired();
+        entity.Property(g => g.IsPrivate).IsRequired();
+        entity.Property(g => g.CreatedAt).IsRequired();
+
+        entity.HasIndex(g => g.CoupleId);
+        entity.HasIndex(g => g.CreatedByUserId);
+
+        ConfigureCoupleAndCreatorRelationships(
+            entity,
+            g => g.Couple,
+            null,
+            g => g.CoupleId,
+            g => g.CreatedByUser,
+            null,
+            g => g.CreatedByUserId);
+    }
+
+    private static void ConfigureCoupleGoalMilestone(ModelBuilder modelBuilder)
+    {
+        var entity = modelBuilder.Entity<CoupleGoalMilestone>();
+
+        entity.HasKey(m => m.Id);
+        entity.Property(m => m.Title).HasMaxLength(200).IsRequired();
+        entity.Property(m => m.IsCompleted).IsRequired();
+        entity.Property(m => m.CreatedAt).IsRequired();
+
+        entity.HasIndex(m => m.GoalId);
+
+        entity
+            .HasOne(m => m.Goal)
+            .WithMany(g => g.Milestones)
+            .HasForeignKey(m => m.GoalId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -238,6 +238,83 @@
   }
 }
 
+
+// ── Mode Comparison Grid & Cards ──────────────────────────
+.mode-comparison-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    max-width: 450px;
+  }
+}
+
+.mode-card {
+  min-height: 480px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  transition: transform var(--arova-transition-base), border-color var(--arova-transition-base), box-shadow var(--arova-transition-base);
+
+  &.highlighted-card {
+    border-color: rgba(129, 140, 248, 0.35) !important;
+    box-shadow: 0 0 30px rgba(129, 140, 248, 0.12) !important;
+  }
+
+  .mode-badge {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+  }
+
+  .cta-btn {
+    display: block;
+    width: 100%;
+    padding: 12px 20px !important;
+    border-radius: 8px !important;
+    font-size: 0.8rem !important;
+    font-weight: 700 !important;
+    text-align: center;
+    box-sizing: border-box;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+
+    &--local {
+      background: rgba(255, 255, 255, 0.04) !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      color: #dfe0ff !important;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.09) !important;
+        border-color: rgba(255, 255, 255, 0.18) !important;
+      }
+    }
+
+    &--api {
+      background: #10b981 !important;
+      color: #000 !important;
+      border: 1px solid #10b981 !important;
+
+      &:hover {
+        background: #34d399 !important;
+        border-color: #34d399 !important;
+        box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+      }
+    }
+  }
+}
+
+.active-mode-banner {
+  margin-top: -10px;
+  margin-bottom: 24px;
+}
+
 // ── Mobile Responsive ─────────────────────────────────────
 @media (max-width: 768px) {
   .plans-grid {

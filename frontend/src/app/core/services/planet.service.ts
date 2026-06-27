@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { RelationshipPointsService } from './relationship-points.service';
+import { GamificationService } from './gamification.service';
 
 export interface Planet {
   id: string;
@@ -191,7 +191,7 @@ const DAILY_PLANET_KEY = 'arova-daily-planet-state-v1';
 export class PlanetService {
   private dailyState: DailyPlanetState | null = null;
 
-  constructor(private points: RelationshipPointsService) {
+  constructor(private gamification: GamificationService) {
     this.loadState();
   }
 
@@ -278,7 +278,7 @@ export class PlanetService {
     if (allDone && !state.rewardClaimed) {
       state.rewardClaimed = true;
       this.saveState();
-      this.points.rewardPlanetComplete();
+      this.gamification.rewardPlanetComplete();
     }
   }
 }
