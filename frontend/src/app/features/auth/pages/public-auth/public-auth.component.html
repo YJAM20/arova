@@ -157,6 +157,14 @@
             >
               Enter Orbit ✦
             </button>
+
+            <!-- Demo credentials hint -->
+            <div class="demo-wrapper mt-6 text-center">
+              <div class="demo-credentials-block">
+                <span class="creds-label">Local demo credentials</span>
+                <span class="creds-values">owner / 1234 &nbsp;·&nbsp; partner / 1234</span>
+              </div>
+            </div>
           </form>
 
           <!-- Register Form -->
@@ -336,9 +344,9 @@
         </div>
 
         <!-- Local demo CTA link -->
-        <div class="demo-wrapper mt-8 text-center space-y-1">
-          <a routerLink="/auth/login" class="local-demo text-primary font-bold text-sm hover:underline">Continue with local demo</a>
-          <span class="demo-hint text-[10px] text-neutral-400 block">Use owner / 1234 or partner / 1234 in Local Mode.</span>
+        <div class="demo-wrapper mt-8 text-center">
+          <a routerLink="/auth/login" class="local-demo">Continue with local demo →</a>
+          <span class="demo-hint text-[10px] text-neutral-400 block mt-2">Use owner / 1234 or partner / 1234 in Local Mode.</span>
         </div>
 
         <!-- Status Fallbacks -->

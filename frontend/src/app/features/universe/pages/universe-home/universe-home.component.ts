@@ -19,11 +19,12 @@ import { FirstWeekChecklistService } from '../../../../core/services/first-week-
 import { FirstWeekChecklistItem } from '../../../../shared/models/first-week-checklist.model';
 
 import { ArovaStreakHeatmapComponent } from '../../../../shared/components/arova-streak-heatmap/arova-streak-heatmap.component';
+import { ArovaRankBadgeComponent } from '../../../../shared/components/arova-rank-badge/arova-rank-badge.component';
 
 @Component({
   selector: 'app-universe-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, ArovaStreakHeatmapComponent],
+  imports: [CommonModule, RouterModule, ArovaStreakHeatmapComponent, ArovaRankBadgeComponent],
   templateUrl: './universe-home.component.html',
   styleUrls: ['./universe-home.component.scss'],
 })

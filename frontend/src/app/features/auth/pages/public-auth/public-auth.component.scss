@@ -146,12 +146,13 @@
   }
 
   .honest-note {
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
+    border-left: 3px solid var(--arova-accent, #E7A6B6);
+    border-radius: var(--arova-radius-sm, 14px);
     padding: 16px;
     box-sizing: border-box;
-    margin-top: 12px;
+    margin-top: 16px;
   }
 }
 
@@ -167,18 +168,19 @@
 .glass-card {
   width: 100%;
   max-width: 480px;
-  background: var(--arova-surface, rgba(15, 23, 42, 0.6)) !important;
-  backdrop-filter: blur(var(--arova-glass-blur, 24px));
-  -webkit-backdrop-filter: blur(var(--arova-glass-blur, 24px));
-  border: 1px solid var(--arova-border, rgba(255, 255, 255, 0.08)) !important;
-  box-shadow: var(--arova-shadow-soft);
+  background: color-mix(in srgb, #0d1f18 80%, #051424) !important;
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border: 1px solid rgba(231, 166, 182, 0.18) !important;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.04) inset, 0 1px 0 rgba(255, 255, 255, 0.06) inset;
   border-radius: var(--arova-radius-md, 20px);
-  padding: 40px !important;
+  padding: 44px !important;
   box-sizing: border-box;
-  transition: border-color var(--arova-transition-base), box-shadow var(--arova-transition-base);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 
   &:hover {
-    border-color: var(--arova-border-strong, rgba(255, 255, 255, 0.12)) !important;
+    border-color: rgba(231, 166, 182, 0.28) !important;
+    box-shadow: 0 28px 80px rgba(0, 0, 0, 0.55), 0 0 40px rgba(231, 166, 182, 0.06);
   }
 }
 
@@ -186,7 +188,7 @@
 .tabs {
   display: flex;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  margin-bottom: 24px;
+  margin-bottom: 28px;
   width: 100%;
   box-sizing: border-box;
 
@@ -195,24 +197,25 @@
     background: transparent !important;
     border: none !important;
     border-bottom: 2px solid transparent !important;
-    color: rgba(223, 224, 255, 0.4) !important;
+    color: rgba(255, 255, 255, 0.32) !important;
     padding: 12px 16px !important;
-    font-size: 0.75rem !important;
-    font-weight: 600 !important;
+    font-size: 0.72rem !important;
+    font-weight: 700 !important;
     text-transform: uppercase !important;
-    letter-spacing: 0.12em !important;
+    letter-spacing: 0.14em !important;
     cursor: pointer;
     transition: all 0.2s ease !important;
     border-radius: 0 !important;
 
     &:hover:not(.active):not(:disabled) {
-      color: #fff !important;
-      border-bottom-color: rgba(255, 255, 255, 0.2) !important;
+      color: rgba(255, 255, 255, 0.65) !important;
+      border-bottom-color: rgba(231, 166, 182, 0.25) !important;
     }
 
     &.active {
-      color: #dfe0ff !important;
-      border-bottom-color: #dfe0ff !important;
+      color: var(--arova-accent, #E7A6B6) !important;
+      border-bottom-color: var(--arova-accent, #E7A6B6) !important;
+      text-shadow: 0 0 10px rgba(231, 166, 182, 0.35);
     }
   }
 }
@@ -280,33 +283,34 @@
   box-sizing: border-box;
 
   label {
-    font-size: 0.72rem;
-    font-weight: 600;
+    font-size: 0.68rem;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: #dfe0ff;
+    letter-spacing: 0.1em;
+    color: var(--arova-accent, #E7A6B6);
   }
 
   input,
   select {
     width: 100%;
-    background: rgba(5, 20, 36, 0.5) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background: rgba(1, 15, 31, 0.45) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
     color: #fff !important;
-    padding: 12px 16px !important;
-    border-radius: 8px !important;
-    font-size: 0.875rem !important;
+    padding: 13px 16px !important;
+    border-radius: var(--arova-radius-sm, 14px) !important;
+    font-size: 0.9rem !important;
     box-sizing: border-box;
-    transition: border-color var(--arova-transition-fast), box-shadow var(--arova-transition-fast);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 
     &::placeholder {
-      color: rgba(255, 255, 255, 0.22);
+      color: rgba(255, 255, 255, 0.25);
     }
 
     &:focus {
       outline: none !important;
-      border-color: #dfe0ff !important;
-      box-shadow: 0 0 0 3px rgba(223, 224, 255, 0.15) !important;
+      border-color: var(--arova-accent, #E7A6B6) !important;
+      box-shadow: 0 0 0 3px rgba(231, 166, 182, 0.15) !important;
+      background: rgba(1, 15, 31, 0.6) !important;
     }
     
     &:disabled {
@@ -347,20 +351,22 @@
   justify-content: center;
   gap: 8px;
   width: 100%;
-  padding: 14px 24px !important;
-  background: #dfe0ff !important;
-  color: #051424 !important;
-  border: 1px solid #dfe0ff !important;
-  border-radius: 8px !important;
-  font-weight: 700 !important;
+  padding: 15px 24px !important;
+  background: linear-gradient(135deg, var(--arova-accent, #E7A6B6), var(--arova-gold, #D6B76A)) !important;
+  color: #120508 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: var(--arova-radius-sm, 14px) !important;
+  font-weight: 800 !important;
   font-size: 0.875rem !important;
-  box-shadow: 0 4px 15px rgba(129, 140, 248, 0.15);
+  letter-spacing: 0.03em;
+  box-shadow: 0 6px 20px rgba(231, 166, 182, 0.28);
   cursor: pointer;
-  transition: all 0.2s ease-in-out !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
 
   &:hover:not(:disabled) {
-    background: #fff !important;
-    box-shadow: 0 6px 20px rgba(129, 140, 248, 0.25);
+    background: linear-gradient(135deg, #f0c2cd, #e0c888) !important;
+    box-shadow: 0 8px 28px rgba(231, 166, 182, 0.4);
+    transform: translateY(-1px);
   }
 
   &:disabled {
@@ -400,13 +406,39 @@
 // ── Demo Access Area ───────────────────────────────────────
 .demo-wrapper {
   border-top: 1px solid rgba(255, 255, 255, 0.05);
-  padding-top: 16px;
+  padding-top: 20px;
   width: 100%;
+
+  .demo-credentials-block {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(231, 166, 182, 0.15);
+    border-radius: var(--arova-radius-sm, 14px);
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 12px;
+
+    .creds-label {
+      font-size: 0.62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--arova-accent, #E7A6B6);
+    }
+
+    .creds-values {
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      color: var(--arova-gold, #D6B76A);
+      letter-spacing: 0.06em;
+    }
+  }
   
   .local-demo {
-    color: #dfe0ff !important;
+    color: var(--arova-accent, #E7A6B6) !important;
     font-weight: 700;
-    text-shadow: 0 0 10px rgba(223, 224, 255, 0.2);
+    font-size: 0.85rem;
     
     &:hover {
       text-decoration: underline;
