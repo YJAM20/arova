@@ -1,4 +1,3 @@
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using LoveUniverse.Api.Data;
@@ -15,10 +14,8 @@ public class ImportantDatesTests
 {
     private static AppDbContext CreateContext()
     {
-        var connection = new SqliteConnection("Filename=:memory:");
-        connection.Open();
         var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseSqlite(connection)
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;
         var context = new AppDbContext(options);
         context.Database.EnsureCreated();
