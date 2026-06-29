@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using LoveUniverse.Api.Data;
 using LoveUniverse.Api.Entities;
@@ -18,10 +17,8 @@ public class AdminTests
 {
     private static AppDbContext CreateContext()
     {
-        var connection = new SqliteConnection("Filename=:memory:");
-        connection.Open();
         var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseSqlite(connection)
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;
         var context = new AppDbContext(options);
         context.Database.EnsureCreated();

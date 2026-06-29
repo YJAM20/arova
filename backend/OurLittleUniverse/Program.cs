@@ -111,7 +111,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
         ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured.");
 
-    options.UseSqlite(connectionString);
+    options.UseSqlServer(connectionString);
 });
 
 var jwtIssuer = builder.Configuration["JwtSettings:Issuer"]
