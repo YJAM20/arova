@@ -120,7 +120,7 @@ test.describe('Arova Settings Page Flow', () => {
 
     await expect(page.locator('.theme-selector-grid')).toBeVisible();
     // At least several theme options
-    await expect(page.locator('.theme-select-btn')).toHaveCount(20);
+    await expect(page.locator('.theme-select-btn')).toHaveCount(21);
   });
 
   test('default theme "dark-romantic" is selected', async ({ page }) => {
