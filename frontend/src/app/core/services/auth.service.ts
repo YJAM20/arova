@@ -45,8 +45,9 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem(SESSION_KEY);
+    localStorage.removeItem('love-universe-api-token');
     this.currentUserSubject.next(null);
-    this.router.navigate(['/auth/login']);
+    this.router.navigate(['/auth']);
   }
 
   getCurrentUser(): AppUser | null {
