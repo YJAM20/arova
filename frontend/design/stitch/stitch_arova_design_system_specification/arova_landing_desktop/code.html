@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Arova | Celestial Sanctuary</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline-variant": "#544249",
+                    "on-error-container": "#ffdad6",
+                    "on-surface": "#e8def5",
+                    "inverse-on-surface": "#332e3f",
+                    "tertiary": "#cec1de",
+                    "surface-container-high": "#2d2738",
+                    "secondary-fixed-dim": "#e9c254",
+                    "on-secondary-fixed-variant": "#584400",
+                    "on-tertiary-fixed": "#1f182d",
+                    "surface-tint": "#ffafd3",
+                    "secondary": "#e9c254",
+                    "on-primary-fixed-variant": "#85145a",
+                    "surface-dim": "#161120",
+                    "tertiary-fixed-dim": "#cec1de",
+                    "inverse-surface": "#e8def5",
+                    "on-surface-variant": "#dac0c9",
+                    "error": "#ffb4ab",
+                    "surface-container": "#221d2d",
+                    "tertiary-container": "#a69ab6",
+                    "primary-container": "#f472b6",
+                    "background": "#161120",
+                    "on-primary-fixed": "#3d0026",
+                    "on-primary": "#620040",
+                    "tertiary-fixed": "#ebddfb",
+                    "surface": "#161120",
+                    "on-secondary-container": "#352800",
+                    "on-background": "#e8def5",
+                    "surface-variant": "#383243",
+                    "surface-container-highest": "#383243",
+                    "secondary-fixed": "#ffe08d",
+                    "on-tertiary-container": "#3b3249",
+                    "on-tertiary-fixed-variant": "#4c435a",
+                    "inverse-primary": "#a43073",
+                    "primary": "#ffafd3",
+                    "on-error": "#690005",
+                    "surface-bright": "#3c3648",
+                    "primary-fixed": "#ffd8e7",
+                    "on-secondary-fixed": "#241a00",
+                    "error-container": "#93000a",
+                    "surface-container-low": "#1e1929",
+                    "outline": "#a28a93",
+                    "primary-fixed-dim": "#ffafd3",
+                    "on-primary-container": "#6d0047",
+                    "on-secondary": "#3d2f00",
+                    "surface-container-lowest": "#100c1b",
+                    "secondary-container": "#ae8d21",
+                    "on-tertiary": "#352c43"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "gutter": "24px",
+                    "stack-sm": "8px",
+                    "stack-xl": "64px",
+                    "stack-lg": "32px",
+                    "margin-desktop": "64px",
+                    "stack-md": "16px",
+                    "container-max": "1440px"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": ["Playfair Display"],
+                    "display-lg-mobile": ["Playfair Display"],
+                    "label-sm": ["Inter"],
+                    "label-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-md": ["Playfair Display"],
+                    "display-lg": ["Playfair Display"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Playfair Display"]
+            },
+            "fontSize": {
+                    "headline-lg-mobile": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "display-lg-mobile": ["40px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "1", "fontWeight": "500"}],
+                    "label-md": ["14px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-md": ["32px", {"lineHeight": "1.3", "fontWeight": "500"}],
+                    "display-lg": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-lg": ["40px", {"lineHeight": "1.2", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #03010b; /* Obsidian Background Base */
+            color: #e8def5;
+            overflow-x: hidden;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(255, 175, 211, 0.3);
+            box-shadow: 0 0 30px rgba(255, 175, 211, 0.1);
+            transform: translateY(-4px);
+        }
+
+        .glow-button {
+            transition: all 0.3s ease;
+        }
+
+        .glow-button:hover {
+            box-shadow: 0 0 20px rgba(244, 114, 182, 0.6);
+        }
+
+        .animated-tagline {
+            background: linear-gradient(90deg, #ffafd3, #e9c254, #ffafd3);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 5s linear infinite;
+        }
+
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+
+        .parchment {
+            background: #fdfaf3;
+            color: #241a00;
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        .parchment::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: url("https://www.transparenttextures.com/patterns/natural-paper.png");
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #03010b;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #ffafd3;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="custom-scrollbar">
+<!-- TopAppBar -->
+<nav class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-desktop py-stack-md bg-white/5 backdrop-blur-xl border-b border-white/10 shadow-[0_0_20px_rgba(255,175,211,0.1)]">
+<div class="flex items-center gap-8">
+<span class="font-headline-lg text-headline-lg font-bold text-primary">Arova</span>
+<div class="hidden md:flex gap-6 items-center">
+<a class="text-primary font-bold border-b-2 border-primary pb-1 font-label-md text-label-md" href="#">Sanctuary</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-300 font-label-md text-label-md" href="#">Nebula</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-300 font-label-md text-label-md" href="#">Moments</a>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4 text-primary">
+<span class="material-symbols-outlined cursor-pointer hover:scale-110 transition-transform">notifications</span>
+<span class="material-symbols-outlined cursor-pointer hover:scale-110 transition-transform">favorite</span>
+<span class="material-symbols-outlined cursor-pointer hover:scale-110 transition-transform">settings</span>
+</div>
+<div class="w-10 h-10 rounded-full overflow-hidden border border-primary/30">
+<img class="w-full h-full object-cover" data-alt="A portrait of a sophisticated couple's shared digital avatar, rendered in a soft-focus cinematic style with warm gold rim lighting against a deep midnight violet background. The style is ultra-premium, mimicking high-end photography for a private social club, with subtle bokeh effects and a serene, intimate expression." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDo6AuYyxQ8hDMjpQziR_NCWJaqDfdr8ARTqJxQf6c7Aa5s8MsY-3cXEFDWCHwESuQp6HBtcWZfoquZSKeW10Es5Aw_AR_yiZ6QlnNcliRs85qBFedsHF3XkSYSBsCgKDw8qvqDf-7foNkbzXCiQsHDy3tD5k2Ovn9o4am3Sbh9WW_QmOtQ76UY34R1IM7WFnfkLMQiyx2dFuZQacu-d4TskplZHZ3kmAJkNMhk-mb7QQMJ2BYH4uU7"/>
+</div>
+</div>
+</nav>
+<main>
+<!-- Hero Section -->
+<section class="relative min-h-screen flex flex-col items-center justify-center pt-24 overflow-hidden">
+
+<div class="relative z-10 text-center px-margin-mobile md:px-margin-desktop">
+<h1 class="font-display-lg text-display-lg-mobile md:text-display-lg mb-4 text-white">
+                    Eternal Connection.
+                </h1>
+<p class="animated-tagline font-headline-md text-headline-md mb-8 max-w-2xl mx-auto">
+                    A private space for two
+                </p>
+<div class="flex flex-col md:flex-row gap-4 justify-center">
+<button class="glow-button px-12 py-4 bg-primary text-on-primary rounded-full font-label-md text-label-md font-bold tracking-widest scale-95 active:scale-90 transition-transform">
+                        INITIALIZE SANCTUARY
+                    </button>
+<button class="px-12 py-4 border border-white/20 text-white rounded-full font-label-md text-label-md hover:bg-white/5 transition-all">
+                        LEARN MORE
+                    </button>
+</div>
+</div>
+<!-- Floating Elemental Icons -->
+<div class="absolute bottom-20 left-1/2 -translate-x-1/2 flex gap-12 text-on-surface-variant/40">
+<span class="material-symbols-outlined text-4xl animate-pulse" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="material-symbols-outlined text-4xl animate-pulse" style="animation-delay: 1s;">explore</span>
+<span class="material-symbols-outlined text-4xl animate-pulse" style="animation-delay: 2s;">auto_stories</span>
+</div>
+</section>
+<!-- The Parchment Protocol -->
+<section class="py-stack-xl px-margin-mobile md:px-margin-desktop grid grid-cols-1 lg:grid-cols-2 gap-gutter items-center">
+<div class="space-y-stack-md">
+<div class="inline-block px-4 py-1 rounded-full bg-secondary/20 text-secondary font-label-md text-label-md border border-secondary/30 mb-4">
+                    THE PARCHMENT PROTOCOL
+                </div>
+<h2 class="font-headline-lg text-headline-lg text-white">
+                    The Art of <span class="italic text-secondary font-serif">Slow Messaging</span>.
+                </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+                    In a world of instant noise, Arova restores the gravity of words. Our specialized letter system uses digital textures to simulate the tactile intimacy of physical letters. Every message is a curated moment, delivered with intentional delay to preserve the excitement of anticipation.
+                </p>
+<a class="inline-flex items-center gap-2 text-secondary font-label-md text-label-md hover:underline group" href="#">
+                    View Letter Archive
+                    <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</a>
+</div>
+<div class="glass-card p-6 rounded-3xl overflow-hidden group">
+<div class="rounded-2xl overflow-hidden h-[500px] relative">
+<img class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" data-alt="A macro close-up photograph of a luxury gold-nibbed fountain pen resting elegantly on a sheet of textured light-cream parchment paper. The lighting is warm and cinematic, coming from a low-angle candle lamp that casts long, romantic shadows. The background is a blurred study filled with old books and celestial maps, evoking a sense of deep history and private luxury." src="https://lh3.googleusercontent.com/aida-public/AB6AXuASI5t11Fns7hn0Xj8Cfh5Hise-_gaswT0p3kcHUVydnMaEWWuYZ4rUO815D_gBAsy3ECrkudfU39ag1dgBqf0MRawxDp60B2M_jylp1bGu5DgrRYxikdMiXQ48EhkYYdxdCyW1uBuvwTruQLc8obV9O4CtPSWh4b4Dns0NAlKA9SUmWUiJDsmw-1Qsig-z7dPtlTEhPNfeoQcKMToun4LYfrVqcGwyZCjuzqbtCf-oVICglPFZAG7m"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
+<div class="absolute bottom-8 left-8 right-8">
+<div class="parchment p-8 rounded-lg transform -rotate-1 shadow-2xl">
+<p class="font-headline-md text-headline-md italic mb-4 opacity-80" style="font-family: 'Playfair Display', serif;">My Dearest...</p>
+<div class="h-px w-full bg-on-secondary/10 mb-4"></div>
+<p class="text-sm text-on-secondary/60">Writing this under the light of the constellation Orion. Every word carries the weight of a thousand whispers...</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Pricing Grid: Celestial Tiers -->
+<section class="py-stack-xl px-margin-mobile md:px-margin-desktop">
+<div class="text-center mb-16">
+<h2 class="font-headline-lg text-headline-lg text-white mb-4">Choose Your Domain</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-xl mx-auto">
+                    Three ways to host your private sanctuary, tailored to your shared needs for security and discovery.
+                </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Card 1: Local Sandbox -->
+<div class="glass-card p-10 rounded-[40px] flex flex-col">
+<span class="material-symbols-outlined text-primary text-5xl mb-6">home_storage</span>
+<h3 class="font-headline-md text-headline-md text-white mb-2">Local Sandbox</h3>
+<p class="text-primary font-bold mb-6 text-2xl">$0 <span class="text-sm font-normal text-on-surface-variant">/ forever</span></p>
+<ul class="space-y-4 mb-10 flex-grow text-on-surface-variant">
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+                            Offline First Storage
+                        </li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+                            Basic Letter Templates
+                        </li>
+<li class="flex items-center gap-3 opacity-40">
+<span class="material-symbols-outlined text-sm">cancel</span>
+                            Cloud Sync
+                        </li>
+</ul>
+<button class="w-full py-4 rounded-2xl border border-white/10 hover:bg-white/5 transition-colors font-label-md text-label-md">
+                        ENTER THE VOID
+                    </button>
+</div>
+<!-- Card 2: Connected Cloud -->
+<div class="glass-card p-10 rounded-[40px] flex flex-col relative border-primary/30 ring-1 ring-primary/20 bg-primary/5">
+<div class="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-primary text-on-primary rounded-full text-xs font-bold tracking-widest">
+                        MOST POPULAR
+                    </div>
+<span class="material-symbols-outlined text-primary text-5xl mb-6">cloud_sync</span>
+<h3 class="font-headline-md text-headline-md text-white mb-2">Connected Cloud</h3>
+<p class="text-primary font-bold mb-6 text-2xl">$12 <span class="text-sm font-normal text-on-surface-variant">/ lunar cycle</span></p>
+<ul class="space-y-4 mb-10 flex-grow text-on-surface-variant">
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+                            End-to-End Encryption
+                        </li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+                            Multi-device Sync
+                        </li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+                            Premium Parchment Styles
+                        </li>
+</ul>
+<button class="w-full py-4 rounded-2xl bg-primary text-on-primary font-bold glow-button font-label-md text-label-md">
+                        SYNC NEBULAS
+                    </button>
+</div>
+<!-- Card 3: Custom Universe -->
+<div class="glass-card p-10 rounded-[40px] flex flex-col">
+<span class="material-symbols-outlined text-primary text-5xl mb-6">public</span>
+<h3 class="font-headline-md text-headline-md text-white mb-2">Custom Universe</h3>
+<p class="text-primary font-bold mb-6 text-2xl">Custom <span class="text-sm font-normal text-on-surface-variant">/ annually</span></p>
+<ul class="space-y-4 mb-10 flex-grow text-on-surface-variant">
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+                            Private Server Hosting
+                        </li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+                            Bespoke UI Themes
+                        </li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+                            Concierge Setup
+                        </li>
+</ul>
+<button class="w-full py-4 rounded-2xl border border-white/10 hover:bg-white/5 transition-colors font-label-md text-label-md">
+                        REQUEST ORBIT
+                    </button>
+</div>
+</div>
+</section>
+<!-- Stats/Visual Break -->
+<section class="py-stack-xl relative">
+<div class="absolute inset-0 z-0">
+
+</div>
+<div class="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-gutter px-margin-desktop text-center">
+<div class="glass-card p-8 rounded-2xl">
+<div class="text-3xl font-bold text-secondary mb-1">540k+</div>
+<div class="text-sm text-on-surface-variant uppercase tracking-widest">Shared Moments</div>
+</div>
+<div class="glass-card p-8 rounded-2xl">
+<div class="text-3xl font-bold text-primary mb-1">E2EE</div>
+<div class="text-sm text-on-surface-variant uppercase tracking-widest">Privacy Protocol</div>
+</div>
+<div class="glass-card p-8 rounded-2xl">
+<div class="text-3xl font-bold text-secondary mb-1">100%</div>
+<div class="text-sm text-on-surface-variant uppercase tracking-widest">Ownership</div>
+</div>
+<div class="glass-card p-8 rounded-2xl">
+<div class="text-3xl font-bold text-primary mb-1">2.4k</div>
+<div class="text-sm text-on-surface-variant uppercase tracking-widest">Active Galaxies</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-stack-md px-margin-desktop flex flex-col md:flex-row justify-between items-center bg-surface-container-lowest border-t border-outline-variant mt-20">
+<div class="flex flex-col gap-2 mb-6 md:mb-0">
+<span class="font-headline-md text-headline-md text-primary">Arova</span>
+<p class="text-on-surface-variant opacity-60 font-label-sm text-label-sm max-w-xs">
+                Your messages are encrypted using client-side E2EE. Even we cannot witness your sanctuary.
+            </p>
+</div>
+<div class="flex flex-col md:flex-row gap-12 items-center">
+<div class="flex gap-8">
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-secondary underline transition-all opacity-80 hover:opacity-100" href="#">Privacy</a>
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-secondary underline transition-all opacity-80 hover:opacity-100" href="#">Terms of Union</a>
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-secondary underline transition-all opacity-80 hover:opacity-100" href="#">Help</a>
+</div>
+<p class="text-secondary font-label-sm text-label-sm">
+                © 2024 Arova Celestial Sanctuary
+            </p>
+</div>
+</footer>
+<!-- FAB for quick entry (Contextual Home) -->
+<button class="fixed bottom-10 right-10 w-16 h-16 bg-primary text-on-primary rounded-full flex items-center justify-center shadow-2xl glow-button z-40 transition-transform active:scale-90">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">add</span>
+</button>
+<script>
+        // Micro-interactions for Glass Cards
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                card.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,175,211,0.05) 0%, rgba(255,255,255,0.03) 70%)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.background = 'rgba(255, 255, 255, 0.03)';
+            });
+        });
+
+        // Sticky Nav Blur Change
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('bg-surface-dim/80');
+            } else {
+                nav.classList.remove('bg-surface-dim/80');
+            }
+        });
+    </script>
+</body></html>

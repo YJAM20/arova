@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+
+<html class="dark" dir="rtl" lang="ar"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AROVA | لوحة تحكم الكون</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed": "#1f182d",
+                    "primary-fixed-dim": "#ffafd3",
+                    "on-tertiary": "#352c43",
+                    "tertiary-fixed": "#ebddfb",
+                    "tertiary-container": "#a69ab6",
+                    "outline": "#a28a93",
+                    "surface-tint": "#ffafd3",
+                    "surface-container-lowest": "#100c1b",
+                    "surface-container-highest": "#383243",
+                    "tertiary-fixed-dim": "#cec1de",
+                    "on-primary-fixed": "#3d0026",
+                    "on-tertiary-fixed-variant": "#4c435a",
+                    "surface-variant": "#383243",
+                    "on-error-container": "#ffdad6",
+                    "on-background": "#e8def5",
+                    "on-surface-variant": "#dac0c9",
+                    "surface-bright": "#3c3648",
+                    "outline-variant": "#544249",
+                    "on-primary-fixed-variant": "#85145a",
+                    "inverse-on-surface": "#332e3f",
+                    "on-surface": "#e8def5",
+                    "surface-container-low": "#1e1929",
+                    "surface-container-high": "#2d2738",
+                    "secondary-fixed": "#ffe08d",
+                    "on-secondary-container": "#352800",
+                    "on-secondary": "#3d2f00",
+                    "surface-container": "#221d2d",
+                    "inverse-surface": "#e8def5",
+                    "primary": "#ffafd3",
+                    "on-error": "#690005",
+                    "inverse-primary": "#a43073",
+                    "surface": "#161120",
+                    "secondary": "#e9c254",
+                    "on-secondary-fixed-variant": "#584400",
+                    "tertiary": "#cec1de",
+                    "on-primary": "#620040",
+                    "error-container": "#93000a",
+                    "secondary-fixed-dim": "#e9c254",
+                    "primary-container": "#f472b6",
+                    "on-secondary-fixed": "#241a00",
+                    "secondary-container": "#ae8d21",
+                    "error": "#ffb4ab",
+                    "on-tertiary-container": "#3b3249",
+                    "on-primary-container": "#6d0047",
+                    "background": "#161120",
+                    "primary-fixed": "#ffd8e7",
+                    "surface-dim": "#161120"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-lg": "32px",
+                    "container-max": "1440px",
+                    "margin-desktop": "64px",
+                    "gutter": "24px",
+                    "stack-sm": "8px",
+                    "margin-mobile": "16px",
+                    "stack-md": "16px",
+                    "stack-xl": "64px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Segoe UI", "Tahoma", "Inter", "sans-serif"],
+                    "display-lg": ["Playfair Display", "serif"],
+                    "label-md": ["Segoe UI", "Tahoma", "Inter", "sans-serif"],
+                    "body-md": ["Segoe UI", "Tahoma", "Inter", "sans-serif"],
+                    "display-lg-mobile": ["Playfair Display", "serif"],
+                    "headline-lg-mobile": ["Playfair Display", "serif"],
+                    "headline-md": ["Playfair Display", "serif"],
+                    "body-lg": ["Segoe UI", "Tahoma", "Inter", "sans-serif"],
+                    "headline-lg": ["Playfair Display", "serif"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "1", "fontWeight": "500"}],
+                    "display-lg": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "display-lg-mobile": ["40px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "headline-md": ["32px", {"lineHeight": "1.3", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-lg": ["40px", {"lineHeight": "1.2", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #03010b;
+            color: #e8def5;
+            overflow-x: hidden;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(255, 175, 211, 0.3);
+            box-shadow: 0 0 40px rgba(255, 175, 211, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .parchment-snippet {
+            background-color: #fdfaf3;
+            background-image: url("https://www.transparenttextures.com/patterns/parchment.png");
+            color: #1a1a1a;
+        }
+
+        .streak-glow {
+            filter: drop-shadow(0 0 8px rgba(255, 175, 211, 0.6));
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #ffafd3;
+            border-radius: 10px;
+        }
+
+        /* Avatar Progress Ring Animation */
+        @keyframes dash {
+            to { stroke-dashoffset: 0; }
+        }
+        .progress-ring-circle {
+            stroke-dasharray: 100 100;
+            stroke-dashoffset: 25;
+            transition: stroke-dashoffset 0.35s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        .rtl-flip {
+            transform: scaleX(-1);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="font-body-md text-body-md min-h-screen">
+<!-- Background Shader Layer -->
+
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/60 backdrop-blur-md border-b border-white/10 shadow-[0_0_20px_rgba(255,175,211,0.1)]">
+<div class="flex justify-between items-center px-margin-mobile py-stack-sm max-w-container-max mx-auto lg:px-margin-desktop">
+<!-- Leading: Avatar & Progress -->
+<div class="flex items-center gap-3">
+<div class="relative w-12 h-12 flex items-center justify-center">
+<svg class="absolute inset-0 w-full h-full" viewbox="0 0 36 36">
+<circle cx="18" cy="18" fill="none" r="16" stroke="rgba(255,255,255,0.1)" stroke-width="2.5"></circle>
+<circle class="progress-ring-circle" cx="18" cy="18" fill="none" r="16" stroke="#ffafd3" stroke-linecap="round" stroke-width="2.5"></circle>
+</svg>
+<img class="w-9 h-9 rounded-full object-cover" data-alt="لوحة فنية سينمائية لامرأة بإضاءة أثيرية" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAA8UVSolNJl8Rs4jqalKxaVqHxgWGc_AsPFINxzA4CdSY3-aW9GRY5en3_IxRORHfSvRf7kfQjfUB9W52-p37J5jmPyRIT2s0xqeRj5rgLEccIbgAyTl08hQCzq-TXMwMHM475kYn9Lo8-Qc-AhrbiS2O09nbBFjXUfwOS_Axfeo-pferYPbRh5CkCVhSB5Uatumf4ZxWjwqzzgluOP58mxVCDEDcu4wwNDYtF2fT8X0HmYN07h54i"/>
+</div>
+<div class="hidden sm:flex flex-col">
+<span class="font-label-md text-label-md text-primary tracking-wider">Soulbound</span>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px] text-secondary">local_fire_department</span>
+<span class="font-bold text-on-surface text-label-md">سلسلة ٤٢ يومًا</span>
+</div>
+</div>
+</div>
+<!-- Brand Logo -->
+<h1 class="font-display-lg-mobile text-display-lg-mobile text-primary tracking-tighter sm:font-display-lg sm:text-display-lg">AROVA</h1>
+<!-- Trailing: Settings -->
+<button class="hover:opacity-80 transition-opacity active:scale-95 duration-200">
+<span class="material-symbols-outlined text-primary text-[28px]" data-icon="settings">settings</span>
+</button>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="pt-24 pb-32 px-margin-mobile max-w-container-max mx-auto lg:px-margin-desktop lg:pt-32">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Bento Column 1: Check-in & Progress -->
+<div class="md:col-span-4 flex flex-col gap-gutter">
+<div class="glass-card rounded-3xl p-6 flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile font-bold">تسجيل الدخول اليوم</h2>
+<span class="material-symbols-outlined text-primary" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</div>
+<div class="flex items-center gap-4 py-4">
+<div class="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-3/4 rounded-full shadow-[0_0_15px_rgba(255,175,211,0.5)]"></div>
+</div>
+<span class="font-label-md text-label-md">٧٥٪</span>
+</div>
+<p class="text-on-surface-variant font-body-md italic text-sm">"الكون بداخلنا. نحن مصنوعون من غبار النجوم."</p>
+<button class="mt-2 w-full py-3 bg-primary text-on-primary rounded-xl font-label-md hover:shadow-[0_0_20px_rgba(255,175,211,0.3)] transition-all">
+                        إتمام الاتصال
+                    </button>
+</div>
+<!-- Shared Goals / Chores -->
+<div class="glass-card rounded-3xl p-6 flex-1">
+<div class="flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-secondary" data-icon="stars">stars</span>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-xl">المهام السماوية</h3>
+</div>
+<ul class="space-y-4">
+<li class="flex items-center justify-between group cursor-pointer">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-fixed-dim" data-icon="radio_button_checked">radio_button_checked</span>
+<span class="text-on-surface/90 line-through decoration-primary/50">تنسيق قائمة تشغيل سماء الليل</span>
+</div>
+</li>
+<li class="flex items-center justify-between group cursor-pointer">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="radio_button_unchecked">radio_button_unchecked</span>
+<span class="text-on-surface/90">تجهيز الملاذ (غرفة المعيشة)</span>
+</div>
+<span class="text-[10px] bg-secondary/10 text-secondary px-2 py-0.5 rounded-full border border-secondary/20">اروفا</span>
+</li>
+<li class="flex items-center justify-between group cursor-pointer">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="radio_button_unchecked">radio_button_unchecked</span>
+<span class="text-on-surface/90">طلب نبيذ سماوي عتيق</span>
+</div>
+<span class="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full border border-primary/20">أنا</span>
+</li>
+</ul>
+</div>
+</div>
+<!-- Bento Column 2: Large Cinematic Element (Playlist) -->
+<div class="md:col-span-8 flex flex-col gap-gutter">
+<div class="glass-card rounded-3xl relative overflow-hidden group min-h-[320px]">
+<div class="absolute inset-0 z-0">
+<div class="w-full h-full bg-cover bg-center opacity-40 group-hover:scale-105 transition-transform duration-[2000ms]" data-alt="تصميم داخلي سينمائي فاخر" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCHdGdC8yN9Q8-N4JO42SLy9Vf1TyEA1_Jdg25nI9MJkDBPheWn3URplkYGnn_pqKbcXGUPvS40lLlDDczQqVxayXeFHRKcdJIqiRC7eoymEhePqiySo-qHKsPjQ3J5HCOSTJ8dZ8TydTKB-vENraLGPVPOebu3ZJ_BFSVjvv2VMRRAdrODpon0MA-MY9JE-0l-OOVlfwf_oNUt0Yr6G4rOyG3-AuS3O1t_om3efr3R37jXFQxN6-sl')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent"></div>
+</div>
+<div class="relative z-10 p-8 flex flex-col h-full justify-between">
+<div class="flex justify-between items-start">
+<div>
+<span class="bg-primary/20 text-primary text-[10px] font-bold tracking-[0.2em] px-3 py-1 rounded-full uppercase border border-primary/20">يتردد صداه الآن</span>
+<h3 class="font-display-lg-mobile text-display-lg-mobile mt-4 leading-tight">ألحان <br/>بين النجوم</h3>
+</div>
+<div class="flex gap-2">
+<button class="p-2 rounded-full border border-white/10 hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined rtl-flip" data-icon="share">share</span>
+</button>
+<button class="p-2 rounded-full border border-white/10 hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+<div class="mt-12 flex flex-col gap-6">
+<div class="flex items-center gap-6">
+<button class="material-symbols-outlined text-on-surface/60 hover:text-primary transition-colors rtl-flip" data-icon="skip_previous">skip_previous</button>
+<button class="w-16 h-16 flex items-center justify-center bg-primary text-on-primary rounded-full shadow-[0_0_30px_rgba(255,175,211,0.4)] hover:scale-105 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[40px] fill-current rtl-flip" data-icon="play_arrow" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+<button class="material-symbols-outlined text-on-surface/60 hover:text-primary transition-colors rtl-flip" data-icon="skip_next">skip_next</button>
+<div class="flex-1 flex flex-col gap-2">
+<div class="flex justify-between text-[11px] font-label-sm text-on-surface-variant flex-row-reverse">
+<span>2:14</span>
+<span>4:32</span>
+</div>
+<div class="h-1 bg-white/10 rounded-full w-full relative overflow-hidden">
+<div class="absolute right-0 h-full bg-primary rounded-full w-[45%]">
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-[0_0_10px_#fff]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Recent Letters Snippet -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-gutter">
+<div class="parchment-snippet rounded-3xl p-6 shadow-xl relative transform rotate-1 hover:rotate-0 transition-transform cursor-pointer">
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-on-surface-variant/40 rtl-flip" data-icon="drafts">drafts</span>
+<span class="font-label-sm text-[10px] text-on-surface-variant/60">١٤ نوفمبر ٢٠٢٣</span>
+</div>
+<h4 class="font-display-lg-mobile text-lg mb-2">عزيزي...</h4>
+<p class="font-serif italic leading-relaxed text-sm line-clamp-3 opacity-80">
+                            النظر إلى النجوم الليلة ذكرني بتلك الأمسية الأولى في الملاذ. الطريقة التي التقط بها الضوء عينيك...
+                        </p>
+<div class="mt-4 flex justify-end">
+<span class="material-symbols-outlined text-primary-fixed-dim text-sm rtl-flip" data-icon="arrow_forward">arrow_forward</span>
+</div>
+</div>
+<div class="glass-card rounded-3xl p-6 flex flex-col justify-center items-center text-center gap-4">
+<div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center border border-primary/20">
+<span class="material-symbols-outlined text-primary" data-icon="add_comment">add_comment</span>
+</div>
+<h4 class="font-label-md text-label-md text-on-surface">كتابة رسالة جديدة</h4>
+<p class="text-on-surface-variant text-xs max-w-[140px]">بعض الأفكار ثمينة جدًا بحيث لا يمكن التعبير عنها بهمسات رقمية.</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Quick Actions Panel -->
+<div class="fixed bottom-24 left-6 flex flex-col gap-3 z-40">
+<button class="w-14 h-14 bg-surface-container-high glass-card rounded-full flex items-center justify-center text-primary hover:text-white transition-all group">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform" data-icon="photo_camera">photo_camera</span>
+</button>
+<button class="w-14 h-14 bg-primary text-on-primary rounded-full flex items-center justify-center shadow-[0_8px_32px_rgba(255,175,211,0.4)] hover:scale-105 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[28px] font-bold" data-icon="add">add</span>
+</button>
+</div>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full h-[80px] z-50 bg-surface/80 backdrop-blur-xl border-t border-white/10 shadow-[0_-4px_24px_rgba(0,0,0,0.5)]">
+<div class="flex justify-around items-center w-full px-4 h-full max-w-container-max mx-auto">
+<!-- Dashboard Active -->
+<a class="flex flex-col items-center justify-center bg-primary-container/20 text-primary rounded-xl p-2 translate-y-[-2px] duration-300" href="#">
+<span class="material-symbols-outlined fill-current" data-icon="dashboard" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-sm text-label-sm mt-1">لوحة القيادة</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 p-2 hover:text-primary-fixed-dim transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="mail">mail</span>
+<span class="font-label-sm text-label-sm mt-1">الرسائل</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 p-2 hover:text-primary-fixed-dim transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="favorite">favorite</span>
+<span class="font-label-sm text-label-sm mt-1">تسجيل</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 p-2 hover:text-primary-fixed-dim transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="stars">stars</span>
+<span class="font-label-sm text-label-sm mt-1">الأهداف</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 p-2 hover:text-primary-fixed-dim transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-sm text-label-sm mt-1">الإعدادات</span>
+</a>
+</div>
+</nav>
+<script>
+        // Micro-interaction for smooth progress ring animation
+        window.addEventListener('DOMContentLoaded', () => {
+            const circle = document.querySelector('.progress-ring-circle');
+            if (circle) {
+                // Animate progress to 75%
+                setTimeout(() => {
+                    circle.style.strokeDashoffset = '25';
+                }, 500);
+            }
+        });
+
+        // Hover effect for glass cards - radial glow follow
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+    </script>
+</body></html>

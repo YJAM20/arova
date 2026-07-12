@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AROVA | Letters Vault</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(22, 17, 32, 0.6);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .parchment-card {
+            background: #fdfaf3;
+            background-image: url('https://www.transparenttextures.com/patterns/felt.png');
+            color: #1f182d;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .parchment-card:hover {
+            transform: translateY(-8px) rotate(1deg);
+        }
+        .wax-seal {
+            background: #93000a;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 0 4px 8px rgba(0,0,0,0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .wax-seal::after {
+            content: 'A';
+            font-family: 'Playfair Display';
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 1.5rem;
+        }
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 5px rgba(244, 114, 182, 0.2); }
+            50% { box-shadow: 0 0 20px rgba(244, 114, 182, 0.5); }
+            100% { box-shadow: 0 0 5px rgba(244, 114, 182, 0.2); }
+        }
+        .active-glow {
+            animation: pulse-glow 3s infinite;
+        }
+        .letter-content {
+            font-family: 'Playfair Display', serif;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed": "#1f182d",
+                    "primary-fixed-dim": "#ffafd3",
+                    "on-tertiary": "#352c43",
+                    "tertiary-fixed": "#ebddfb",
+                    "tertiary-container": "#a69ab6",
+                    "outline": "#a28a93",
+                    "surface-tint": "#ffafd3",
+                    "surface-container-lowest": "#100c1b",
+                    "surface-container-highest": "#383243",
+                    "tertiary-fixed-dim": "#cec1de",
+                    "on-primary-fixed": "#3d0026",
+                    "on-tertiary-fixed-variant": "#4c435a",
+                    "surface-variant": "#383243",
+                    "on-error-container": "#ffdad6",
+                    "on-background": "#e8def5",
+                    "on-surface-variant": "#dac0c9",
+                    "surface-bright": "#3c3648",
+                    "outline-variant": "#544249",
+                    "on-primary-fixed-variant": "#85145a",
+                    "inverse-on-surface": "#332e3f",
+                    "on-surface": "#e8def5",
+                    "surface-container-low": "#1e1929",
+                    "surface-container-high": "#2d2738",
+                    "secondary-fixed": "#ffe08d",
+                    "on-secondary-container": "#352800",
+                    "on-secondary": "#3d2f00",
+                    "surface-container": "#221d2d",
+                    "inverse-surface": "#e8def5",
+                    "primary": "#ffafd3",
+                    "on-error": "#690005",
+                    "inverse-primary": "#a43073",
+                    "surface": "#161120",
+                    "secondary": "#e9c254",
+                    "on-secondary-fixed-variant": "#584400",
+                    "tertiary": "#cec1de",
+                    "on-primary": "#620040",
+                    "error-container": "#93000a",
+                    "secondary-fixed-dim": "#e9c254",
+                    "primary-container": "#f472b6",
+                    "on-secondary-fixed": "#241a00",
+                    "secondary-container": "#ae8d21",
+                    "error": "#ffb4ab",
+                    "on-tertiary-container": "#3b3249",
+                    "on-primary-container": "#6d0047",
+                    "background": "#161120",
+                    "primary-fixed": "#ffd8e7",
+                    "surface-dim": "#161120"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-lg": "32px",
+                    "container-max": "1440px",
+                    "margin-desktop": "64px",
+                    "gutter": "24px",
+                    "stack-sm": "8px",
+                    "margin-mobile": "16px",
+                    "stack-md": "16px",
+                    "stack-xl": "64px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Inter"],
+                    "display-lg": ["Playfair Display"],
+                    "label-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "display-lg-mobile": ["Playfair Display"],
+                    "headline-lg-mobile": ["Playfair Display"],
+                    "headline-md": ["Playfair Display"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Playfair Display"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "1", "fontWeight": "500"}],
+                    "display-lg": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "display-lg-mobile": ["40px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "headline-md": ["32px", {"lineHeight": "1.3", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-lg": ["40px", {"lineHeight": "1.2", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background text-on-background min-h-screen overflow-x-hidden selection:bg-primary/30">
+<!-- Ambient Background Shader -->
+<div class="fixed inset-0 z-0">
+<!-- STITCH_SHADER_START:ANIMATION_2 class="absolute inset-0 w-full h-full opacity-40" -->
+<div class="absolute inset-0 w-full h-full opacity-40" style="display:block;">
+<canvas id="shader-canvas-ANIMATION_2" style="display:block;width:100%;height:100%"></canvas>
+<script>
+(function() {
+  const canvas = document.getElementById('shader-canvas-ANIMATION_2');
+
+  // Sync the WebGL drawing-buffer size with the CSS-driven layout size.
+  // This fires on initial layout and whenever the element is resized.
+  function syncSize() {
+    const w = canvas.clientWidth  || 1280;
+    const h = canvas.clientHeight || 720;
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width  = w;
+      canvas.height = h;
+    }
+  }
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(syncSize).observe(canvas);
+  }
+  syncSize();
+
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) return;
+  const vs = `attribute vec2 a_position;
+varying vec2 v_texCoord;
+void main() {
+  v_texCoord = a_position * 0.5 + 0.5;
+  gl_Position = vec4(a_position, 0.0, 1.0);
+}`;
+  const fs = `precision highp float;
+uniform float u_time;
+uniform vec2 u_resolution;
+
+float noise(vec2 p) {
+    return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
+}
+
+void main() {
+    vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+    vec3 color = vec3(0.01, 0.005, 0.05); // Deep space base
+    
+    // Subtle nebula glow
+    float glow = sin(uv.x * 3.0 + u_time * 0.2) * 0.5 + 0.5;
+    color += vec3(0.95, 0.45, 0.71) * glow * 0.05; // Neon pink hint
+    
+    // Twinkling stars
+    vec2 starPos = uv * 50.0;
+    float n = noise(floor(starPos));
+    if (n > 0.98) {
+        float twink = sin(u_time * (n * 10.0)) * 0.5 + 0.5;
+        color += vec3(1.0) * twink * n;
+    }
+    
+    gl_FragColor = vec4(color, 1.0);
+}`;
+  function cs(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, cs(gl.VERTEX_SHADER, vs));
+  gl.attachShader(prog, cs(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  const pos = gl.getAttribLocation(prog, 'a_position');
+  gl.enableVertexAttribArray(pos);
+  gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+  const uTime = gl.getUniformLocation(prog, 'u_time');
+  const uRes = gl.getUniformLocation(prog, 'u_resolution');
+  const uMouse = gl.getUniformLocation(prog, 'u_mouse');
+
+  // u_mouse is in pixel coordinates matching u_resolution (ShaderToy convention).
+  // Shaders that need normalized coords should use: u_mouse / u_resolution.
+  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+  window.addEventListener('mousemove', (event) => {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width && rect.height) {
+      const nx = (event.clientX - rect.left) / rect.width;
+      const ny = 1.0 - (event.clientY - rect.top) / rect.height;
+      mouse.x = nx * canvas.width;
+      mouse.y = ny * canvas.height;
+    }
+  });
+
+  function render(t) {
+    if (typeof ResizeObserver === 'undefined') syncSize();
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    if (uTime) gl.uniform1f(uTime, t * 0.001);
+    if (uRes) gl.uniform2f(uRes, canvas.width, canvas.height);
+    if (uMouse) gl.uniform2f(uMouse, mouse.x, mouse.y);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    requestAnimationFrame(render);
+  }
+  render(0);
+})();
+</script>
+</div>
+<!-- STITCH_SHADER_END:ANIMATION_2 -->
+</div>
+<!-- Top AppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/60 backdrop-blur-md border-b border-white/10 shadow-[0_0_20px_rgba(255,175,211,0.1)]">
+<div class="flex justify-between items-center px-4 md:px-16 py-4 max-w-7xl mx-auto">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full border-2 border-primary overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A portrait of a sophisticated couple in soft, cinematic lighting, with a warm golden glow highlighting their shared features. The style is premium digital photography with a narrow depth of field and high-end aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIokGycpF7LB7ZcDeTwlKsLjquU8tjDBrwCEfjtjaGO1WQQ7ZvGL3AsaGiEQtxYhp8FV6GA7DJqfbeDdDrig9BDnRh0CIcK-JpP4gQ5Gx8NpF_N2Y5b-dYXs26pqLsd-uuX4W70uaFnRFyLtsQGuP9OQ6tY9_PkSMbfO_UAFdggGKIYiDryTdHlcDKfgsC7FgBuI21KkMHL-ckGAo3Gf3nMwqe1I0LI_VFaNnGnm295fKs4gPId_Fq"/>
+</div>
+<h1 class="font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg text-primary tracking-tighter">AROVA</h1>
+</div>
+<button class="hover:opacity-80 transition-opacity active:scale-95 duration-200">
+<span class="material-symbols-outlined text-primary text-3xl">settings</span>
+</button>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="relative z-10 pt-32 pb-32 px-4 md:px-16 max-w-7xl mx-auto">
+<header class="mb-12">
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-2">Letters Vault</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Your shared sanctuary of whispered words and timeless promises.</p>
+</header>
+<!-- Bento Grid for Letters -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Sealed Letter (Countdown) -->
+<div class="parchment-card rounded-2xl p-8 flex flex-col relative overflow-hidden h-[320px]">
+<div class="flex justify-between items-start mb-6">
+<span class="bg-error-container/20 text-on-error-container px-3 py-1 rounded-full text-label-sm font-label-sm border border-error/30 uppercase tracking-widest">Sealed</span>
+<span class="text-on-tertiary-fixed/60 font-label-sm text-label-sm italic">Oct 24, 2023</span>
+</div>
+<div class="flex-grow flex flex-col justify-center items-center gap-4">
+<div class="wax-seal w-20 h-20 active-glow"></div>
+<div class="text-center">
+<p class="font-label-md text-label-md text-on-tertiary-fixed mb-1 uppercase tracking-tighter">Opens in</p>
+<p class="font-display-lg-mobile text-display-lg-mobile text-on-tertiary-fixed">14:22:05</p>
+</div>
+</div>
+<div class="mt-auto border-t border-on-tertiary-fixed/10 pt-4">
+<p class="font-label-md text-label-md text-on-tertiary-fixed opacity-60">"For our first anniversary..."</p>
+</div>
+</div>
+<!-- Unlocked Letter -->
+<div class="parchment-card rounded-2xl p-8 flex flex-col h-[320px] cursor-pointer" onclick="openLetter('unlocked')">
+<div class="flex justify-between items-start mb-6">
+<span class="bg-secondary/20 text-on-secondary px-3 py-1 rounded-full text-label-sm font-label-sm border border-secondary/30 uppercase tracking-widest">Unlocked</span>
+<span class="text-on-tertiary-fixed/60 font-label-sm text-label-sm italic">Sept 12, 2023</span>
+</div>
+<div class="letter-content flex-grow overflow-hidden">
+<h3 class="text-2xl font-bold mb-4">To my starlight,</h3>
+<p class="text-lg leading-relaxed line-clamp-4">I found myself thinking about that night in Ravello, where the sea seemed to swallow the moon whole. You were wearing that silk scarf, and for a moment...</p>
+</div>
+<div class="mt-auto flex justify-between items-center border-t border-on-tertiary-fixed/10 pt-4">
+<span class="font-label-sm text-label-sm opacity-60">Read by both</span>
+<span class="material-symbols-outlined text-on-tertiary-fixed/40">auto_stories</span>
+</div>
+</div>
+<!-- Private Letter (Passcode Required) -->
+<div class="parchment-card rounded-2xl p-8 flex flex-col h-[320px] relative cursor-pointer group" onclick="showPasscode()">
+<div class="absolute inset-0 bg-surface/10 backdrop-blur-[2px] z-10 transition-opacity group-hover:bg-transparent"></div>
+<div class="flex justify-between items-start mb-6 relative z-20">
+<span class="bg-on-tertiary/20 text-on-tertiary-fixed px-3 py-1 rounded-full text-label-sm font-label-sm border border-on-tertiary/30 uppercase tracking-widest flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">lock</span> Private
+                    </span>
+</div>
+<div class="flex-grow flex flex-col justify-center items-center relative z-20">
+<span class="material-symbols-outlined text-6xl text-on-tertiary-fixed/20 mb-4">visibility_off</span>
+<p class="font-label-md text-label-md text-on-tertiary-fixed">Tap to enter vault</p>
+</div>
+<div class="mt-auto pt-4 relative z-20">
+<p class="font-label-sm text-label-sm text-on-tertiary-fixed/40 italic">A secret for only your eyes.</p>
+</div>
+</div>
+<!-- Draft Letter -->
+<div class="parchment-card rounded-2xl p-8 flex flex-col h-[320px] opacity-90 border-dashed border-2 border-on-tertiary-fixed/20 bg-transparent">
+<div class="flex justify-between items-start mb-6">
+<span class="bg-outline/10 text-on-tertiary-fixed/60 px-3 py-1 rounded-full text-label-sm font-label-sm border border-outline/30 uppercase tracking-widest">Draft</span>
+</div>
+<div class="flex-grow flex flex-col justify-center items-center gap-3">
+<button class="w-14 h-14 rounded-full border border-on-tertiary-fixed/30 flex items-center justify-center hover:bg-on-tertiary-fixed/5 transition-colors">
+<span class="material-symbols-outlined text-on-tertiary-fixed">edit_note</span>
+</button>
+<p class="font-label-md text-label-md text-on-tertiary-fixed">Continue Writing...</p>
+</div>
+</div>
+<!-- Another Unlocked Letter -->
+<div class="parchment-card rounded-2xl p-8 flex flex-col h-[320px]">
+<div class="flex justify-between items-start mb-6">
+<span class="bg-secondary/20 text-on-secondary px-3 py-1 rounded-full text-label-sm font-label-sm border border-secondary/30 uppercase tracking-widest">Unlocked</span>
+<span class="text-on-tertiary-fixed/60 font-label-sm text-label-sm italic">Aug 05, 2023</span>
+</div>
+<div class="letter-content flex-grow">
+<h3 class="text-2xl font-bold mb-4">The Morning Ritual</h3>
+<p class="text-lg leading-relaxed line-clamp-4">The way the light hits the kitchen floor when you're making coffee. It's the small silences that say everything.</p>
+</div>
+<div class="mt-auto border-t border-on-tertiary-fixed/10 pt-4 flex justify-end">
+<span class="material-symbols-outlined text-on-tertiary-fixed/40">favorite</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Passcode Overlay -->
+<div class="fixed inset-0 z-[100] bg-surface/90 backdrop-blur-xl hidden flex flex-col items-center justify-center animate-in fade-in duration-500" id="passcodeOverlay">
+<div class="text-center mb-12">
+<span class="material-symbols-outlined text-primary text-6xl mb-4">lock_open</span>
+<h2 class="font-headline-lg text-headline-lg-mobile text-primary">Identity Verification</h2>
+<p class="font-body-md text-on-surface-variant">Enter your private letter vault passcode.</p>
+</div>
+<div class="grid grid-cols-3 gap-6 max-w-xs w-full">
+<template id="numpad-btn">
+<button class="w-16 h-16 rounded-full glass-panel flex items-center justify-center font-headline-md text-headline-md hover:bg-primary/20 hover:text-primary transition-all active:scale-90"></button>
+</template>
+</div>
+<div class="mt-12 flex gap-4">
+<div class="w-4 h-4 rounded-full border-2 border-primary passcode-dot"></div>
+<div class="w-4 h-4 rounded-full border-2 border-primary passcode-dot"></div>
+<div class="w-4 h-4 rounded-full border-2 border-primary passcode-dot"></div>
+<div class="w-4 h-4 rounded-full border-2 border-primary passcode-dot"></div>
+</div>
+<button class="mt-16 text-on-surface-variant font-label-md text-label-md flex items-center gap-2 hover:text-primary" onclick="hidePasscode()">
+<span class="material-symbols-outlined">close</span> Cancel Access
+        </button>
+</div>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 w-full h-[80px] z-50 bg-surface/80 backdrop-blur-xl border-t border-white/10 shadow-[0_-4px_24px_rgba(0,0,0,0.5)]">
+<div class="flex justify-around items-center w-full h-full px-4 max-w-7xl mx-auto">
+<!-- Dashboard -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant/60 p-2 hover:text-primary-fixed-dim transition-colors group">
+<span class="material-symbols-outlined mb-1 group-active:scale-95 duration-200">dashboard</span>
+<span class="font-label-sm text-label-sm">Dashboard</span>
+</button>
+<!-- Letters (Active) -->
+<button class="flex flex-col items-center justify-center bg-primary-container/20 text-primary rounded-xl p-2 translate-y-[-2px] duration-300">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">mail</span>
+<span class="font-label-sm text-label-sm">Letters</span>
+</button>
+<!-- Check-In -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant/60 p-2 hover:text-primary-fixed-dim transition-colors group">
+<span class="material-symbols-outlined mb-1 group-active:scale-95 duration-200">favorite</span>
+<span class="font-label-sm text-label-sm">Check-In</span>
+</button>
+<!-- Goals -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant/60 p-2 hover:text-primary-fixed-dim transition-colors group">
+<span class="material-symbols-outlined mb-1 group-active:scale-95 duration-200">stars</span>
+<span class="font-label-sm text-label-sm">Goals</span>
+</button>
+<!-- Settings -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant/60 p-2 hover:text-primary-fixed-dim transition-colors group">
+<span class="material-symbols-outlined mb-1 group-active:scale-95 duration-200">settings</span>
+<span class="font-label-sm text-label-sm">Settings</span>
+</button>
+</div>
+</nav>
+<script>
+        // Passcode UI Generation
+        const numpad = document.querySelector('.grid.grid-cols-3');
+        const template = document.getElementById('numpad-btn');
+        const buttons = [1,2,3,4,5,6,7,8,9,'',0,'delete'];
+
+        buttons.forEach(btn => {
+            const clone = template.content.cloneNode(true);
+            const button = clone.querySelector('button');
+            if (btn === 'delete') {
+                button.innerHTML = '<span class="material-symbols-outlined">backspace</span>';
+            } else {
+                button.textContent = btn;
+            }
+            if (btn === '') button.classList.add('opacity-0', 'pointer-events-none');
+            numpad.appendChild(clone);
+        });
+
+        function showPasscode() {
+            document.getElementById('passcodeOverlay').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hidePasscode() {
+            document.getElementById('passcodeOverlay').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Dummy countdown interaction
+        let timeLeft = 14 * 3600 + 22 * 60 + 5;
+        setInterval(() => {
+            timeLeft--;
+            const hours = Math.floor(timeLeft / 3600);
+            const mins = Math.floor((timeLeft % 3600) / 60);
+            const secs = timeLeft % 60;
+            const timerDisplay = document.querySelector('.font-display-lg-mobile');
+            if(timerDisplay) {
+                timerDisplay.textContent = `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+        }, 1000);
+
+        function openLetter(type) {
+            console.log('Opening letter of type:', type);
+        }
+    </script>
+</body></html>

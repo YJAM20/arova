@@ -7,7 +7,7 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   imports: [CommonModule, RouterModule],
   template: `
-    <div class="not-found-page fixed inset-0 flex flex-col items-center justify-center p-6 bg-[#051424] stars-bg z-50">
+    <div class="not-found-page fixed inset-0 flex flex-col items-center justify-center p-6 bg-[#161120] stars-bg z-50">
       <div class="content-card glass max-w-md w-full p-8 text-center space-y-6">
         <div class="visual-wrapper relative w-28 h-28 mx-auto flex items-center justify-center">
           <div class="orbiting-dot absolute inset-0 rounded-full border border-purple-500/20"></div>

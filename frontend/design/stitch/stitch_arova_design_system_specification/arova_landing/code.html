@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AROVA | A Private Sanctuary</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&amp;family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        :root {
+            --obsidian: #03010b;
+        }
+        body {
+            background-color: var(--obsidian);
+            color: #e8def5;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .glass-card:hover {
+            border-color: rgba(255, 175, 211, 0.3);
+            box-shadow: 0 0 40px rgba(255, 175, 211, 0.1);
+            transform: translateY(-4px);
+        }
+        .hero-glow {
+            text-shadow: 0 0 20px rgba(255, 175, 211, 0.4);
+        }
+        .parchment {
+            background: #fdfaf3;
+            color: #241a00;
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.05);
+        }
+        .custom-cursor-glow {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(244, 114, 182, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.3s ease;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed": "#1f182d",
+                    "primary-fixed-dim": "#ffafd3",
+                    "on-tertiary": "#352c43",
+                    "tertiary-fixed": "#ebddfb",
+                    "tertiary-container": "#a69ab6",
+                    "outline": "#a28a93",
+                    "surface-tint": "#ffafd3",
+                    "surface-container-lowest": "#100c1b",
+                    "surface-container-highest": "#383243",
+                    "tertiary-fixed-dim": "#cec1de",
+                    "on-primary-fixed": "#3d0026",
+                    "on-tertiary-fixed-variant": "#4c435a",
+                    "surface-variant": "#383243",
+                    "on-error-container": "#ffdad6",
+                    "on-background": "#e8def5",
+                    "on-surface-variant": "#dac0c9",
+                    "surface-bright": "#3c3648",
+                    "outline-variant": "#544249",
+                    "on-primary-fixed-variant": "#85145a",
+                    "inverse-on-surface": "#332e3f",
+                    "on-surface": "#e8def5",
+                    "surface-container-low": "#1e1929",
+                    "surface-container-high": "#2d2738",
+                    "secondary-fixed": "#ffe08d",
+                    "on-secondary-container": "#352800",
+                    "on-secondary": "#3d2f00",
+                    "surface-container": "#221d2d",
+                    "inverse-surface": "#e8def5",
+                    "primary": "#ffafd3",
+                    "on-error": "#690005",
+                    "inverse-primary": "#a43073",
+                    "surface": "#161120",
+                    "secondary": "#e9c254",
+                    "on-secondary-fixed-variant": "#584400",
+                    "tertiary": "#cec1de",
+                    "on-primary": "#620040",
+                    "error-container": "#93000a",
+                    "secondary-fixed-dim": "#e9c254",
+                    "primary-container": "#f472b6",
+                    "on-secondary-fixed": "#241a00",
+                    "secondary-container": "#ae8d21",
+                    "error": "#ffb4ab",
+                    "on-tertiary-container": "#3b3249",
+                    "on-primary-container": "#6d0047",
+                    "background": "#161120",
+                    "primary-fixed": "#ffd8e7",
+                    "surface-dim": "#161120"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-lg": "32px",
+                    "container-max": "1440px",
+                    "margin-desktop": "64px",
+                    "gutter": "24px",
+                    "stack-sm": "8px",
+                    "margin-mobile": "16px",
+                    "stack-md": "16px",
+                    "stack-xl": "64px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Inter"],
+                    "display-lg": ["Playfair Display"],
+                    "label-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "display-lg-mobile": ["Playfair Display"],
+                    "headline-lg-mobile": ["Playfair Display"],
+                    "headline-md": ["Playfair Display"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Playfair Display"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "1", "fontWeight": "500"}],
+                    "display-lg": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "display-lg-mobile": ["40px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "headline-md": ["32px", {"lineHeight": "1.3", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-lg": ["40px", {"lineHeight": "1.2", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="font-body-md text-on-surface">
+<div class="custom-cursor-glow" id="cursor-glow"></div>
+<!-- Background Shader -->
+<div class="fixed inset-0 z-0 pointer-events-none opacity-40">
+<!-- STITCH_SHADER_START:ANIMATION_2 class="absolute inset-0 w-full h-full" -->
+<div class="absolute inset-0 w-full h-full" style="display:block;">
+<canvas id="shader-canvas-ANIMATION_2" style="display:block;width:100%;height:100%"></canvas>
+<script>
+(function() {
+  const canvas = document.getElementById('shader-canvas-ANIMATION_2');
+
+  // Sync the WebGL drawing-buffer size with the CSS-driven layout size.
+  // This fires on initial layout and whenever the element is resized.
+  function syncSize() {
+    const w = canvas.clientWidth  || 1280;
+    const h = canvas.clientHeight || 720;
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width  = w;
+      canvas.height = h;
+    }
+  }
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(syncSize).observe(canvas);
+  }
+  syncSize();
+
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) return;
+  const vs = `attribute vec2 a_position;
+varying vec2 v_texCoord;
+void main() {
+  v_texCoord = a_position * 0.5 + 0.5;
+  gl_Position = vec4(a_position, 0.0, 1.0);
+}`;
+  const fs = `precision highp float;
+uniform float u_time;
+uniform vec2 u_resolution;
+
+float noise(vec2 p) {
+    return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
+}
+
+void main() {
+    vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+    vec3 color = vec3(0.01, 0.005, 0.05); // Deep space base
+    
+    // Subtle nebula glow
+    float glow = sin(uv.x * 3.0 + u_time * 0.2) * 0.5 + 0.5;
+    color += vec3(0.95, 0.45, 0.71) * glow * 0.05; // Neon pink hint
+    
+    // Twinkling stars
+    vec2 starPos = uv * 50.0;
+    float n = noise(floor(starPos));
+    if (n > 0.98) {
+        float twink = sin(u_time * (n * 10.0)) * 0.5 + 0.5;
+        color += vec3(1.0) * twink * n;
+    }
+    
+    gl_FragColor = vec4(color, 1.0);
+}`;
+  function cs(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, cs(gl.VERTEX_SHADER, vs));
+  gl.attachShader(prog, cs(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  const pos = gl.getAttribLocation(prog, 'a_position');
+  gl.enableVertexAttribArray(pos);
+  gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+  const uTime = gl.getUniformLocation(prog, 'u_time');
+  const uRes = gl.getUniformLocation(prog, 'u_resolution');
+  const uMouse = gl.getUniformLocation(prog, 'u_mouse');
+
+  // u_mouse is in pixel coordinates matching u_resolution (ShaderToy convention).
+  // Shaders that need normalized coords should use: u_mouse / u_resolution.
+  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+  window.addEventListener('mousemove', (event) => {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width && rect.height) {
+      const nx = (event.clientX - rect.left) / rect.width;
+      const ny = 1.0 - (event.clientY - rect.top) / rect.height;
+      mouse.x = nx * canvas.width;
+      mouse.y = ny * canvas.height;
+    }
+  });
+
+  function render(t) {
+    if (typeof ResizeObserver === 'undefined') syncSize();
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    if (uTime) gl.uniform1f(uTime, t * 0.001);
+    if (uRes) gl.uniform2f(uRes, canvas.width, canvas.height);
+    if (uMouse) gl.uniform2f(uMouse, mouse.x, mouse.y);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    requestAnimationFrame(render);
+  }
+  render(0);
+})();
+</script>
+</div>
+<!-- STITCH_SHADER_END:ANIMATION_2 -->
+</div>
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/60 backdrop-blur-md border-b border-white/10 shadow-[0_0_20px_rgba(255,175,211,0.1)]">
+<div class="flex justify-between items-center px-margin-mobile py-stack-sm max-w-container-max mx-auto">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container text-[18px]">favorite</span>
+</div>
+<h1 class="font-display-lg-mobile text-display-lg-mobile text-primary tracking-tighter leading-none">AROVA</h1>
+</div>
+<div class="flex items-center gap-stack-md">
+<button class="material-symbols-outlined text-primary hover:opacity-80 transition-opacity active:scale-95 duration-200">settings</button>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="relative z-10 pt-[120px] pb-stack-xl px-margin-mobile">
+<!-- Hero Section -->
+<section class="max-w-container-max mx-auto text-center mb-stack-xl md:py-stack-xl">
+<div class="inline-flex items-center px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-stack-md">
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-widest">Premium Cinematic Experience</span>
+</div>
+<h2 class="font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg text-primary hero-glow leading-tight mb-stack-md transition-all duration-700 animate-float">
+                A private space <br class="hidden md:block"/> for two
+            </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-[600px] mx-auto opacity-80 mb-stack-lg">
+                Celestial intimacy, woven into digital fabric. Experience a portal designed exclusively for your most meaningful connection.
+            </p>
+<div class="flex flex-col sm:flex-row gap-4 justify-center">
+<button class="bg-primary text-on-primary font-label-md text-label-md px-stack-lg py-4 rounded-xl shadow-[0_0_20px_rgba(255,175,211,0.3)] hover:opacity-90 transition-all active:scale-95">
+                    Enter the Sanctuary
+                </button>
+<button class="border border-white/20 text-on-surface font-label-md text-label-md px-stack-lg py-4 rounded-xl backdrop-blur-md hover:bg-white/5 transition-all active:scale-95">
+                    View Universe Map
+                </button>
+</div>
+</section>
+<!-- Pricing Cards -->
+<section class="max-w-container-max mx-auto grid grid-cols-1 md:grid-cols-3 gap-gutter mb-stack-xl">
+<!-- Local Sandbox -->
+<div class="glass-card rounded-2xl p-stack-lg flex flex-col h-full group">
+<div class="mb-stack-lg">
+<span class="font-label-sm text-label-sm text-secondary-container bg-secondary-container/10 px-3 py-1 rounded-full uppercase tracking-tighter">Private</span>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile mt-4 mb-2">Local Sandbox</h3>
+<p class="text-on-surface-variant/70 font-body-md text-body-md">Self-hosted solitude for absolute sovereignty over your shared data.</p>
+</div>
+<div class="flex-grow space-y-4 mb-stack-lg">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[20px]">verified</span>
+<span class="text-on-surface/80">Offline First Mode</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[20px]">security</span>
+<span class="text-on-surface/80">Local-only Encryption</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[20px]">memory</span>
+<span class="text-on-surface/80">Unlimited Local Storage</span>
+</div>
+</div>
+<div class="mt-auto">
+<div class="mb-stack-md">
+<span class="text-[32px] font-bold text-primary">$0</span>
+<span class="text-on-surface-variant/60">/ forever</span>
+</div>
+<button class="w-full py-4 rounded-xl border border-primary/30 text-primary font-label-md text-label-md hover:bg-primary/5 transition-colors">Start Building</button>
+</div>
+</div>
+<!-- Connected Cloud -->
+<div class="glass-card rounded-2xl p-stack-lg flex flex-col h-full border-primary/30 shadow-[0_0_40px_rgba(255,175,211,0.05)] relative overflow-hidden">
+<div class="absolute top-0 right-0 bg-primary px-4 py-1 rounded-bl-xl font-label-sm text-label-sm text-on-primary">Most Popular</div>
+<div class="mb-stack-lg">
+<span class="font-label-sm text-label-sm text-primary-container bg-primary-container/10 px-3 py-1 rounded-full uppercase tracking-tighter">Synced</span>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile mt-4 mb-2">Connected Cloud</h3>
+<p class="text-on-surface-variant/70 font-body-md text-body-md">Seamless synchronicity across the cosmos, wherever your paths lead.</p>
+</div>
+<div class="flex-grow space-y-4 mb-stack-lg">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[20px]">cloud_sync</span>
+<span class="text-on-surface/80">Real-time Pulse Sync</span>
+</div>
+<div class="flex items-center gap-3" data-weight="fill">
+<span class="material-symbols-outlined text-primary text-[20px]" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="text-on-surface/80">Shared Celestial Gallery</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[20px]">mail</span>
+<span class="text-on-surface/80">Parchment Letter Delivery</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[20px]">stars</span>
+<span class="text-on-surface/80">Advanced Space Themes</span>
+</div>
+</div>
+<div class="mt-auto">
+<div class="mb-stack-md">
+<span class="text-[32px] font-bold text-primary">$12</span>
+<span class="text-on-surface-variant/60">/ month</span>
+</div>
+<button class="w-full py-4 rounded-xl bg-primary text-on-primary font-label-md text-label-md shadow-lg shadow-primary/20 hover:opacity-90 transition-all">Begin Journey</button>
+</div>
+</div>
+<!-- Custom Universe -->
+<div class="glass-card rounded-2xl p-stack-lg flex flex-col h-full">
+<div class="mb-stack-lg">
+<span class="font-label-sm text-label-sm text-secondary-fixed bg-secondary-fixed/10 px-3 py-1 rounded-full uppercase tracking-tighter">Infinite</span>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile mt-4 mb-2">Custom Universe</h3>
+<p class="text-on-surface-variant/70 font-body-md text-body-md">Tailored architecture for couples building a legacy without limits.</p>
+</div>
+<div class="flex-grow space-y-4 mb-stack-lg">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[20px]">hub</span>
+<span class="text-on-surface/80">White-label Domain</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[20px]">palette</span>
+<span class="text-on-surface/80">Full Visual Customization</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[20px]">database</span>
+<span class="text-on-surface/80">Managed Private Node</span>
+</div>
+</div>
+<div class="mt-auto">
+<div class="mb-stack-md">
+<span class="text-[32px] font-bold text-primary">Custom</span>
+</div>
+<button class="w-full py-4 rounded-xl border border-white/20 text-on-surface font-label-md text-label-md hover:bg-white/5 transition-colors">Contact Architects</button>
+</div>
+</div>
+</section>
+<!-- Feature Spotlight: Parchment (Glass vs Parchment Contrast) -->
+<section class="max-w-4xl mx-auto mb-stack-xl">
+<div class="parchment rounded-3xl p-stack-lg md:p-stack-xl flex flex-col md:flex-row gap-8 items-center overflow-hidden rotate-[-1deg] shadow-2xl">
+<div class="flex-1">
+<span class="material-symbols-outlined text-[48px] text-primary-container/40 mb-4">edit_square</span>
+<h4 class="font-display-lg-mobile text-headline-lg-mobile text-[#241a00] mb-4">The Parchment Protocol</h4>
+<p class="font-body-md text-body-md text-[#4c435a] italic mb-6 leading-relaxed">
+                        "In a world of ephemeral bytes, we offer a place for the words that must last. Handwritten in digital ink, stored forever in your private vault."
+                    </p>
+<div class="flex items-center gap-2">
+<div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">ink_pen</span>
+</div>
+<span class="font-label-md text-label-md text-[#241a00]">Proprietary Textural Synthesis</span>
+</div>
+</div>
+<div class="w-full md:w-[300px] h-[300px] relative">
+<img class="w-full h-full object-cover rounded-2xl shadow-lg border-4 border-white/50" data-alt="A macro close-up of a high-quality cream-colored paper texture with a single vintage fountain pen resting on it. The lighting is warm and soft, reminiscent of a candlelit library. The scene is cinematic and evokes a feeling of romantic tradition and private communication, matching the premium sanctuary brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPrWL4TIxh2UKSqKy6fRj7xUGJJ7HZQawCQr8EPNduoGzNvZFtIXOy_3JYDcU_eHc-PqCCAPVTHx_abqv_Vo-6NWxG332DIWtCTsuGAuPzTGqyxMdOyBEfEL5ooZgM_VUnYyv2rDSTp1hXC243r3sIPYxTK231pX9akA9OTg9z3QtUNfytDQvy8aUf0FRwGbFsdxpH4DSh-Wf4oH612cXhYf4KfRwMHoKhwOimoRw0qdffxmgOkk5O"/>
+</div>
+</div>
+</section>
+<!-- Honesty Disclaimer -->
+<footer class="max-w-container-max mx-auto pt-stack-xl pb-stack-lg border-t border-white/10">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-stack-lg items-center text-center md:text-left">
+<div>
+<div class="flex items-center gap-2 justify-center md:justify-start mb-2">
+<span class="material-symbols-outlined text-primary text-[16px]">lock</span>
+<h5 class="font-label-md text-label-md text-primary uppercase">Security Architecture</h5>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant/60 max-w-md">
+                        Every interaction within Arova is secured via End-to-End Encryption (E2EE). We have no mechanical ability to decrypt your letters, images, or shared goals. Your sanctuary belongs solely to the two of you.
+                    </p>
+</div>
+<div class="flex flex-wrap justify-center md:justify-end gap-stack-md text-on-surface-variant/40 font-label-sm text-label-sm">
+<a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-primary transition-colors" href="#">Encryption Audit</a>
+<a class="hover:text-primary transition-colors" href="#">Sovereignty Docs</a>
+<span>© 2024 AROVA CELESTIAL</span>
+</div>
+</div>
+</footer>
+</main>
+<!-- Bottom Nav Shell (Mobile Only Context) -->
+<nav class="md:hidden fixed bottom-0 w-full h-[80px] z-50 bg-surface/80 backdrop-blur-xl border-t border-white/10 shadow-[0_-4px_24px_rgba(0,0,0,0.5)]">
+<div class="flex justify-around items-center w-full px-4 h-full">
+<div class="flex flex-col items-center justify-center bg-primary-container/20 text-primary rounded-xl p-2 translate-y-[-2px] duration-300">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-sm text-label-sm mt-1">Dashboard</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant/60 p-2 hover:text-primary-fixed-dim transition-colors">
+<span class="material-symbols-outlined">mail</span>
+<span class="font-label-sm text-label-sm mt-1">Letters</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant/60 p-2 hover:text-primary-fixed-dim transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+<span class="font-label-sm text-label-sm mt-1">Check-In</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant/60 p-2 hover:text-primary-fixed-dim transition-colors">
+<span class="material-symbols-outlined">stars</span>
+<span class="font-label-sm text-label-sm mt-1">Goals</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant/60 p-2 hover:text-primary-fixed-dim transition-colors">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-sm text-label-sm mt-1">Settings</span>
+</div>
+</div>
+</nav>
+<script>
+        document.addEventListener('mousemove', (e) => {
+            const glow = document.getElementById('cursor-glow');
+            glow.style.left = e.clientX + 'px';
+            glow.style.top = e.clientY + 'px';
+        });
+
+        // Simple visibility effect for cards
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'all 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
+            observer.observe(card);
+        });
+    </script>
+</body></html>

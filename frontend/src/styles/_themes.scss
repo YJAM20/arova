@@ -1,22 +1,22 @@
 :root {
-  --theme-bg: #051424;
-  --theme-surface: #051424;
-  --theme-card: rgba(5, 20, 36, 0.6);
+  --theme-bg: #161120;
+  --theme-surface: #161120;
+  --theme-card: rgba(255, 255, 255, 0.03);
   --theme-border: rgba(255, 255, 255, 0.08);
-  --theme-accent: #dfe0ff;
-  --theme-accent-2: #f6be38;
-  --theme-soft: #dce2fb;
-  --theme-text: #fff8ef;
-  --theme-muted: #b8b8b8;
-  --theme-dim: #8e8e8e;
+  --theme-accent: #ffafd3;
+  --theme-accent-2: #e9c254;
+  --theme-soft: #cec1de;
+  --theme-text: #e8def5;
+  --theme-muted: #dac0c9;
+  --theme-dim: #a28a93;
 
   /* Living Nebula v2 Tokens */
-  --arova-bg-main: #051424;
-  --arova-surface-dim: #051424;
-  --arova-surface-bright: #2c3a4c;
-  --arova-primary: #dfe0ff;
-  --arova-secondary: #f6be38;
-  --arova-tertiary: #dce2fb;
+  --arova-bg-main: #161120;
+  --arova-surface-dim: #161120;
+  --arova-surface-bright: #3c3648;
+  --arova-primary: #ffafd3;
+  --arova-secondary: #e9c254;
+  --arova-tertiary: #cec1de;
   --primary-color: var(--theme-accent);
   --accent-color: var(--theme-accent-2);
   

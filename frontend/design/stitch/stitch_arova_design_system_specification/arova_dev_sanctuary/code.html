@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AROVA | Developer Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;family=Playfair+Display:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(22, 17, 32, 0.7);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            border-color: rgba(255, 175, 211, 0.3);
+            box-shadow: 0 0 20px rgba(255, 175, 211, 0.1);
+        }
+        .status-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(162, 138, 147, 0.2); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(162, 138, 147, 0.4); }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed": "#1f182d",
+                    "primary-fixed-dim": "#ffafd3",
+                    "on-tertiary": "#352c43",
+                    "tertiary-fixed": "#ebddfb",
+                    "tertiary-container": "#a69ab6",
+                    "outline": "#a28a93",
+                    "surface-tint": "#ffafd3",
+                    "surface-container-lowest": "#100c1b",
+                    "surface-container-highest": "#383243",
+                    "tertiary-fixed-dim": "#cec1de",
+                    "on-primary-fixed": "#3d0026",
+                    "on-tertiary-fixed-variant": "#4c435a",
+                    "surface-variant": "#383243",
+                    "on-error-container": "#ffdad6",
+                    "on-background": "#e8def5",
+                    "on-surface-variant": "#dac0c9",
+                    "surface-bright": "#3c3648",
+                    "outline-variant": "#544249",
+                    "on-primary-fixed-variant": "#85145a",
+                    "inverse-on-surface": "#332e3f",
+                    "on-surface": "#e8def5",
+                    "surface-container-low": "#1e1929",
+                    "surface-container-high": "#2d2738",
+                    "secondary-fixed": "#ffe08d",
+                    "on-secondary-container": "#352800",
+                    "on-secondary": "#3d2f00",
+                    "surface-container": "#221d2d",
+                    "inverse-surface": "#e8def5",
+                    "primary": "#ffafd3",
+                    "on-error": "#690005",
+                    "inverse-primary": "#a43073",
+                    "surface": "#161120",
+                    "secondary": "#e9c254",
+                    "on-secondary-fixed-variant": "#584400",
+                    "tertiary": "#cec1de",
+                    "on-primary": "#620040",
+                    "error-container": "#93000a",
+                    "secondary-fixed-dim": "#e9c254",
+                    "primary-container": "#f472b6",
+                    "on-secondary-fixed": "#241a00",
+                    "secondary-container": "#ae8d21",
+                    "error": "#ffb4ab",
+                    "on-tertiary-container": "#3b3249",
+                    "on-primary-container": "#6d0047",
+                    "background": "#161120",
+                    "primary-fixed": "#ffd8e7",
+                    "surface-dim": "#161120"
+            },
+            "spacing": {
+                    "stack-lg": "32px",
+                    "container-max": "1440px",
+                    "margin-desktop": "64px",
+                    "gutter": "24px",
+                    "stack-sm": "8px",
+                    "margin-mobile": "16px",
+                    "stack-md": "16px",
+                    "stack-xl": "64px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Inter"],
+                    "display-lg": ["Playfair Display"],
+                    "label-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "display-lg-mobile": ["Playfair Display"],
+                    "headline-lg-mobile": ["Playfair Display"],
+                    "headline-md": ["Playfair Display"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Playfair Display"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", { "lineHeight": "1", "fontWeight": "500" }],
+                    "display-lg": ["64px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                    "label-md": ["14px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                    "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                    "display-lg-mobile": ["40px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                    "headline-lg-mobile": ["28px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                    "headline-md": ["32px", { "lineHeight": "1.3", "fontWeight": "500" }],
+                    "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                    "headline-lg": ["40px", { "lineHeight": "1.2", "fontWeight": "600" }]
+            }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background text-on-background min-h-screen font-body-md overflow-x-hidden">
+<!-- Background Shader Layer -->
+<div class="fixed inset-0 z-0">
+<!-- STITCH_SHADER_START:ANIMATION_2 class="absolute inset-0 w-full h-full opacity-40" -->
+<div class="absolute inset-0 w-full h-full opacity-40" style="display:block;">
+<canvas id="shader-canvas-ANIMATION_2" style="display:block;width:100%;height:100%"></canvas>
+<script>
+(function() {
+  const canvas = document.getElementById('shader-canvas-ANIMATION_2');
+
+  // Sync the WebGL drawing-buffer size with the CSS-driven layout size.
+  // This fires on initial layout and whenever the element is resized.
+  function syncSize() {
+    const w = canvas.clientWidth  || 1280;
+    const h = canvas.clientHeight || 720;
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width  = w;
+      canvas.height = h;
+    }
+  }
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(syncSize).observe(canvas);
+  }
+  syncSize();
+
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) return;
+  const vs = `attribute vec2 a_position;
+varying vec2 v_texCoord;
+void main() {
+  v_texCoord = a_position * 0.5 + 0.5;
+  gl_Position = vec4(a_position, 0.0, 1.0);
+}`;
+  const fs = `precision highp float;
+uniform float u_time;
+uniform vec2 u_resolution;
+
+float noise(vec2 p) {
+    return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
+}
+
+void main() {
+    vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+    vec3 color = vec3(0.01, 0.005, 0.05); // Deep space base
+    
+    // Subtle nebula glow
+    float glow = sin(uv.x * 3.0 + u_time * 0.2) * 0.5 + 0.5;
+    color += vec3(0.95, 0.45, 0.71) * glow * 0.05; // Neon pink hint
+    
+    // Twinkling stars
+    vec2 starPos = uv * 50.0;
+    float n = noise(floor(starPos));
+    if (n > 0.98) {
+        float twink = sin(u_time * (n * 10.0)) * 0.5 + 0.5;
+        color += vec3(1.0) * twink * n;
+    }
+    
+    gl_FragColor = vec4(color, 1.0);
+}`;
+  function cs(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, cs(gl.VERTEX_SHADER, vs));
+  gl.attachShader(prog, cs(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  const pos = gl.getAttribLocation(prog, 'a_position');
+  gl.enableVertexAttribArray(pos);
+  gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+  const uTime = gl.getUniformLocation(prog, 'u_time');
+  const uRes = gl.getUniformLocation(prog, 'u_resolution');
+  const uMouse = gl.getUniformLocation(prog, 'u_mouse');
+
+  // u_mouse is in pixel coordinates matching u_resolution (ShaderToy convention).
+  // Shaders that need normalized coords should use: u_mouse / u_resolution.
+  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+  window.addEventListener('mousemove', (event) => {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width && rect.height) {
+      const nx = (event.clientX - rect.left) / rect.width;
+      const ny = 1.0 - (event.clientY - rect.top) / rect.height;
+      mouse.x = nx * canvas.width;
+      mouse.y = ny * canvas.height;
+    }
+  });
+
+  function render(t) {
+    if (typeof ResizeObserver === 'undefined') syncSize();
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    if (uTime) gl.uniform1f(uTime, t * 0.001);
+    if (uRes) gl.uniform2f(uRes, canvas.width, canvas.height);
+    if (uMouse) gl.uniform2f(uMouse, mouse.x, mouse.y);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    requestAnimationFrame(render);
+  }
+  render(0);
+})();
+</script>
+</div>
+<!-- STITCH_SHADER_END:ANIMATION_2 -->
+<div class="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background"></div>
+</div>
+<!-- Top AppBar (from Shared Components) -->
+<header class="fixed top-0 w-full z-50 bg-surface/60 backdrop-blur-md border-b border-white/10 shadow-[0_0_20px_rgba(255,175,211,0.1)]">
+<div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-stack-sm max-w-container-max mx-auto">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full border border-primary/30 flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A futuristic professional portrait of a tech administrator in a cinematic, low-light studio environment. The lighting features soft neon pink and gold accents, reflecting the premium obsidian and glass aesthetic of a high-end sanctuary. The mood is focused and sophisticated, matching the ultra-private sanctuary theme." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxQbAyy5I7WPkzjlrKKVIAZyBZ8AqixYWnnntZF5X37pZvrtFbw72PJgHAQ_J9PJy2ZtkhFvTyuoYGyD1zmoFCcNTXXM61yqMQXJh8H5742dHWjRSmPJajzD52ujaEtK27n_ARlGamQi0V7HZ-37PnKsAVyb7WTkWaEjecMt_rtMDiyB6_PLMLSwOemg9lA8G8-7dRcuCAOmnOGtoqQqFVv4xV7E1nsV6xwRVa-8wdAw4aBI6lyOFj"/>
+</div>
+<h1 class="font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg text-primary tracking-tighter">AROVA</h1>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex gap-4">
+<span class="text-primary font-bold font-label-md text-label-md cursor-pointer hover:opacity-80 transition-opacity">DASHBOARD</span>
+<span class="text-on-surface-variant font-label-md text-label-md cursor-pointer hover:opacity-80 transition-opacity">NETWORK</span>
+<span class="text-on-surface-variant font-label-md text-label-md cursor-pointer hover:opacity-80 transition-opacity">SECURITY</span>
+</div>
+<button class="material-symbols-outlined text-primary hover:opacity-80 transition-opacity p-2 active:scale-95 duration-200">settings</button>
+</div>
+</div>
+</header>
+<!-- Main Content Grid -->
+<main class="relative z-10 pt-24 pb-32 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<!-- Welcome Header -->
+<div class="mb-stack-xl flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<span class="text-secondary font-label-md text-label-md tracking-widest uppercase mb-2 block">System Diagnostics</span>
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">Developer Console</h2>
+</div>
+<div class="flex gap-3">
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary-fixed-dim font-label-sm text-label-sm">
+<span class="w-2 h-2 rounded-full bg-primary status-pulse"></span>
+                    PROD-US-EAST-1
+                </div>
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary/10 border border-secondary/20 text-secondary-fixed-dim font-label-sm text-label-sm">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+                    v2.4.8-STABLE
+                </div>
+</div>
+</div>
+<!-- Metric Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter mb-stack-xl">
+<!-- Sessions -->
+<div class="glass-card p-stack-md rounded-xl flex flex-col justify-between h-48 group">
+<div class="flex justify-between items-start">
+<div class="p-2 rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined">group</span>
+</div>
+<span class="text-primary font-label-sm text-label-sm">+12% vs last hr</span>
+</div>
+<div>
+<p class="text-on-surface-variant font-label-md text-label-md uppercase mb-1">Active Sessions</p>
+<h3 class="text-headline-lg-mobile md:text-headline-md font-bold text-on-surface">1,284</h3>
+</div>
+</div>
+<!-- Security Keys -->
+<div class="glass-card p-stack-md rounded-xl flex flex-col justify-between h-48">
+<div class="flex justify-between items-start">
+<div class="p-2 rounded-lg bg-secondary/10 text-secondary">
+<span class="material-symbols-outlined">key</span>
+</div>
+<span class="text-secondary font-label-sm text-label-sm">Rotation Active</span>
+</div>
+<div>
+<p class="text-on-surface-variant font-label-md text-label-md uppercase mb-1">Security Vault</p>
+<h3 class="text-headline-lg-mobile md:text-headline-md font-bold text-on-surface">42 active</h3>
+</div>
+</div>
+<!-- DB Entries -->
+<div class="glass-card p-stack-md rounded-xl flex flex-col justify-between h-48">
+<div class="flex justify-between items-start">
+<div class="p-2 rounded-lg bg-tertiary/10 text-tertiary">
+<span class="material-symbols-outlined">database</span>
+</div>
+<span class="text-on-surface-variant font-label-sm text-label-sm">98.2% Load</span>
+</div>
+<div>
+<p class="text-on-surface-variant font-label-md text-label-md uppercase mb-1">DB Index Entries</p>
+<h3 class="text-headline-lg-mobile md:text-headline-md font-bold text-on-surface">8.4M</h3>
+</div>
+</div>
+<!-- Latency -->
+<div class="glass-card p-stack-md rounded-xl flex flex-col justify-between h-48 border-primary/20">
+<div class="flex justify-between items-start">
+<div class="p-2 rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined">bolt</span>
+</div>
+<span class="text-primary font-label-sm text-label-sm">Optimal</span>
+</div>
+<div>
+<p class="text-on-surface-variant font-label-md text-label-md uppercase mb-1">Avg Latency</p>
+<h3 class="text-headline-lg-mobile md:text-headline-md font-bold text-primary">14ms</h3>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter items-start">
+<!-- Activity Log (Asymmetric Column) -->
+<div class="lg:col-span-2 space-y-gutter">
+<div class="glass-card rounded-2xl overflow-hidden">
+<div class="px-stack-md py-stack-sm border-b border-white/5 bg-white/5 flex justify-between items-center">
+<h4 class="font-label-md text-label-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">history</span>
+                            SYSTEM ACTIVITY LOG
+                        </h4>
+<button class="text-primary font-label-sm text-label-sm hover:underline">View All Logs</button>
+</div>
+<div class="divide-y divide-white/5 max-h-[500px] overflow-y-auto">
+<!-- Log Item 1 -->
+<div class="p-stack-md flex gap-4 hover:bg-white/5 transition-colors">
+<div class="flex flex-col items-center">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<div class="w-px h-full bg-white/10 mt-1"></div>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<span class="font-label-md text-label-md text-on-surface">Cache Synchronization</span>
+<span class="text-[10px] font-mono text-on-surface-variant">12:04:22 PM</span>
+</div>
+<p class="text-sm text-on-surface-variant leading-relaxed">Global CDN edge nodes updated successfully. Propagation completed in 450ms across 12 regions.</p>
+<div class="mt-2 inline-flex items-center gap-2 bg-primary/10 text-primary px-2 py-0.5 rounded text-[11px] font-bold">
+                                    SUCCESS
+                                </div>
+</div>
+</div>
+<!-- Log Item 2 -->
+<div class="p-stack-md flex gap-4 hover:bg-white/5 transition-colors">
+<div class="flex flex-col items-center">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">warning</span>
+<div class="w-px h-full bg-white/10 mt-1"></div>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<span class="font-label-md text-label-md text-on-surface">Memory Threshold Warning</span>
+<span class="text-[10px] font-mono text-on-surface-variant">11:58:45 AM</span>
+</div>
+<p class="text-sm text-on-surface-variant leading-relaxed">Redis instance 'ALPHA-SECURE' reaching 85% capacity. Automatic eviction policy engaged.</p>
+<div class="mt-2 inline-flex items-center gap-2 bg-secondary/10 text-secondary px-2 py-0.5 rounded text-[11px] font-bold">
+                                    WARNING
+                                </div>
+</div>
+</div>
+<!-- Log Item 3 -->
+<div class="p-stack-md flex gap-4 hover:bg-white/5 transition-colors">
+<div class="flex flex-col items-center">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<span class="font-label-md text-label-md text-on-surface">Payment Sandbox Initialized</span>
+<span class="text-[10px] font-mono text-on-surface-variant">11:30:12 AM</span>
+</div>
+<p class="text-sm text-on-surface-variant leading-relaxed">Merchant testing environment reset. Transaction routing confirmed for simulated partners.</p>
+<div class="mt-2 inline-flex items-center gap-2 bg-primary/10 text-primary px-2 py-0.5 rounded text-[11px] font-bold">
+                                    SUCCESS
+                                </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Actions (Side Column) -->
+<div class="space-y-gutter">
+<div class="glass-card rounded-2xl p-stack-md">
+<h4 class="font-label-md text-label-md text-on-surface mb-stack-md flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">bolt</span>
+                        QUICK ACTIONS
+                    </h4>
+<div class="space-y-3">
+<!-- Purge Cache -->
+<button class="w-full group relative overflow-hidden bg-white/5 hover:bg-primary transition-all duration-300 p-4 rounded-xl text-left border border-white/10 flex items-center justify-between">
+<div>
+<p class="font-bold text-on-surface group-hover:text-on-primary transition-colors">Purge Cache</p>
+<p class="text-xs text-on-surface-variant group-hover:text-on-primary/70 transition-colors">Invalidate all global CDNs</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-on-primary">layers_clear</span>
+</button>
+<!-- Simulate Latency -->
+<button class="w-full group relative overflow-hidden bg-white/5 hover:bg-secondary transition-all duration-300 p-4 rounded-xl text-left border border-white/10 flex items-center justify-between">
+<div>
+<p class="font-bold text-on-surface group-hover:text-on-secondary transition-colors">Simulate Latency</p>
+<p class="text-xs text-on-surface-variant group-hover:text-on-secondary/70 transition-colors">Inject +200ms into API stack</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-on-secondary">hourglass_empty</span>
+</button>
+<!-- Sandbox Payments -->
+<button class="w-full group relative overflow-hidden bg-white/5 hover:bg-tertiary transition-all duration-300 p-4 rounded-xl text-left border border-white/10 flex items-center justify-between">
+<div>
+<p class="font-bold text-on-surface group-hover:text-on-tertiary transition-colors">Sandbox Payments</p>
+<p class="text-xs text-on-surface-variant group-hover:text-on-tertiary/70 transition-colors">Force checkout to debug env</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-on-tertiary">account_balance_wallet</span>
+</button>
+</div>
+</div>
+<!-- Database Status Mini Card -->
+<div class="glass-card rounded-2xl p-stack-md overflow-hidden relative">
+<div class="relative z-10">
+<p class="text-xs text-on-surface-variant font-label-sm mb-4">DB STORAGE QUOTA</p>
+<div class="w-full h-1 bg-white/10 rounded-full mb-2">
+<div class="w-[74%] h-full bg-primary rounded-full"></div>
+</div>
+<div class="flex justify-between text-[10px] font-mono">
+<span>14.8 GB USED</span>
+<span>20 GB TOTAL</span>
+</div>
+</div>
+<div class="absolute -right-4 -bottom-4 opacity-5 rotate-12">
+<span class="material-symbols-outlined text-8xl">database</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation (from Shared Components) -->
+<nav class="fixed bottom-0 w-full h-[80px] z-50 bg-surface/80 backdrop-blur-xl border-t border-white/10 shadow-[0_-4px_24px_rgba(0,0,0,0.5)]">
+<div class="flex justify-around items-center w-full px-4 h-full max-w-container-max mx-auto">
+<!-- Dashboard (Active) -->
+<a class="flex flex-col items-center justify-center bg-primary-container/20 text-primary rounded-xl p-2 translate-y-[-2px] duration-300" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-sm text-label-sm">Dashboard</span>
+</a>
+<!-- Letters -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 p-2 hover:text-primary-fixed-dim transition-colors" href="#">
+<span class="material-symbols-outlined">mail</span>
+<span class="font-label-sm text-label-sm">Letters</span>
+</a>
+<!-- Check-In -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 p-2 hover:text-primary-fixed-dim transition-colors" href="#">
+<span class="material-symbols-outlined">favorite</span>
+<span class="font-label-sm text-label-sm">Check-In</span>
+</a>
+<!-- Goals -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 p-2 hover:text-primary-fixed-dim transition-colors" href="#">
+<span class="material-symbols-outlined">stars</span>
+<span class="font-label-sm text-label-sm">Goals</span>
+</a>
+<!-- Settings -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 p-2 hover:text-primary-fixed-dim transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-sm text-label-sm">Settings</span>
+</a>
+</div>
+</nav>
+<!-- Micro-interaction Scripts -->
+<script>
+        // Simple radial gradient follow effect for cards
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+                card.style.background = `radial-gradient(400px circle at ${x}px ${y}px, rgba(255, 175, 211, 0.05), transparent 80%), rgba(22, 17, 32, 0.7)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.background = 'rgba(22, 17, 32, 0.7)';
+            });
+        });
+
+        // Toggle animation simulation for "Quick Actions"
+        const actionButtons = document.querySelectorAll('.quick-action');
+        actionButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.classList.add('scale-95');
+                setTimeout(() => this.classList.remove('scale-95'), 150);
+            });
+        });
+    </script>
+</body></html>

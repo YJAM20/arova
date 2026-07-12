@@ -67,10 +67,10 @@ input, textarea {
   position: relative;
   overflow-x: hidden;
   background: 
-    radial-gradient(circle at 20% 30%, color-mix(in srgb, var(--theme-accent, #dfe0ff) 32%, transparent) 0%, transparent 60%),
-    radial-gradient(circle at 80% 70%, color-mix(in srgb, var(--theme-accent-2, #f6be38) 24%, transparent) 0%, transparent 55%),
-    radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--theme-soft, #dce2fb) 20%, transparent) 0%, transparent 65%),
-    var(--theme-bg, #051424) !important;
+    radial-gradient(circle at 20% 30%, color-mix(in srgb, var(--theme-accent, #ffafd3) 32%, transparent) 0%, transparent 60%),
+    radial-gradient(circle at 80% 70%, color-mix(in srgb, var(--theme-accent-2, #e9c254) 24%, transparent) 0%, transparent 55%),
+    radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--theme-soft, #cec1de) 20%, transparent) 0%, transparent 65%),
+    var(--theme-bg, #161120) !important;
   background-size: 200% 200% !important;
   animation: meshBreathing 25s ease-in-out infinite !important;
 

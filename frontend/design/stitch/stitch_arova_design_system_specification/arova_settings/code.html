@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Arova | Settings Panel</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed": "#1f182d",
+                    "primary-fixed-dim": "#ffafd3",
+                    "on-tertiary": "#352c43",
+                    "tertiary-fixed": "#ebddfb",
+                    "tertiary-container": "#a69ab6",
+                    "outline": "#a28a93",
+                    "surface-tint": "#ffafd3",
+                    "surface-container-lowest": "#100c1b",
+                    "surface-container-highest": "#383243",
+                    "tertiary-fixed-dim": "#cec1de",
+                    "on-primary-fixed": "#3d0026",
+                    "on-tertiary-fixed-variant": "#4c435a",
+                    "surface-variant": "#383243",
+                    "on-error-container": "#ffdad6",
+                    "on-background": "#e8def5",
+                    "on-surface-variant": "#dac0c9",
+                    "surface-bright": "#3c3648",
+                    "outline-variant": "#544249",
+                    "on-primary-fixed-variant": "#85145a",
+                    "inverse-on-surface": "#332e3f",
+                    "on-surface": "#e8def5",
+                    "surface-container-low": "#1e1929",
+                    "surface-container-high": "#2d2738",
+                    "secondary-fixed": "#ffe08d",
+                    "on-secondary-container": "#352800",
+                    "on-secondary": "#3d2f00",
+                    "surface-container": "#221d2d",
+                    "inverse-surface": "#e8def5",
+                    "primary": "#ffafd3",
+                    "on-error": "#690005",
+                    "inverse-primary": "#a43073",
+                    "surface": "#161120",
+                    "secondary": "#e9c254",
+                    "on-secondary-fixed-variant": "#584400",
+                    "tertiary": "#cec1de",
+                    "on-primary": "#620040",
+                    "error-container": "#93000a",
+                    "secondary-fixed-dim": "#e9c254",
+                    "primary-container": "#f472b6",
+                    "on-secondary-fixed": "#241a00",
+                    "secondary-container": "#ae8d21",
+                    "error": "#ffb4ab",
+                    "on-tertiary-container": "#3b3249",
+                    "on-primary-container": "#6d0047",
+                    "background": "#161120",
+                    "primary-fixed": "#ffd8e7",
+                    "surface-dim": "#161120"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-lg": "32px",
+                    "container-max": "1440px",
+                    "margin-desktop": "64px",
+                    "gutter": "24px",
+                    "stack-sm": "8px",
+                    "margin-mobile": "16px",
+                    "stack-md": "16px",
+                    "stack-xl": "64px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Inter"],
+                    "display-lg": ["Playfair Display"],
+                    "label-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "display-lg-mobile": ["Playfair Display"],
+                    "headline-lg-mobile": ["Playfair Display"],
+                    "headline-md": ["Playfair Display"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Playfair Display"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "1", "fontWeight": "500"}],
+                    "display-lg": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "display-lg-mobile": ["40px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "headline-md": ["32px", {"lineHeight": "1.3", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-lg": ["40px", {"lineHeight": "1.2", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #03010b;
+            color: #e8def5;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            border-color: rgba(255, 175, 211, 0.3);
+            box-shadow: 0 0 30px rgba(255, 175, 211, 0.05);
+        }
+        .glow-button:hover {
+            box-shadow: 0 0 20px rgba(255, 175, 211, 0.4);
+        }
+        /* Custom Toggle Styling */
+        .toggle-switch {
+            width: 44px;
+            height: 24px;
+            background: #383243;
+            border-radius: 9999px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+        .toggle-active .toggle-switch {
+            background: #ffafd3;
+        }
+        .toggle-active .toggle-switch::after {
+            transform: translateX(20px);
+        }
+        .theme-swatch-active {
+            border: 2px solid #ffafd3 ! from-primary;
+        }
+        [dir="rtl"] {
+            text-align: right;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-body-md text-body-md">
+<!-- Background Shader -->
+<!-- STITCH_SHADER_START:ANIMATION_2 class="fixed inset-0 w-full h-full -z-10 opacity-40" -->
+<div class="fixed inset-0 w-full h-full -z-10 opacity-40" style="display:block;">
+<canvas id="shader-canvas-ANIMATION_2" style="display:block;width:100%;height:100%"></canvas>
+<script>
+(function() {
+  const canvas = document.getElementById('shader-canvas-ANIMATION_2');
+
+  // Sync the WebGL drawing-buffer size with the CSS-driven layout size.
+  // This fires on initial layout and whenever the element is resized.
+  function syncSize() {
+    const w = canvas.clientWidth  || 1280;
+    const h = canvas.clientHeight || 720;
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width  = w;
+      canvas.height = h;
+    }
+  }
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(syncSize).observe(canvas);
+  }
+  syncSize();
+
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) return;
+  const vs = `attribute vec2 a_position;
+varying vec2 v_texCoord;
+void main() {
+  v_texCoord = a_position * 0.5 + 0.5;
+  gl_Position = vec4(a_position, 0.0, 1.0);
+}`;
+  const fs = `precision highp float;
+uniform float u_time;
+uniform vec2 u_resolution;
+
+float noise(vec2 p) {
+    return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
+}
+
+void main() {
+    vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+    vec3 color = vec3(0.01, 0.005, 0.05); // Deep space base
+    
+    // Subtle nebula glow
+    float glow = sin(uv.x * 3.0 + u_time * 0.2) * 0.5 + 0.5;
+    color += vec3(0.95, 0.45, 0.71) * glow * 0.05; // Neon pink hint
+    
+    // Twinkling stars
+    vec2 starPos = uv * 50.0;
+    float n = noise(floor(starPos));
+    if (n > 0.98) {
+        float twink = sin(u_time * (n * 10.0)) * 0.5 + 0.5;
+        color += vec3(1.0) * twink * n;
+    }
+    
+    gl_FragColor = vec4(color, 1.0);
+}`;
+  function cs(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, cs(gl.VERTEX_SHADER, vs));
+  gl.attachShader(prog, cs(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  const pos = gl.getAttribLocation(prog, 'a_position');
+  gl.enableVertexAttribArray(pos);
+  gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+  const uTime = gl.getUniformLocation(prog, 'u_time');
+  const uRes = gl.getUniformLocation(prog, 'u_resolution');
+  const uMouse = gl.getUniformLocation(prog, 'u_mouse');
+
+  // u_mouse is in pixel coordinates matching u_resolution (ShaderToy convention).
+  // Shaders that need normalized coords should use: u_mouse / u_resolution.
+  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+  window.addEventListener('mousemove', (event) => {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width && rect.height) {
+      const nx = (event.clientX - rect.left) / rect.width;
+      const ny = 1.0 - (event.clientY - rect.top) / rect.height;
+      mouse.x = nx * canvas.width;
+      mouse.y = ny * canvas.height;
+    }
+  });
+
+  function render(t) {
+    if (typeof ResizeObserver === 'undefined') syncSize();
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    if (uTime) gl.uniform1f(uTime, t * 0.001);
+    if (uRes) gl.uniform2f(uRes, canvas.width, canvas.height);
+    if (uMouse) gl.uniform2f(uMouse, mouse.x, mouse.y);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    requestAnimationFrame(render);
+  }
+  render(0);
+})();
+</script>
+</div>
+<!-- STITCH_SHADER_END:ANIMATION_2 -->
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/60 backdrop-blur-md border-b border-white/10 shadow-[0_0_20px_rgba(255,175,211,0.1)]">
+<div class="flex justify-between items-center px-margin-mobile py-stack-sm max-w-container-max mx-auto md:px-margin-desktop">
+<div class="flex items-center gap-stack-md">
+<div class="w-10 h-10 rounded-full border border-primary/30 flex items-center justify-center overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="A sophisticated close-up portrait of an elegant user with a warm smile, set against a blurred cinematic background with soft pink and gold light leaks. The style is ultra-premium digital photography with deep contrast and a sense of exclusivity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBj25xqfFHAgiuS8gGhdAbE85uogGIPVIoRjVJDF5HJ47dYKlrkx2SGn_p9Ap4FbcMAl6lLt43pSAQ0Fh6b50xu0monfUbE81D-VEAawxAPH_zCpQR35fVDk-ooD2O2R7jAgdFpKt8AmIdZ_xj962qO72IYgTkZPG4o1sLaT9eGPhxjz2wWiPKT2nyhpBQLheT5Z2WXhCCz5zQ670GbVn8QTZf6aMnUaJTQrY1ix2UDSwHCBYXZSVU7"/>
+</div>
+<h1 class="font-display-lg-mobile text-display-lg-mobile text-primary tracking-tighter md:font-display-lg md:text-display-lg">AROVA</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-primary hover:opacity-80 transition-opacity active:scale-95 duration-200">settings</button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-32 pb-32 px-margin-mobile md:px-margin-desktop max-w-5xl mx-auto w-full">
+<header class="mb-stack-lg">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface md:font-headline-lg md:text-headline-lg">Settings</h2>
+<p class="text-on-surface-variant font-body-md mt-2">Personalize your celestial sanctuary experience.</p>
+</header>
+<!-- Tab Navigation -->
+<div class="flex gap-stack-md mb-stack-lg overflow-x-auto pb-2 no-scrollbar">
+<button class="px-6 py-2 rounded-full font-label-md text-label-md transition-all glass-card bg-primary-container/20 text-primary border-primary/30" id="tab-general" onclick="switchTab('general')">General</button>
+<button class="px-6 py-2 rounded-full font-label-md text-label-md transition-all text-on-surface-variant hover:text-primary" id="tab-appearance" onclick="switchTab('appearance')">Appearance</button>
+<button class="px-6 py-2 rounded-full font-label-md text-label-md transition-all text-on-surface-variant hover:text-primary" id="tab-partner" onclick="switchTab('partner')">Partner</button>
+</div>
+<!-- Panels Container -->
+<div id="panels">
+<!-- Appearance Tab Content (Active by default for visual task) -->
+<section class="space-y-stack-lg" id="panel-appearance">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Theme Swatches -->
+<div class="md:col-span-3">
+<h3 class="font-label-md text-label-md text-primary uppercase tracking-widest mb-4">Celestial Themes</h3>
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-gutter">
+<!-- Swatch 1 -->
+<div class="glass-card p-4 rounded-xl cursor-pointer theme-swatch-active" onclick="selectSwatch(this)">
+<div class="h-32 rounded-lg mb-4 bg-gradient-to-br from-purple-900 via-pink-900 to-black overflow-hidden relative">
+<div class="absolute inset-0 opacity-40 mix-blend-screen bg-[radial-gradient(circle_at_50%_50%,_rgba(255,175,211,0.5),transparent)]"></div>
+</div>
+<span class="font-label-md text-label-md block text-center">Living Nebula</span>
+</div>
+<!-- Swatch 2 -->
+<div class="glass-card p-4 rounded-xl cursor-pointer" onclick="selectSwatch(this)">
+<div class="h-32 rounded-lg mb-4 bg-gradient-to-br from-red-950 via-black to-red-900 overflow-hidden relative">
+<div class="absolute inset-0 opacity-30 bg-[url('https://www.transparenttextures.com/patterns/dust.png')]"></div>
+</div>
+<span class="font-label-md text-label-md block text-center">Dark Romantic</span>
+</div>
+<!-- Swatch 3 -->
+<div class="glass-card p-4 rounded-xl cursor-pointer" onclick="selectSwatch(this)">
+<div class="h-32 rounded-lg mb-4 bg-gradient-to-br from-blue-950 via-black to-slate-900 overflow-hidden relative">
+<div class="absolute inset-0 opacity-50 bg-[radial-gradient(1px_1px_at_20px_30px,white,transparent)] bg-[length:40px_40px]"></div>
+</div>
+<span class="font-label-md text-label-md block text-center">Midnight Stars</span>
+</div>
+</div>
+</div>
+<!-- Language & Localization -->
+<div class="glass-card p-stack-md rounded-2xl flex flex-col justify-between">
+<div>
+<h3 class="font-label-md text-label-md text-primary uppercase mb-2">Language</h3>
+<p class="text-label-sm text-on-surface-variant mb-4">Choose your preferred dialect.</p>
+</div>
+<div class="space-y-3">
+<button class="w-full text-left p-3 rounded-lg flex items-center justify-between bg-surface-container hover:bg-surface-container-high transition-colors border border-white/5" onclick="setLanguage('en')">
+<span>English</span>
+<span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+</button>
+<button class="w-full text-left p-3 rounded-lg flex items-center justify-between hover:bg-surface-container-high transition-colors border border-white/5" onclick="setLanguage('ar')">
+<span dir="rtl">العربية</span>
+<span class="material-symbols-outlined text-on-surface-variant/20 text-sm">circle</span>
+</button>
+<button class="w-full text-left p-3 rounded-lg flex items-center justify-between hover:bg-surface-container-high transition-colors border border-white/5" onclick="setLanguage('es')">
+<span>Español</span>
+<span class="material-symbols-outlined text-on-surface-variant/20 text-sm">circle</span>
+</button>
+</div>
+</div>
+<!-- App Mode Swapper -->
+<div class="glass-card p-stack-md rounded-2xl flex flex-col justify-between">
+<div>
+<h3 class="font-label-md text-label-md text-primary uppercase mb-2">System Core</h3>
+<p class="text-label-sm text-on-surface-variant mb-4">Toggle between local data and live API sync.</p>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface-container rounded-xl border border-white/5">
+<div class="flex flex-col">
+<span class="font-label-md" id="mode-label">Local Engine</span>
+<span class="text-[10px] text-on-surface-variant opacity-60">Optimized Performance</span>
+</div>
+<div class="toggle-container" onclick="toggleMode(this)">
+<div class="toggle-switch"></div>
+</div>
+</div>
+</div>
+<!-- Motion Preference -->
+<div class="glass-card p-stack-md rounded-2xl flex flex-col justify-between">
+<div>
+<h3 class="font-label-md text-label-md text-primary uppercase mb-2">Atmoshere</h3>
+<p class="text-label-sm text-on-surface-variant mb-4">Control environmental motion intensity.</p>
+</div>
+<div class="space-y-4">
+<input class="w-full accent-primary h-1 bg-surface-container rounded-lg appearance-none cursor-pointer" type="range"/>
+<div class="flex justify-between text-[10px] uppercase tracking-tighter text-on-surface-variant">
+<span>Static</span>
+<span>Cinematic</span>
+<span>Dynamic</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- General Tab (Hidden) -->
+<section class="hidden glass-card p-stack-lg rounded-2xl" id="panel-general">
+<h3 class="font-headline-md text-headline-md mb-4">General Settings</h3>
+<div class="space-y-6">
+<div class="flex justify-between items-center py-4 border-b border-white/5">
+<label class="font-label-md">Notifications</label>
+<div class="toggle-container toggle-active" onclick="toggleMode(this)"><div class="toggle-switch"></div></div>
+</div>
+<div class="flex justify-between items-center py-4 border-b border-white/5">
+<label class="font-label-md">Biometric Unlock</label>
+<div class="toggle-container" onclick="toggleMode(this)"><div class="toggle-switch"></div></div>
+</div>
+<div class="flex justify-between items-center py-4">
+<label class="font-label-md">Privacy Mode</label>
+<div class="toggle-container" onclick="toggleMode(this)"><div class="toggle-switch"></div></div>
+</div>
+</div>
+</section>
+<!-- Partner Tab (Hidden) -->
+<section class="hidden" id="panel-partner">
+<div class="glass-card p-stack-lg rounded-3xl relative overflow-hidden">
+<div class="relative z-10">
+<h3 class="font-headline-md text-headline-md mb-2">The Shared Sanctuary</h3>
+<p class="text-on-surface-variant mb-8">Manage the intimate connection with your partner.</p>
+<div class="flex items-center gap-stack-lg p-6 bg-primary-container/10 rounded-2xl border border-primary/20">
+<div class="relative">
+<div class="w-16 h-16 rounded-full border-2 border-primary overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A portrait of a male partner with kind eyes and a confident smile, warm low-key lighting, cinematic depth of field, premium aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDd8ZUI7vlhYZAdRtZXuQHPIrLOdqqxrduPbYbStOfIT18QUxWEPCdgJjSlKIW2spucWKKmK3T_W0maBiF6fn6zDb2zBCFd-L2x7MCC5GZqXvQ8NRC-hQLK79CFtVwIKryZZ_f9-_IT2ZswhYmaUojrWtUMqClFA3wKtA5QJS7zGyFgwGZ9ZmNqNyEvh-EswROMcWyqdxP9v6Pfox0fHbsswrFYEMoeoEDHHoCMHgbuwlFOfaTVyfdn"/>
+</div>
+<div class="absolute -bottom-1 -right-1 bg-secondary text-on-secondary rounded-full p-1">
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">stars</span>
+</div>
+</div>
+<div class="flex-grow">
+<p class="font-label-md text-primary">Connected with Julian</p>
+<p class="text-label-sm text-on-surface-variant">Sanctuary streak: 42 days</p>
+</div>
+<button class="px-4 py-2 bg-on-error-container/10 text-error rounded-lg font-label-md hover:bg-error-container/20 transition-all border border-error/30">Disconnect</button>
+</div>
+</div>
+<!-- Subtle background decoration for partner tab -->
+<div class="absolute -bottom-20 -right-20 w-64 h-64 bg-primary/10 blur-[100px] rounded-full"></div>
+</div>
+</section>
+</div>
+<!-- Action Footer -->
+<footer class="mt-stack-xl flex justify-end gap-stack-md">
+<button class="px-8 py-3 rounded-full font-label-md text-label-md text-on-surface-variant border border-white/10 hover:bg-white/5 transition-all">Reset to Defaults</button>
+<button class="glow-button px-10 py-3 rounded-full font-label-md text-label-md bg-primary text-on-primary font-bold shadow-[0_0_20px_rgba(255,175,211,0.3)] transition-all active:scale-95">Save Changes</button>
+</footer>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full h-[80px] z-50 bg-surface/80 backdrop-blur-xl border-t border-white/10 shadow-[0_-4px_24px_rgba(0,0,0,0.5)]">
+<div class="flex justify-around items-center w-full h-full px-4 max-w-lg mx-auto">
+<div class="flex flex-col items-center justify-center text-on-surface-variant/60 p-2 hover:text-primary-fixed-dim transition-colors cursor-pointer">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-sm text-label-sm mt-1">Dashboard</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant/60 p-2 hover:text-primary-fixed-dim transition-colors cursor-pointer">
+<span class="material-symbols-outlined">mail</span>
+<span class="font-label-sm text-label-sm mt-1">Letters</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant/60 p-2 hover:text-primary-fixed-dim transition-colors cursor-pointer">
+<span class="material-symbols-outlined">favorite</span>
+<span class="font-label-sm text-label-sm mt-1">Check-In</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant/60 p-2 hover:text-primary-fixed-dim transition-colors cursor-pointer">
+<span class="material-symbols-outlined">stars</span>
+<span class="font-label-sm text-label-sm mt-1">Goals</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-primary-container/20 text-primary rounded-xl p-2 translate-y-[-2px] duration-300">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-label-sm text-label-sm mt-1">Settings</span>
+</div>
+</div>
+</nav>
+<script>
+        function switchTab(tabId) {
+            // Hide all panels
+            document.querySelectorAll('#panels > section').forEach(panel => panel.classList.add('hidden'));
+            // Remove active styles from buttons
+            document.querySelectorAll('[id^="tab-"]').forEach(btn => {
+                btn.classList.remove('bg-primary-container/20', 'text-primary', 'border-primary/30', 'glass-card');
+                btn.classList.add('text-on-surface-variant');
+            });
+
+            // Show current panel
+            document.getElementById('panel-' + tabId).classList.remove('hidden');
+            // Style active button
+            const activeBtn = document.getElementById('tab-' + tabId);
+            activeBtn.classList.add('bg-primary-container/20', 'text-primary', 'border-primary/30', 'glass-card');
+            activeBtn.classList.remove('text-on-surface-variant');
+        }
+
+        function toggleMode(el) {
+            el.classList.toggle('toggle-active');
+            const label = document.getElementById('mode-label');
+            if (label && el.closest('#panel-appearance')) {
+                label.innerText = el.classList.contains('toggle-active') ? 'Live API Core' : 'Local Engine';
+            }
+        }
+
+        function setLanguage(lang) {
+            if (lang === 'ar') {
+                document.documentElement.setAttribute('dir', 'rtl');
+            } else {
+                document.documentElement.setAttribute('dir', 'ltr');
+            }
+            
+            // UI visual feedback
+            const btns = document.querySelectorAll('#panel-appearance button span.material-symbols-outlined');
+            btns.forEach(span => {
+                span.innerText = 'circle';
+                span.classList.remove('text-primary');
+                span.classList.add('text-on-surface-variant/20');
+            });
+            
+            event.currentTarget.querySelector('span.material-symbols-outlined').innerText = 'check_circle';
+            event.currentTarget.querySelector('span.material-symbols-outlined').classList.add('text-primary');
+            event.currentTarget.querySelector('span.material-symbols-outlined').classList.remove('text-on-surface-variant/20');
+        }
+
+        function selectSwatch(el) {
+            document.querySelectorAll('.theme-swatch-active').forEach(sw => sw.classList.remove('theme-swatch-active'));
+            el.classList.add('theme-swatch-active');
+        }
+
+        // Initialize with appearance tab for the prompt task
+        switchTab('appearance');
+    </script>
+</body></html>

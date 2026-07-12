@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AROVA | Celestial Entrance</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed": "#1f182d",
+                    "primary-fixed-dim": "#ffafd3",
+                    "on-tertiary": "#352c43",
+                    "tertiary-fixed": "#ebddfb",
+                    "tertiary-container": "#a69ab6",
+                    "outline": "#a28a93",
+                    "surface-tint": "#ffafd3",
+                    "surface-container-lowest": "#100c1b",
+                    "surface-container-highest": "#383243",
+                    "tertiary-fixed-dim": "#cec1de",
+                    "on-primary-fixed": "#3d0026",
+                    "on-tertiary-fixed-variant": "#4c435a",
+                    "surface-variant": "#383243",
+                    "on-error-container": "#ffdad6",
+                    "on-background": "#e8def5",
+                    "on-surface-variant": "#dac0c9",
+                    "surface-bright": "#3c3648",
+                    "outline-variant": "#544249",
+                    "on-primary-fixed-variant": "#85145a",
+                    "inverse-on-surface": "#332e3f",
+                    "on-surface": "#e8def5",
+                    "surface-container-low": "#1e1929",
+                    "surface-container-high": "#2d2738",
+                    "secondary-fixed": "#ffe08d",
+                    "on-secondary-container": "#352800",
+                    "on-secondary": "#3d2f00",
+                    "surface-container": "#221d2d",
+                    "inverse-surface": "#e8def5",
+                    "primary": "#ffafd3",
+                    "on-error": "#690005",
+                    "inverse-primary": "#a43073",
+                    "surface": "#161120",
+                    "secondary": "#e9c254",
+                    "on-secondary-fixed-variant": "#584400",
+                    "tertiary": "#cec1de",
+                    "on-primary": "#620040",
+                    "error-container": "#93000a",
+                    "secondary-fixed-dim": "#e9c254",
+                    "primary-container": "#f472b6",
+                    "on-secondary-fixed": "#241a00",
+                    "secondary-container": "#ae8d21",
+                    "error": "#ffb4ab",
+                    "on-tertiary-container": "#3b3249",
+                    "on-primary-container": "#6d0047",
+                    "background": "#161120",
+                    "primary-fixed": "#ffd8e7",
+                    "surface-dim": "#161120"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-lg": "32px",
+                    "container-max": "1440px",
+                    "margin-desktop": "64px",
+                    "gutter": "24px",
+                    "stack-sm": "8px",
+                    "margin-mobile": "16px",
+                    "stack-md": "16px",
+                    "stack-xl": "64px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Inter"],
+                    "display-lg": ["Playfair Display"],
+                    "label-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "display-lg-mobile": ["Playfair Display"],
+                    "headline-lg-mobile": ["Playfair Display"],
+                    "headline-md": ["Playfair Display"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Playfair Display"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "1", "fontWeight": "500"}],
+                    "display-lg": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "display-lg-mobile": ["40px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "headline-md": ["32px", {"lineHeight": "1.3", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-lg": ["40px", {"lineHeight": "1.2", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #03010b; /* The Void */
+            color: #e8def5;
+            overflow-x: hidden;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 20px rgba(255, 175, 211, 0.05);
+        }
+
+        .glass-card:hover {
+            box-shadow: 0 0 30px rgba(255, 175, 211, 0.12);
+        }
+
+        .luminous-button {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 10px rgba(244, 114, 182, 0.2);
+        }
+
+        .luminous-button:hover {
+            box-shadow: 0 0 25px rgba(244, 114, 182, 0.6);
+            transform: scale(1.02);
+        }
+
+        .tab-transition {
+            transition: all 0.4s ease-in-out;
+        }
+
+        .neon-glow-border {
+            border: 1px solid rgba(255, 175, 211, 0.3);
+            transition: border-color 0.3s ease;
+        }
+
+        .neon-glow-border:hover {
+            border-color: #ffafd3;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #03010b; }
+        ::-webkit-scrollbar-thumb { background: #383243; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #ffafd3; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center relative selection:bg-primary-container/30">
+<!-- Global Background Shader -->
+<div class="fixed inset-0 z-0 opacity-40 pointer-events-none">
+<!-- STITCH_SHADER_START:ANIMATION_2 class="absolute inset-0 w-full h-full" -->
+<div class="absolute inset-0 w-full h-full" style="display:block;">
+<canvas id="shader-canvas-ANIMATION_2" style="display:block;width:100%;height:100%"></canvas>
+<script>
+(function() {
+  const canvas = document.getElementById('shader-canvas-ANIMATION_2');
+
+  // Sync the WebGL drawing-buffer size with the CSS-driven layout size.
+  // This fires on initial layout and whenever the element is resized.
+  function syncSize() {
+    const w = canvas.clientWidth  || 1280;
+    const h = canvas.clientHeight || 720;
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width  = w;
+      canvas.height = h;
+    }
+  }
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(syncSize).observe(canvas);
+  }
+  syncSize();
+
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) return;
+  const vs = `attribute vec2 a_position;
+varying vec2 v_texCoord;
+void main() {
+  v_texCoord = a_position * 0.5 + 0.5;
+  gl_Position = vec4(a_position, 0.0, 1.0);
+}`;
+  const fs = `precision highp float;
+uniform float u_time;
+uniform vec2 u_resolution;
+
+float noise(vec2 p) {
+    return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
+}
+
+void main() {
+    vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+    vec3 color = vec3(0.01, 0.005, 0.05); // Deep space base
+    
+    // Subtle nebula glow
+    float glow = sin(uv.x * 3.0 + u_time * 0.2) * 0.5 + 0.5;
+    color += vec3(0.95, 0.45, 0.71) * glow * 0.05; // Neon pink hint
+    
+    // Twinkling stars
+    vec2 starPos = uv * 50.0;
+    float n = noise(floor(starPos));
+    if (n > 0.98) {
+        float twink = sin(u_time * (n * 10.0)) * 0.5 + 0.5;
+        color += vec3(1.0) * twink * n;
+    }
+    
+    gl_FragColor = vec4(color, 1.0);
+}`;
+  function cs(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, cs(gl.VERTEX_SHADER, vs));
+  gl.attachShader(prog, cs(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  const pos = gl.getAttribLocation(prog, 'a_position');
+  gl.enableVertexAttribArray(pos);
+  gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+  const uTime = gl.getUniformLocation(prog, 'u_time');
+  const uRes = gl.getUniformLocation(prog, 'u_resolution');
+  const uMouse = gl.getUniformLocation(prog, 'u_mouse');
+
+  // u_mouse is in pixel coordinates matching u_resolution (ShaderToy convention).
+  // Shaders that need normalized coords should use: u_mouse / u_resolution.
+  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+  window.addEventListener('mousemove', (event) => {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width && rect.height) {
+      const nx = (event.clientX - rect.left) / rect.width;
+      const ny = 1.0 - (event.clientY - rect.top) / rect.height;
+      mouse.x = nx * canvas.width;
+      mouse.y = ny * canvas.height;
+    }
+  });
+
+  function render(t) {
+    if (typeof ResizeObserver === 'undefined') syncSize();
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    if (uTime) gl.uniform1f(uTime, t * 0.001);
+    if (uRes) gl.uniform2f(uRes, canvas.width, canvas.height);
+    if (uMouse) gl.uniform2f(uMouse, mouse.x, mouse.y);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    requestAnimationFrame(render);
+  }
+  render(0);
+})();
+</script>
+</div>
+<!-- STITCH_SHADER_END:ANIMATION_2 -->
+</div>
+<!-- Main Content Canvas -->
+<main class="relative z-10 w-full max-w-md px-margin-mobile md:px-0 py-stack-xl flex flex-col items-center">
+<!-- Brand Header (Isolated from Nav as per transactional rule) -->
+<div class="mb-stack-xl text-center">
+<h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-primary tracking-tighter mb-2">
+                AROVA
+            </h1>
+<p class="font-body-md text-on-surface-variant/80 tracking-wide">Enter your private sanctuary.</p>
+</div>
+<!-- Auth Container -->
+<div class="glass-card w-full rounded-[32px] p-8 md:p-10 relative overflow-hidden">
+<!-- Auth Tabs -->
+<div class="flex items-center justify-center space-x-8 mb-stack-lg border-b border-white/10">
+<button class="pb-4 font-label-md text-label-md text-primary border-b-2 border-primary tab-transition" id="tab-signin" onclick="switchTab('signin')">
+                    Sign In
+                </button>
+<button class="pb-4 font-label-md text-label-md text-on-surface-variant/60 hover:text-on-surface tab-transition border-b-2 border-transparent" id="tab-register" onclick="switchTab('register')">
+                    Register
+                </button>
+</div>
+<!-- Forms Layer -->
+<div class="space-y-6" id="signin-form">
+<div class="space-y-4">
+<div class="relative group">
+<input class="w-full bg-surface-container-low border border-white/10 rounded-xl px-4 py-4 text-on-surface focus:outline-none focus:border-primary transition-colors font-body-md placeholder:text-on-surface-variant/40" placeholder="Email address" type="email"/>
+</div>
+<div class="relative group">
+<input class="w-full bg-surface-container-low border border-white/10 rounded-xl px-4 py-4 text-on-surface focus:outline-none focus:border-primary transition-colors font-body-md placeholder:text-on-surface-variant/40" placeholder="Password" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant/60 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<label class="flex items-center space-x-2 cursor-pointer group">
+<input class="w-4 h-4 rounded border-white/20 bg-surface-container text-primary focus:ring-primary/20" type="checkbox"/>
+<span class="font-label-sm text-label-sm text-on-surface-variant/80 group-hover:text-on-surface">Remember me</span>
+</label>
+<a class="font-label-sm text-label-sm text-secondary hover:text-secondary-fixed transition-colors" href="#">Forgot password?</a>
+</div>
+<button class="w-full bg-primary py-4 rounded-xl text-on-primary font-label-md text-label-md luminous-button uppercase tracking-widest">
+                    Enter Sanctuary
+                </button>
+<!-- Divider -->
+<div class="relative flex items-center py-2">
+<div class="flex-grow border-t border-white/5"></div>
+<span class="flex-shrink mx-4 text-on-surface-variant/40 font-label-sm text-label-sm uppercase tracking-widest">OR</span>
+<div class="flex-grow border-t border-white/5"></div>
+</div>
+<!-- Social Buttons -->
+<div class="grid grid-cols-2 gap-4">
+<button class="flex items-center justify-center space-x-2 py-3.5 rounded-xl bg-surface-container-highest/40 neon-glow-border group">
+<img class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity" data-alt="A clean, minimalist monochrome Google logo vector icon designed for a dark mode premium user interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCN9ZLHHc-t9YnJutSUwfHCKPIpoHm2lFteUi1_1UlFjv-AouK95HxpC2F4EYVtIhx_iWgrydRVFrNFRuxu3DpOjaLCB7TG-7H5wiyZwXo3EinSVMul5fhiSZQJbisjmy-1GFNJTOBbMt6er6K5F7QGVKwPUzDJMvSu2DC9IeqV7bSgHe8GTdEGlDtWPzOJU4UdWqrgY9lWTeTeINQBkJyDAjk4cBj9gTfuq6emQ3DwYw65IiRkfk1k"/>
+<span class="font-label-md text-label-md text-on-surface-variant">Google</span>
+</button>
+<button class="flex items-center justify-center space-x-2 py-3.5 rounded-xl bg-surface-container-highest/40 neon-glow-border group">
+<img class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity" data-alt="A clean, minimalist monochrome Apple logo vector icon designed for a high-end luxury dark mode dashboard." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiQRK4Ni24RSSvhjrIaPmQFMCAozdlNPIxW96jQGpiz3PE0Td4ssRlfc0u1Ok34LkDzT3FNI8--cfKmcpG9RBtabhwPy2mpBO-nfZqONq2inNTFoz3FPfPs59blD_CvsMZTJJkISDE5ZRpDKE783Sr3B2d3XBrKHVpNjhJSWdqQlt-hqapD5pqPe5-Vu98xWZqLECTSNgksA0shFC4hDGqQ3vzSY2lspQt88ZYws75Lt13PMKyCgfA"/>
+<span class="font-label-md text-label-md text-on-surface-variant">Apple</span>
+</button>
+</div>
+</div>
+<!-- Register Form (Hidden by default) -->
+<div class="hidden space-y-6" id="register-form">
+<div class="space-y-4">
+<input class="w-full bg-surface-container-low border border-white/10 rounded-xl px-4 py-4 text-on-surface focus:outline-none focus:border-primary transition-colors font-body-md placeholder:text-on-surface-variant/40" placeholder="Full Name" type="text"/>
+<input class="w-full bg-surface-container-low border border-white/10 rounded-xl px-4 py-4 text-on-surface focus:outline-none focus:border-primary transition-colors font-body-md placeholder:text-on-surface-variant/40" placeholder="Email address" type="email"/>
+<input class="w-full bg-surface-container-low border border-white/10 rounded-xl px-4 py-4 text-on-surface focus:outline-none focus:border-primary transition-colors font-body-md placeholder:text-on-surface-variant/40" placeholder="Create Password" type="password"/>
+</div>
+<button class="w-full bg-primary py-4 rounded-xl text-on-primary font-label-md text-label-md luminous-button uppercase tracking-widest">
+                    Begin Journey
+                </button>
+<p class="text-center font-label-sm text-label-sm text-on-surface-variant/60">
+                    By registering, you agree to our <a class="text-primary hover:underline" href="#">Terms of Eternity</a>.
+                </p>
+</div>
+</div>
+<!-- Footer Link -->
+<a class="mt-stack-lg group flex items-center space-x-2 text-secondary hover:text-secondary-fixed transition-all duration-300" href="#">
+<span class="font-label-md text-label-md">Continue with local demo</span>
+<span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</a>
+<!-- Atmospheric Decoration -->
+<div class="fixed bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#03010b] to-transparent pointer-events-none z-0"></div>
+</main>
+<!-- Subtle Lighting Effects -->
+<div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[120px] rounded-full pointer-events-none"></div>
+<div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary/5 blur-[120px] rounded-full pointer-events-none"></div>
+<script>
+        function switchTab(tab) {
+            const signinForm = document.getElementById('signin-form');
+            const registerForm = document.getElementById('register-form');
+            const signinTab = document.getElementById('tab-signin');
+            const registerTab = document.getElementById('tab-register');
+
+            if (tab === 'signin') {
+                signinForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+                
+                signinTab.classList.add('text-primary', 'border-primary');
+                signinTab.classList.remove('text-on-surface-variant/60', 'border-transparent');
+                
+                registerTab.classList.remove('text-primary', 'border-primary');
+                registerTab.classList.add('text-on-surface-variant/60', 'border-transparent');
+            } else {
+                signinForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+                
+                registerTab.classList.add('text-primary', 'border-primary');
+                registerTab.classList.remove('text-on-surface-variant/60', 'border-transparent');
+                
+                signinTab.classList.remove('text-primary', 'border-primary');
+                signinTab.classList.add('text-on-surface-variant/60', 'border-transparent');
+            }
+        }
+
+        // Mouse trail effect on the card
+        const card = document.querySelector('.glass-card');
+        document.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            if (x > 0 && x < rect.width && y > 0 && y < rect.height) {
+                card.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255, 175, 211, 0.08) 0%, rgba(255, 255, 255, 0.03) 70%)`;
+            } else {
+                card.style.background = `rgba(255, 255, 255, 0.03)`;
+            }
+        });
+    </script>
+</body></html>
