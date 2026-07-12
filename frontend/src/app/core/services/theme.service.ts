@@ -27,6 +27,7 @@ export class ThemeService {
     'forest-whisper',
     'solar-dusk',
     'monochrome-luxe',
+    'uiux-pro-max',
   ]);
 
   constructor(

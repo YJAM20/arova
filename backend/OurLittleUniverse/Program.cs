@@ -5,6 +5,7 @@ using LoveUniverse.Api.Hubs;
 using LoveUniverse.Api.Options;
 using LoveUniverse.Api.Services;
 using LoveUniverse.Api.Services.Email;
+using LoveUniverse.Api.Services.Sms;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -100,18 +101,56 @@ builder.Services.AddScoped<IEmailSender>(sp =>
 
     return sp.GetRequiredService<ConsoleEmailSender>();
 });
-builder.Services.AddScoped<ISmsSender, ConsoleSmsSender>();
+builder.Services.Configure<SmsOptions>(builder.Configuration.GetSection("Sms"));
+builder.Services.AddScoped<ConsoleSmsSender>();
+builder.Services.AddScoped<TwilioSmsSender>();
+builder.Services.AddScoped<ISmsSender>(sp =>
+{
+    var options = sp.GetRequiredService<IOptions<SmsOptions>>().Value;
+    var logger = sp.GetRequiredService<ILogger<Program>>();
+
+    if (string.Equals(options.Provider, "Twilio", StringComparison.OrdinalIgnoreCase))
+    {
+        if (string.IsNullOrWhiteSpace(options.TwilioAccountSid) ||
+            string.IsNullOrWhiteSpace(options.TwilioAuthToken) ||
+            string.IsNullOrWhiteSpace(options.TwilioFromNumber))
+        {
+            logger.LogWarning("SMS provider is configured as Twilio, but credentials are missing. Falling back to ConsoleSmsSender.");
+            return sp.GetRequiredService<ConsoleSmsSender>();
+        }
+        return sp.GetRequiredService<TwilioSmsSender>();
+    }
+
+    return sp.GetRequiredService<ConsoleSmsSender>();
+});
 builder.Services.AddScoped<IAccountVerificationService, AccountVerificationService>();
+builder.Services.Configure<GoogleAuthOptions>(builder.Configuration.GetSection("Authentication"));
+builder.Services.Configure<StripeOptions>(builder.Configuration.GetSection("Stripe"));
+Stripe.StripeConfiguration.ApiKey = builder.Configuration["Stripe:ApiKey"];
 builder.Services.AddScoped<IExternalAuthVerifier, GoogleExternalAuthVerifier>();
 builder.Services.AddScoped<IExternalAuthVerifier, AppleExternalAuthVerifier>();
 builder.Services.AddSignalR();
 builder.Services.AddAuthorization();
+var databaseProvider = builder.Configuration["Database:Provider"] ?? "SqlServer";
+var isSqliteProvider = string.Equals(databaseProvider, "SQLite", StringComparison.OrdinalIgnoreCase);
+
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-        ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured.");
+    if (isSqliteProvider)
+    {
+        var connectionString = builder.Configuration.GetConnectionString("SqliteConnection")
+            ?? builder.Configuration.GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException("Connection string 'SqliteConnection' is not configured.");
 
-    options.UseSqlServer(connectionString);
+        options.UseSqlite(connectionString, x => x.MigrationsAssembly("OurLittleUniverse"));
+    }
+    else
+    {
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured.");
+
+        options.UseSqlServer(connectionString, x => x.MigrationsAssembly("OurLittleUniverse"));
+    }
 });
 
 var jwtIssuer = builder.Configuration["JwtSettings:Issuer"]
@@ -190,6 +229,8 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+app.UseMiddleware<LoveUniverse.Api.Middleware.ExceptionHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {

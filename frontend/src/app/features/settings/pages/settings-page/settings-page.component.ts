@@ -69,6 +69,7 @@ export class SettingsPageComponent implements OnInit {
     { label: 'Forest Whisper', value: 'forest-whisper' },
     { label: 'Solar Dusk', value: 'solar-dusk' },
     { label: 'Monochrome Luxe', value: 'monochrome-luxe' },
+    { label: 'UI/UX Pro Max (Cinematic)', value: 'uiux-pro-max' },
   ];
 
   languageOptions: Array<{ label: string; value: AppSettings['languageMode'] }> = [

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -13,6 +13,11 @@ namespace OurLittleUniverse.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            if (migrationBuilder.ActiveProvider != "Microsoft.EntityFrameworkCore.SqlServer")
+            {
+                return;
+            }
+
             migrationBuilder.CreateTable(
                 name: "AppUsers",
                 columns: table => new
@@ -1642,6 +1647,11 @@ namespace OurLittleUniverse.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            if (migrationBuilder.ActiveProvider != "Microsoft.EntityFrameworkCore.SqlServer")
+            {
+                return;
+            }
+
             migrationBuilder.DropTable(
                 name: "AccountVerificationCodes");
 

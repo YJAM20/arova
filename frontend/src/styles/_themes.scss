@@ -342,6 +342,21 @@
   --theme-dim: #a3a3a3;
 }
 
+:root.theme-uiux-pro-max {
+  --theme-bg: #03010b;
+  --theme-surface: #0a0417;
+  --theme-card: rgba(18, 7, 36, 0.48);
+  --theme-border: rgba(214, 183, 106, 0.22);
+  --theme-accent: #f472b6;
+  --theme-accent-2: #ffd766;
+  --theme-soft: #a78bfa;
+  --theme-text: #fff6fa;
+  --theme-muted: #d5cadf;
+  --theme-dim: #9283a3;
+  --arova-shadow-soft: 0 24px 72px rgba(0, 0, 0, 0.5);
+  --arova-shadow-glow: 0 0 45px rgba(244, 114, 182, 0.22);
+}
+
 body {
   background: var(--theme-bg);
   color: var(--theme-text) !important;
