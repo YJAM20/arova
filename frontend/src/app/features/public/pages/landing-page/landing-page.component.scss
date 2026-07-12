@@ -127,7 +127,7 @@
   align-items: center;
   padding: 140px 24px 80px;
   box-sizing: border-box;
-  pointer-events: none;
+  pointer-events: auto;
   transition: opacity 0.1s linear;
 
   .hero-content {
@@ -313,26 +313,19 @@
 
 // ── Trigger Spacer Section ────────────────────────────────
 .trigger-section {
-  height: 120vh;
-  width: 100%;
-  pointer-events: none;
+  display: none;
 }
 
 // ── Fixed Revealed Cards Section ──────────────────────────
 .fixed-cards {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 100vh;
-  height: 100dvh;
+  position: relative;
+  width: 100%;
+  padding: 80px 24px;
+  box-sizing: border-box;
   z-index: 10;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
-  box-sizing: border-box;
-  transition: opacity 0.1s linear;
 
   .cards-container {
     max-width: 1120px;
@@ -507,21 +500,16 @@
 
 // ── Final Reveal Section ──────────────────────────────────
 .final-reveal-section {
-  min-height: 90vh;
-  min-height: 90dvh;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #010f1f;
-  
-  // Transition state
-  opacity: 0;
-  transform: translateY(32px);
-  filter: blur(6px);
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-              filter 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  background: #0d0914;
+  padding: 80px 24px;
+  box-sizing: border-box;
+  opacity: 1;
+  transform: none;
+  filter: none;
 
   &.visible {
     opacity: 1;

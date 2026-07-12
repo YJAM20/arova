@@ -42,7 +42,7 @@
 <div class="scroll-landing">
 
   <!-- Section 1: Hero -->
-  <header class="hero" [style.opacity]="heroOpacity">
+  <header class="hero">
     <div class="hero-content max-w-4xl mx-auto text-center space-y-6">
       <span class="hero-eyebrow text-xs uppercase tracking-[0.2em] text-primary opacity-80">Architectural Intimacy</span>
       <h1 id="landing-hero-title" class="text-glow-primary">Create a private universe <br/> <em>for two</em>.</h1>
@@ -96,15 +96,12 @@
   </header>
 
   <!-- Section 2: Trigger spacer for revealed cards on scroll -->
-  <div #cardsTrigger class="trigger-section"></div>
+  <!-- Spacer removed -->
 
   <!-- Section 3: Revealed Bento Grid / Feature Universe Preview -->
   <div 
     #fixedCards 
     class="fixed-cards"
-    [style.opacity]="cardsOpacity"
-    [style.clip-path]="cardsClipPath"
-    [style.pointer-events]="cardsPointerEvents"
   >
     <div class="cards-container max-w-[1200px] w-full mx-auto px-4">
       <div class="cards-header text-center mb-12">
@@ -234,8 +231,7 @@
   <!-- Section 6: CTA Final Section (Fitted for Final Reveal spec) -->
   <section 
     #finalReveal 
-    class="final-reveal-section py-24 px-4 text-center z-10 relative"
-    [class.visible]="finalRevealVisible"
+    class="final-reveal-section py-24 px-4 text-center z-10 relative visible"
     aria-labelledby="final-reveal-title"
   >
     <div class="reveal-content max-w-xl mx-auto space-y-6">
