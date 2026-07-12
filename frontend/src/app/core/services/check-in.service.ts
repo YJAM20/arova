@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, catchError, map, of, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
+import { toFriendlyError as friendlyErrorHelper } from './error-handler.utils';
 import { RelationshipCheckIn } from '../../shared/models/check-in.model';
 import { AppModeService } from './app-mode.service';
 import { CheckInApiService } from './check-in-api.service';
@@ -162,55 +163,10 @@ export class CheckInService {
   }
 
   private toFriendlyError(error: unknown): Observable<never> {
-    if (!(error instanceof HttpErrorResponse)) {
-      return throwError(() => new Error('Check-in request failed. Please try again.'));
-    }
-
-    if (error.status === 0) {
-      return throwError(
-        () =>
-          new Error(
-            `Backend is not reachable. Make sure ${environment.apiBaseUrl} is running.`
-          )
-      );
-    }
-
-    if (error.status === 401) {
-      return throwError(() => new Error('Please login in API Mode first.'));
-    }
-
-    if (error.status === 403) {
-      return throwError(() => new Error('You do not have permission for this action.'));
-    }
-
-    if (error.status === 404) {
-      return throwError(() => new Error('Check-in not found.'));
-    }
-
-    if (error.status === 400) {
-      return throwError(
-        () =>
-          new Error(
-            this.extractServerMessage(error) ??
-              'The backend rejected this check-in. Check required fields.'
-          )
-      );
-    }
-
-    return throwError(
-      () =>
-        new Error(
-          this.extractServerMessage(error) ?? `Request failed with status ${error.status}.`
-        )
+    return friendlyErrorHelper(
+      error,
+      'Check-in request failed. Please try again.',
+      'Check-in not found.'
     );
-  }
-
-  private extractServerMessage(error: HttpErrorResponse): string | null {
-    if (typeof error.error === 'string' && error.error.trim()) return error.error;
-    if (typeof error.error === 'object' && error.error) {
-      if ('message' in error.error) return String(error.error.message);
-      if ('title' in error.error) return String(error.error.title);
-    }
-    return null;
   }
 }

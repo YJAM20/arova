@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { Observable, catchError, map, of, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
+import { toFriendlyError as friendlyErrorHelper } from './error-handler.utils';
 import { AppModeService } from './app-mode.service';
 import { RelationshipPointsService, RankInfo } from './relationship-points.service';
 import { RelationshipScoreApiService, DailyTaskApiResponse } from './relationship-score-api.service';
@@ -260,15 +261,9 @@ export class GamificationService {
   }
 
   private toFriendlyError(error: unknown): Observable<never> {
-    if (!(error instanceof HttpErrorResponse)) {
-      return throwError(() => new Error('Gamification request failed. Please try again.'));
-    }
-    if (error.status === 0) {
-      return throwError(() => new Error(`Backend is not reachable. Make sure ${environment.apiBaseUrl} is running.`));
-    }
-    if (error.status === 401) {
-      return throwError(() => new Error('Please login in API Mode first.'));
-    }
-    return throwError(() => new Error(`Gamification request failed (${error.status}).`));
+    return friendlyErrorHelper(
+      error,
+      'Gamification request failed. Please try again.'
+    );
   }
 }

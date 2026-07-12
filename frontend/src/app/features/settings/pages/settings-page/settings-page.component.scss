@@ -304,6 +304,17 @@
 
 .api-warning-container {
   margin-top: 4px;
+
+  .api-external-note {
+    margin-top: 8px;
+    font-size: 0.73rem;
+    color: rgba(253, 186, 116, 0.8); // amber-300 tinted
+    line-height: 1.5;
+    padding: 6px 10px;
+    background: rgba(245, 158, 11, 0.06);
+    border: 1px solid rgba(245, 158, 11, 0.15);
+    border-radius: 6px;
+  }
 }
 
 /* ─────────────────────────────────────────

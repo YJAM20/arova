@@ -2,7 +2,11 @@ using LoveUniverse.Api.Data;
 using LoveUniverse.Api.DTOs.Plans;
 using LoveUniverse.Api.Entities;
 using LoveUniverse.Api.Entities.Enums;
+using LoveUniverse.Api.Options;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Stripe;
+using Stripe.Checkout;
 
 namespace LoveUniverse.Api.Services;
 
@@ -12,11 +16,19 @@ public sealed class SubscriptionService : ISubscriptionService
 
     private readonly AppDbContext _dbContext;
     private readonly IPermissionService _permissionService;
+    private readonly StripeOptions _stripeOptions;
+    private readonly ILogger<SubscriptionService> _logger;
 
-    public SubscriptionService(AppDbContext dbContext, IPermissionService permissionService)
+    public SubscriptionService(
+        AppDbContext dbContext,
+        IPermissionService permissionService,
+        IOptions<StripeOptions> stripeOptions,
+        ILogger<SubscriptionService> logger)
     {
         _dbContext = dbContext;
         _permissionService = permissionService;
+        _stripeOptions = stripeOptions.Value;
+        _logger = logger;
     }
 
     public IReadOnlyList<PlanResponse> GetPlans()
@@ -198,6 +210,113 @@ public sealed class SubscriptionService : ISubscriptionService
         }
 
         return AccessContext.Success(userId.Value, coupleId.Value, role.Value);
+    }
+
+    public async Task<ContentServiceResult<string>> CreateCheckoutSessionAsync(
+        SubscriptionPlanType planType,
+        string successUrl,
+        string cancelUrl,
+        CancellationToken cancellationToken = default)
+    {
+        var coupleId = await _permissionService.GetCurrentUserCoupleIdAsync(cancellationToken);
+        if (coupleId is null)
+        {
+            return ContentServiceResult<string>.Failure(ContentServiceStatus.BadRequest, "You must belong to a couple to upgrade subscriptions.");
+        }
+
+        var priceId = planType switch
+        {
+            SubscriptionPlanType.Pro => _stripeOptions.ProPriceId,
+            SubscriptionPlanType.Platinum => _stripeOptions.PlatinumPriceId,
+            _ => null
+        };
+
+        if (string.IsNullOrWhiteSpace(priceId) || string.Equals(priceId, "price_pro_placeholder") || string.Equals(priceId, "price_plat_placeholder"))
+        {
+            _logger.LogWarning("Attempted checkout for {PlanType} but Stripe price ID configuration is placeholder.", planType);
+            return ContentServiceResult<string>.Failure(ContentServiceStatus.BadRequest, "Stripe price identifiers are not configured on the server.");
+        }
+
+        try
+        {
+            var options = new SessionCreateOptions
+            {
+                PaymentMethodTypes = new List<string> { "card" },
+                LineItems = new List<SessionLineItemOptions>
+                {
+                    new()
+                    {
+                        Price = priceId,
+                        Quantity = 1
+                    }
+                },
+                Mode = "subscription",
+                SuccessUrl = successUrl,
+                CancelUrl = cancelUrl,
+                Metadata = new Dictionary<string, string>
+                {
+                    { "coupleId", coupleId.Value.ToString() },
+                    { "planType", planType.ToString() }
+                }
+            };
+
+            var service = new SessionService();
+            var session = await service.CreateAsync(options, cancellationToken: cancellationToken);
+            return ContentServiceResult<string>.Success(session.Url);
+        }
+        catch (StripeException ex)
+        {
+            _logger.LogError(ex, "Stripe exception occurred while creating checkout session.");
+            return ContentServiceResult<string>.Failure(ContentServiceStatus.BadRequest, $"Stripe error: {ex.Message}");
+        }
+    }
+
+    public async Task<ContentServiceResult<bool>> ProcessWebhookAsync(
+        string json,
+        string stripeSignature,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(_stripeOptions.WebhookSecret))
+        {
+            _logger.LogError("Stripe WebhookSecret is missing. Cannot verify webhook signature.");
+            return ContentServiceResult<bool>.Failure(ContentServiceStatus.BadRequest, "Stripe Webhook Secret is not configured on the server.");
+        }
+
+        try
+        {
+            var stripeEvent = EventUtility.ConstructEvent(json, stripeSignature, _stripeOptions.WebhookSecret);
+            if (stripeEvent.Type == Events.CheckoutSessionCompleted)
+            {
+                var session = stripeEvent.Data.Object as Session;
+                if (session?.Metadata != null &&
+                    session.Metadata.TryGetValue("coupleId", out var coupleIdStr) &&
+                    session.Metadata.TryGetValue("planType", out var planTypeStr) &&
+                    Guid.TryParse(coupleIdStr, out var coupleId) &&
+                    Enum.TryParse<SubscriptionPlanType>(planTypeStr, out var planType))
+                {
+                    var subscription = await GetOrCreateSubscriptionAsync(coupleId, cancellationToken);
+                    subscription.PlanType = planType;
+                    subscription.Status = "Active";
+                    subscription.IsGifted = false;
+                    subscription.ExpiresAt = null;
+                    subscription.UpdatedAt = DateTime.UtcNow;
+
+                    await _dbContext.SaveChangesAsync(cancellationToken);
+                    _logger.LogInformation("Successfully upgraded subscription for couple {CoupleId} to {PlanType} via Stripe webhook.", coupleId, planType);
+                    return ContentServiceResult<bool>.Success(true);
+                }
+                
+                _logger.LogWarning("Stripe checkout completed webhook received but session metadata is incomplete.");
+                return ContentServiceResult<bool>.Failure(ContentServiceStatus.BadRequest, "Stripe checkout session metadata was incomplete.");
+            }
+
+            return ContentServiceResult<bool>.Success(false);
+        }
+        catch (StripeException ex)
+        {
+            _logger.LogError(ex, "Stripe exception occurred while verifying webhook event signature.");
+            return ContentServiceResult<bool>.Failure(ContentServiceStatus.BadRequest, $"Signature verification failed: {ex.Message}");
+        }
     }
 
     private static SubscriptionResponse MapSubscription(CoupleSubscription subscription)

@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  arova-api:
+    image: arova-api:latest
+    build:
+      context: ./backend
+      dockerfile: OurLittleUniverse/Dockerfile
+    ports:
+      - "5036:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - Database__Provider=SQLite
+      - ConnectionStrings__SqliteConnection=Data Source=/app/data/loveuniverse-dev.db
+    volumes:
+      - api-data:/app/data
+
+  arova-web:
+    image: arova-web:latest
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - arova-api
+
+volumes:
+  api-data:

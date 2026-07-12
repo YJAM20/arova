@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError, map, of, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { toFriendlyError as friendlyErrorHelper } from './error-handler.utils';
 import { CoupleGoal, CoupleGoalMilestone, GoalCategory, GoalStatus } from '../../shared/models/couple-goal.model';
 import { AppModeService } from './app-mode.service';
 import { AuthService } from './auth.service';
@@ -261,46 +262,10 @@ export class CoupleGoalDataService {
   }
 
   private toFriendlyError(error: unknown): Observable<never> {
-    if (!(error instanceof HttpErrorResponse)) {
-      return throwError(() => new Error('The couple goal request failed. Please try again.'));
-    }
-
-    if (error.status === 0) {
-      return throwError(
-        () =>
-          new Error(
-            `Backend is not reachable. Make sure ${environment.apiBaseUrl} is running.`
-          )
-      );
-    }
-    if (error.status === 401) return throwError(() => new Error('Please login in API Mode first.'));
-    if (error.status === 403) return throwError(() => new Error('You do not have permission for this action.'));
-    if (error.status === 404) return throwError(() => new Error('Item not found.'));
-    if (error.status === 400) {
-      return throwError(
-        () =>
-          new Error(
-            this.extractServerMessage(error) ??
-              'The backend rejected this goal request. Check the required fields.'
-          )
-      );
-    }
-
-    return throwError(
-      () =>
-        new Error(
-          this.extractServerMessage(error) ?? `Goal request failed with status ${error.status}.`
-        )
+    return friendlyErrorHelper(
+      error,
+      'The couple goal request failed. Please try again.',
+      'Item not found.'
     );
-  }
-
-  private extractServerMessage(error: HttpErrorResponse): string | null {
-    if (typeof error.error === 'string' && error.error.trim()) return error.error;
-    if (typeof error.error === 'object' && error.error) {
-      if ('message' in error.error) return String(error.error['message']);
-      if ('title' in error.error) return String(error.error['title']);
-    }
-
-    return null;
   }
 }
