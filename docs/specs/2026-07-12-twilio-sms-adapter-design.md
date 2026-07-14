@@ -132,7 +132,7 @@ public sealed class TwilioSmsSender : ISmsSender
             var response = await _httpClient.SendAsync(request, cancellationToken);
             if (response.IsSuccessStatusCode)
             {
-                _logger.LogInformation("Successfully sent SMS to {Destination} via Twilio API.", destination);
+                _logger.LogInformation("Successfully sent SMS for purpose '{Purpose}' via Twilio API.", purpose);
                 return new SmsSendResult(true, "SMS sent successfully via Twilio.");
             }
 
@@ -142,8 +142,8 @@ public sealed class TwilioSmsSender : ISmsSender
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Exception occurred while sending SMS via Twilio to {Destination}", destination);
-            return new SmsSendResult(false, $"Internal exception: {ex.Message}");
+            _logger.LogError(ex, "Exception occurred while sending SMS via Twilio for purpose '{Purpose}'", purpose);
+            return new SmsSendResult(false, "An error occurred while sending the SMS.");
         }
     }
 }

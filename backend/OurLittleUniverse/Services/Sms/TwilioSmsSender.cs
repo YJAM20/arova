@@ -20,6 +20,14 @@ public sealed class TwilioSmsSender : ISmsSender
         _logger = logger;
     }
 
+    private static string MaskPhoneNumber(string? phoneNumber)
+    {
+        if (string.IsNullOrWhiteSpace(phoneNumber)) return string.Empty;
+        return phoneNumber.Length > 4
+            ? new string('*', phoneNumber.Length - 4) + phoneNumber[^4..]
+            : phoneNumber;
+    }
+
     public async Task<SmsSendResult> SendVerificationCodeAsync(
         string destination,
         string code,
@@ -34,6 +42,7 @@ public sealed class TwilioSmsSender : ISmsSender
             return new SmsSendResult(false, "Twilio configuration credentials are missing.");
         }
 
+        var maskedDestination = MaskPhoneNumber(destination);
         var messageBody = string.IsNullOrWhiteSpace(code)
             ? $"Arova verification update for: {purpose}."
             : $"Your Arova verification code is: {code}\n\nThis code is for {purpose} and will expire in 10 minutes.";
@@ -59,18 +68,18 @@ public sealed class TwilioSmsSender : ISmsSender
             var response = await _httpClient.SendAsync(request, cancellationToken);
             if (response.IsSuccessStatusCode)
             {
-                _logger.LogInformation("Successfully sent SMS to {Destination} via Twilio API.", destination);
+                _logger.LogInformation("Successfully sent SMS to '{Destination}' for purpose '{Purpose}' via Twilio API.", maskedDestination, purpose);
                 return new SmsSendResult(true, "SMS sent successfully via Twilio.");
             }
 
             var errorContent = await response.Content.ReadAsStringAsync(cancellationToken);
-            _logger.LogError("Failed to send SMS via Twilio API. Status: {StatusCode}, Error: {Error}", response.StatusCode, errorContent);
+            _logger.LogError("Failed to send SMS to '{Destination}' via Twilio API. Status: {StatusCode}, Error: {Error}", maskedDestination, response.StatusCode, errorContent);
             return new SmsSendResult(false, $"Twilio returned error status {response.StatusCode}.");
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Exception occurred while sending SMS via Twilio to {Destination}", destination);
-            return new SmsSendResult(false, $"Internal exception: {ex.Message}");
+            _logger.LogError(ex, "Exception occurred while sending SMS to '{Destination}' via Twilio for purpose '{Purpose}'", maskedDestination, purpose);
+            return new SmsSendResult(false, "An error occurred while sending the SMS.");
         }
     }
 }

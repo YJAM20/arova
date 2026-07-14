@@ -18,14 +18,16 @@ We will derive a symmetric encryption key from a user-supplied shared secret key
 
 ### Key Derivation Flow (PBKDF2)
 1. **Material**: Import the plaintext secret keyphrase as a raw key material.
-2. **Salt**: Use a constant salt `"arova-static-nebula-salt"` to ensure both partners derive the same key.
-3. **Derivation**: Use PBKDF2 with 100,000 iterations of SHA-256 to derive a 256-bit AES-GCM key.
+2. **Salt**: Use a cryptographically random per-couple 16-byte (128-bit) salt that is persisted in the database.
+   - **Generation**: Generated on the client or server via cryptographically secure random number generators when the couple's chat is initialized.
+   - **Retrieval**: Fetched dynamically by both partners from the backend (Base64-encoded) via the relationship/chat metadata endpoint when loading the chat room. The client decodes the salt to a binary format.
+3. **Derivation**: Use PBKDF2 with 600,000 iterations of SHA-256 (the hardware-benchmarked cost recommended by OWASP for secure browser-side derivation) to derive a 256-bit AES-GCM key.
 
 ```
 Keyphrase string -> TextEncoder -> Raw Key Material
                                         |
-                             PBKDF2 (100,000 iter, SHA-256)
-                             Salt: "arova-static-nebula-salt"
+                             PBKDF2 (600,000 iter, SHA-256)
+                             Salt: Base64-decoded per-couple salt
                                         |
                                         v
                                256-bit AES-GCM Key

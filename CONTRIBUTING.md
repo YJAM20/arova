@@ -41,7 +41,14 @@ dotnet run
 ```
 The API is configured to run on `http://localhost:5036`. You can access the Swagger documentation page at `http://localhost:5036/swagger`.
 
-By default, the backend boots in **SQLite** mode creating a local database file `loveuniverse-dev.db`. To switch to **SQL Server**, update `Database:Provider` to `"SqlServer"` in `appsettings.json`.
+By default, the backend boots in **SQL Server** mode. To switch to **SQLite**, update `Database:Provider` to `"Sqlite"` in `appsettings.json` (or `appsettings.Development.json`).
+
+#### SMS & Email Configuration (Optional)
+To test live SMS and email deliveries instead of console output logging, configure the corresponding credentials in `appsettings.json` (or `appsettings.Development.json`):
+- **Email (Resend)**: Set `Email:Provider` to `"Resend"`, and provide a valid API key in `Email:ResendApiKey`.
+- **SMS (Twilio)**: Set `Sms:Provider` to `"Twilio"`, and provide valid values for `Sms:TwilioAccountSid`, `Sms:TwilioAuthToken`, and `Sms:TwilioFromNumber`.
+
+*Note: If no credentials are supplied, or if the `Provider` key is set to `"Console"` (default), all SMS and email messages will be printed directly to the backend server logs.*
 
 ### 2. Running the Frontend client
 Navigate to the frontend directory and start the Angular development server:

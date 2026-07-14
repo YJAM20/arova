@@ -14,6 +14,7 @@ services:
       - ConnectionStrings__SqliteConnection=Data Source=/app/data/loveuniverse-dev.db
     volumes:
       - api-data:/app/data
+    restart: unless-stopped
 
   arova-web:
     image: arova-web:latest
@@ -24,6 +25,7 @@ services:
       - "80:80"
     depends_on:
       - arova-api
+    restart: unless-stopped
 
 volumes:
   api-data:

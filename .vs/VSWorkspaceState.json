@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\backend",
+    "\\backend\\OurLittleUniverse",
+    "\\backend\\OurLittleUniverse\\Auth",
+    "\\backend\\OurLittleUniverse\\Controllers",
+    "\\backend\\OurLittleUniverse\\DTOs"
+  ],
+  "SelectedNode": "\\backend\\OurLittleUniverse\\Auth\\PasswordHasherService.cs",
+  "PreviewInSolutionExplorer": false
+}

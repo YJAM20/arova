@@ -184,7 +184,6 @@ export class DailyQuestionService {
   }
 
   private toFriendlyError(error: unknown): Observable<never> {
-    console.log('toFriendlyError caught error:', error);
     return friendlyErrorHelper(
       error,
       'Daily question request failed. Please try again.',

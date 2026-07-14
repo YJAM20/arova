@@ -31,12 +31,18 @@ public sealed class ExceptionHandlingMiddleware
 
     private static async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
+        if (context.Response.HasStarted)
+        {
+            // Headers/body have already been sent; mutating the response would throw and
+            // mask the original exception. The caller already logged it, so just return.
+            return;
+        }
+
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = StatusCodes.Status500InternalServerError;
 
         var response = ApiResponse<object>.CreateFailure(
-            "An unexpected error occurred on the server. Please try again later.",
-            [exception.Message]
+            "An unexpected error occurred on the server. Please try again later."
         );
 
         var options = new JsonSerializerOptions
