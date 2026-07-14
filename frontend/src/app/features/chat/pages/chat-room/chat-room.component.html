@@ -24,33 +24,37 @@
   <section class="chat-shell glass" aria-label="Chat room">
 
     <!-- E2EE Security Settings Header -->
-    <div class="e2ee-header" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); background: rgba(0, 0, 0, 0.2); border-top-left-radius: 12px; border-top-right-radius: 12px;">
-      <div class="e2ee-info" style="display: flex; align-items: center; gap: 12px;">
-        <span class="e2ee-icon" style="font-size: 1.25rem;">{{ isE2eeUnlocked ? '🔓' : '🔒' }}</span>
-        <div class="e2ee-text" style="display: flex; flex-direction: column; gap: 2px;">
-          <strong style="font-size: 0.88rem; color: var(--theme-text-primary, #ffffff);">End-to-End Encryption (256-bit AES-GCM)</strong>
-          <span style="font-size: 0.76rem; color: var(--theme-muted, #B8B8B8);">
+    <div class="e2ee-header">
+      <div class="e2ee-info">
+        <span class="e2ee-icon">{{ isE2eeUnlocked ? '🔓' : '🔒' }}</span>
+        <div class="e2ee-text">
+          <strong>End-to-End Encryption (256-bit AES-GCM)</strong>
+          <span>
             {{ isE2eeUnlocked ? 'Chat messages are encrypted client-side.' : 'Chat is locked. Enter shared keyphrase to decrypt.' }}
           </span>
         </div>
       </div>
-      <div class="e2ee-controls" style="display: flex; align-items: center; gap: 8px;">
-        <input 
-          type="password" 
-          placeholder="Shared Secret Keyphrase" 
-          [(ngModel)]="e2eePasscode" 
+      <div class="e2ee-controls">
+        <input
+          type="password"
+          placeholder="Shared Secret Keyphrase"
+          [(ngModel)]="e2eePasscode"
           (ngModelChange)="onPasscodeChange()"
-          style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; padding: 6px 12px; font-size: 0.8rem; color: #ffffff; outline: none; width: 220px;"
           [attr.aria-label]="'Shared Secret Keyphrase'"
         />
-        <button type="button" (click)="toggleE2eeHelp()" style="background: none; border: 1px solid rgba(255, 255, 255, 0.15); width: 26px; height: 26px; border-radius: 50%; color: var(--theme-muted, #B8B8B8); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.78rem;">
+        <button
+          type="button"
+          class="e2ee-help-btn"
+          aria-label="Toggle E2EE help information"
+          (click)="toggleE2eeHelp()"
+        >
           ?
         </button>
       </div>
-      <div class="e2ee-help-panel" *ngIf="showHelp" style="width: 100%; margin-top: 8px; font-size: 0.78rem; line-height: 1.45; color: var(--theme-muted, #B8B8B8); background: rgba(0,0,0,0.3); padding: 12px; border-radius: 6px; border: 1px dashed rgba(255,255,255,0.08);">
+      <div class="e2ee-help-panel" *ngIf="showHelp">
         💡 <strong>How it works:</strong> Both partners must enter the exact same secret keyphrase on their respective browsers. The keyphrase is converted locally to a 256-bit symmetric encryption key using PBKDF2. Every message sent is cryptographically sealed in your browser and decoded in your partner's browser. The server and database never see your plaintext messages.
       </div>
-      <div class="e2ee-error-panel" *ngIf="e2eeError" style="width: 100%; margin-top: 8px; color: #ff5a5a; font-size: 0.78rem;">
+      <div class="e2ee-error-panel" *ngIf="e2eeError">
         ⚠️ {{ e2eeError }}
       </div>
     </div>
@@ -206,7 +210,7 @@
   <!-- Honest Product Note -->
   <footer class="chat-disclaimer" id="chat-disclaimer">
     <p>
-      Chat is a local/API demo feature. True E2EE and production messaging infrastructure are planned, not active in this demo. (Native AES-GCM encryption is available locally in this sandbox via shared secret keyphrase).
+      Chat is a local/API demo feature. True E2EE and production messaging infrastructure are planned, not active in this demo. AES-GCM encryption applies only when the shared keyphrase has unlocked E2EE, while messages sent without that keyphrase remain plaintext.
     </p>
   </footer>
 

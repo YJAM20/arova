@@ -48,4 +48,14 @@ describe('CryptoService', () => {
 
     await expect(service.decrypt(encrypted, key2)).rejects.toThrow();
   });
+
+  it('should derive different keys for different salts with the same passcode', async () => {
+    const passcode = 'myphrase';
+    const key1 = await service.deriveKey(passcode, 'couple-1-salt');
+    const key2 = await service.deriveKey(passcode, 'couple-2-salt');
+
+    const plaintext = 'Hello';
+    const encrypted = await service.encrypt(plaintext, key1);
+    await expect(service.decrypt(encrypted, key2)).rejects.toThrow();
+  });
 });

@@ -81,3 +81,6 @@ playwright-report/
 *.webm
 *.mp4
 
+
+# Visual Studio IDE files
+.vs/

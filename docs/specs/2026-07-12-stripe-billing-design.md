@@ -19,13 +19,17 @@ In `appsettings.json`, we will add the configuration settings under the `"Stripe
 ```json
 {
   "Stripe": {
-    "ApiKey": "sk_test_...",
-    "WebhookSecret": "whsec_...",
     "ProPriceId": "price_pro_placeholder",
     "PlatinumPriceId": "price_plat_placeholder"
   }
 }
 ```
+
+> [!IMPORTANT]
+> Sensitive credentials such as `ApiKey` and `WebhookSecret` must never be committed to source control in `appsettings.json`. Instead, they should be configured as external secrets using one of the following methods:
+> - **User Secrets (Development)**: Run `dotnet user-secrets set "Stripe:ApiKey" "<your_api_key>"` and `dotnet user-secrets set "Stripe:WebhookSecret" "<your_webhook_secret>"` in the backend directory.
+> - **Environment Variables**: Configure variables named `Stripe__ApiKey` and `Stripe__WebhookSecret`.
+> - **Secret Manager**: Retrieve them dynamically from a secret manager (such as Azure Key Vault or AWS Secrets Manager) in cloud environments.
 
 ---
 
@@ -37,6 +41,15 @@ When a couple selects a subscription upgrade:
 3. The frontend redirects the user to the Stripe Checkout page.
 4. Upon successful payment, Stripe fires a `checkout.session.completed` event to Arova's webhook `/api/subscription/webhook`.
 5. The backend verifies the event signature using the `WebhookSecret`, extracts the metadata, and updates the database record status to `Active`.
+
+### Webhook Event Handling Matrix
+
+Arova's webhook controller verifies signatures using the `WebhookSecret` for all incoming events. Upon verification, the following events trigger database synchronization and business logic:
+
+- **`checkout.session.completed`**: Triggers upon new successful subscriptions. The backend extracts metadata (`coupleId`, `planType`), synchronizes the couple's subscription status in the database to `Active`, and assigns the plan type.
+- **`customer.subscription.deleted`**: Triggers upon cancellations or end-of-cycle subscription teardown. The backend looks up the couple based on the metadata or Stripe subscription ID, updates the database status, and downgrades the couple's subscription to `Free`.
+- **`invoice.payment_failed`**: Triggers upon failed renewal payments. The backend synchronizes the status of the database record as `PastDue`, and sends a system notification to the couple requesting billing information updates.
+
 
 ```mermaid
 sequenceDiagram

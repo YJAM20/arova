@@ -231,7 +231,7 @@ public sealed class SubscriptionService : ISubscriptionService
             _ => null
         };
 
-        if (string.IsNullOrWhiteSpace(priceId) || string.Equals(priceId, "price_pro_placeholder") || string.Equals(priceId, "price_plat_placeholder"))
+        if (!StripeOptions.IsPriceConfigured(priceId))
         {
             _logger.LogWarning("Attempted checkout for {PlanType} but Stripe price ID configuration is placeholder.", planType);
             return ContentServiceResult<string>.Failure(ContentServiceStatus.BadRequest, "Stripe price identifiers are not configured on the server.");
@@ -260,14 +260,19 @@ public sealed class SubscriptionService : ISubscriptionService
                 }
             };
 
+            var requestOptions = new RequestOptions
+            {
+                IdempotencyKey = Guid.NewGuid().ToString()
+            };
+
             var service = new SessionService();
-            var session = await service.CreateAsync(options, cancellationToken: cancellationToken);
+            var session = await service.CreateAsync(options, requestOptions, cancellationToken: cancellationToken);
             return ContentServiceResult<string>.Success(session.Url);
         }
         catch (StripeException ex)
         {
             _logger.LogError(ex, "Stripe exception occurred while creating checkout session.");
-            return ContentServiceResult<string>.Failure(ContentServiceStatus.BadRequest, $"Stripe error: {ex.Message}");
+            return ContentServiceResult<string>.Failure(ContentServiceStatus.BadRequest, "An error occurred while creating the checkout session. Please try again.");
         }
     }
 

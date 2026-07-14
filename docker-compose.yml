@@ -14,6 +14,7 @@ services:
       - ConnectionStrings__SqliteConnection=Data Source=/app/data/loveuniverse-dev.db
     volumes:
       - api-data:/app/data
+    restart: unless-stopped
 
   arova-web:
     image: arova-web:latest
@@ -21,9 +22,10 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "80:80"
+      - "80:8080"
     depends_on:
       - arova-api
+    restart: unless-stopped
 
 volumes:
   api-data:

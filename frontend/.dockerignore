@@ -1,0 +1,24 @@
+# Dependencies (reinstalled clean by npm ci inside Docker)
+node_modules
+
+# Build output (rebuilt inside Docker)
+dist
+.angular
+
+# Test & QA artifacts
+playwright-report
+test-results
+e2e
+
+# Debug & local logs
+debug.log
+*.log
+
+# Editor / IDE directories
+.vscode
+.editorconfig
+
+# Design / audit scratch files (not needed in image)
+design
+visual-audit
+visual-audit-temp

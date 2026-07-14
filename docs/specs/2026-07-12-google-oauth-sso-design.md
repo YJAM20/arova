@@ -98,7 +98,7 @@ public sealed class GoogleExternalAuthVerifier : IExternalAuthVerifier
             };
 
             var payload = await GoogleJsonWebSignature.ValidateAsync(idToken, settings);
-            _logger.LogInformation("Successfully verified Google ID token for email: {Email}", payload.Email);
+            _logger.LogInformation("Successfully verified Google ID token for subject: {Subject}", payload.Subject);
             
             return new ExternalAuthVerificationResult(true, $"Successfully verified Google login for {payload.Email} ({payload.Name}).");
         }

@@ -46,8 +46,14 @@ export function toFriendlyError(
 function extractServerMessage(error: HttpErrorResponse): string | null {
   if (typeof error.error === 'string' && error.error.trim()) return error.error;
   if (typeof error.error === 'object' && error.error) {
-    if ('message' in error.error) return String(error.error.message);
-    if ('title' in error.error) return String(error.error.title);
+    if ('message' in error.error) {
+      const msg = String(error.error.message).trim();
+      if (msg) return msg;
+    }
+    if ('title' in error.error) {
+      const title = String(error.error.title).trim();
+      if (title) return title;
+    }
   }
   return null;
 }

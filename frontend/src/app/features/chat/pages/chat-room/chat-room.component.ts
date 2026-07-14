@@ -12,6 +12,7 @@ import { AuthService } from '../../../../core/services/auth.service';
 import { GamificationService } from '../../../../core/services/gamification.service';
 import { LocalChatService } from '../../../../core/services/local-chat.service';
 import { CryptoService } from '../../../../core/services/crypto.service';
+import { CoupleApiService } from '../../../../core/services/couple-api.service';
 
 @Component({
   selector: 'app-chat-room',
@@ -24,7 +25,15 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
   @ViewChild('scrollContainer') private scrollContainer?: ElementRef;
 
   messages: ChatMessage[] = [];
-  rawMessages: ChatMessage[] = [];
+  private _rawMessages: ChatMessage[] = [];
+  get rawMessages(): ChatMessage[] {
+    return this._rawMessages;
+  }
+  set rawMessages(val: ChatMessage[]) {
+    this._rawMessages = val;
+    this.rawMessagesVersion++;
+  }
+  private rawMessagesVersion = 0;
   draft = '';
   isLoading = false;
   isSending = false;
@@ -32,6 +41,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
   statusMessage = '';
   apiBaseUrl = environment.apiBaseUrl;
   myUserId: string | null = null;
+  coupleId: string | null = null;
   demoRepliesEnabled = true; // For local mode simulated responses
   partnerTyping = false;
 
@@ -41,6 +51,8 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
   e2eeError = '';
   showHelp = false;
   private derivedKey: CryptoKey | null = null;
+  private passcodeTimeout: any = null;
+  private e2eeRequestId = 0;
 
   private subscription?: Subscription;
   private shouldScrollToBottom = false;
@@ -61,7 +73,8 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
     private gamification: GamificationService,
     private localChat: LocalChatService,
     private crypto: CryptoService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private coupleApi: CoupleApiService
   ) {}
 
   ngOnInit(): void {
@@ -108,6 +121,16 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     this.loadMessages();
     this.startHub(token);
+
+    this.coupleApi.getMyCouple().subscribe({
+      next: couple => {
+        this.coupleId = couple.id;
+        if (this.e2eePasscode.trim()) {
+          this.onPasscodeChange();
+        }
+      },
+      error: () => {}
+    });
   }
 
   ngAfterViewChecked(): void {
@@ -124,9 +147,18 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
     if (this.typingTimeout) {
       clearTimeout(this.typingTimeout);
     }
+    if (this.passcodeTimeout) {
+      clearTimeout(this.passcodeTimeout);
+    }
   }
 
   onPasscodeChange(): void {
+    if (this.passcodeTimeout) {
+      clearTimeout(this.passcodeTimeout);
+    }
+
+    const currentRequestId = ++this.e2eeRequestId;
+
     if (!this.e2eePasscode.trim()) {
       this.derivedKey = null;
       this.isE2eeUnlocked = false;
@@ -135,17 +167,22 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
       return;
     }
 
-    this.crypto.deriveKey(this.e2eePasscode.trim())
-      .then(key => {
-        this.derivedKey = key;
-        this.isE2eeUnlocked = true;
-        this.e2eeError = '';
-        this.decryptMessages();
-      })
-      .catch(err => {
-        console.error('Error deriving key', err);
-        this.e2eeError = 'Failed to configure decryption key.';
-      });
+    this.passcodeTimeout = setTimeout(() => {
+      const salt = this.coupleId || 'arova-static-nebula-salt';
+      this.crypto.deriveKey(this.e2eePasscode.trim(), salt)
+        .then(key => {
+          if (currentRequestId !== this.e2eeRequestId) return;
+          this.derivedKey = key;
+          this.isE2eeUnlocked = true;
+          this.e2eeError = '';
+          this.decryptMessages();
+        })
+        .catch(err => {
+          if (currentRequestId !== this.e2eeRequestId) return;
+          console.error('Error deriving key', err);
+          this.e2eeError = 'Failed to configure decryption key.';
+        });
+    }, 400);
   }
 
   toggleE2eeHelp(): void {
@@ -170,12 +207,15 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   async decryptMessages(): Promise<void> {
+    const token = this.rawMessagesVersion;
     const mapped = [];
     for (const msg of this.rawMessages) {
       mapped.push(await this.decryptSingleMessage(msg));
     }
-    this.messages = mapped;
-    this.cdr.detectChanges();
+    if (token === this.rawMessagesVersion) {
+      this.messages = mapped;
+      this.cdr.detectChanges();
+    }
   }
 
   sendMessage(): void {
@@ -191,42 +231,48 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
       ? this.crypto.encrypt(body, this.derivedKey)
       : Promise.resolve(body);
 
-    payloadPromise.then(finalBody => {
-      if (this.appMode.isLocalMode()) {
-        const myUser = this.auth.getCurrentUser();
-        const senderName = myUser?.displayName ?? 'Partner A';
-        this.localChat.addMessage(finalBody, this.myUserId ?? 'user-owner', senderName);
-        this.isSending = false;
-        this.gamification.rewardChatMessage();
-
-        if (this.demoRepliesEnabled) {
-          this.triggerSimulatedReply();
-        }
-        return;
-      }
-
-      this.hub.sendMessage(finalBody)
-        .then(() => {
+    payloadPromise
+      .then(finalBody => {
+        if (this.appMode.isLocalMode()) {
+          const myUser = this.auth.getCurrentUser();
+          const senderName = myUser?.displayName ?? 'Partner A';
+          this.localChat.addMessage(finalBody, this.myUserId ?? 'user-owner', senderName);
           this.isSending = false;
           this.gamification.rewardChatMessage();
-        })
-        .catch(() => {
-          this.chatApi.sendMessage({ message: finalBody }).subscribe({
-            next: response => {
-              this.appendMessage(this.chatApi.toMessage(response));
-              this.isSending = false;
-              this.shouldScrollToBottom = true;
-              this.gamification.rewardChatMessage();
-            },
-            error: error => {
-              this.errorMessage = this.toFriendlyError(error);
-              this.isSending = false;
-              // Restore draft if failed
-              this.draft = body;
-            },
+
+          if (this.demoRepliesEnabled) {
+            this.triggerSimulatedReply();
+          }
+          return;
+        }
+
+        this.hub.sendMessage(finalBody)
+          .then(() => {
+            this.isSending = false;
+            this.gamification.rewardChatMessage();
+          })
+          .catch(() => {
+            this.chatApi.sendMessage({ message: finalBody }).subscribe({
+              next: response => {
+                this.appendMessage(this.chatApi.toMessage(response));
+                this.isSending = false;
+                this.shouldScrollToBottom = true;
+                this.gamification.rewardChatMessage();
+              },
+              error: error => {
+                this.errorMessage = this.toFriendlyError(error);
+                this.isSending = false;
+                // Restore draft if failed
+                this.draft = body;
+              },
+            });
           });
-        });
-    });
+      })
+      .catch(error => {
+        this.errorMessage = this.toFriendlyError(error);
+        this.isSending = false;
+        this.draft = body;
+      });
   }
 
   private triggerSimulatedReply(): void {
@@ -263,6 +309,9 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   retryLoad(): void {
+    if (this._apiToken) {
+      this.startHub(this._apiToken);
+    }
     this.loadMessages();
   }
 

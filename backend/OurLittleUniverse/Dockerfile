@@ -14,5 +14,13 @@ RUN dotnet publish "OurLittleUniverse.csproj" -c Release -o /app/publish /p:UseA
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
 EXPOSE 8080
-COPY --from=build /app/publish .
+
+# Create a dedicated non-root user and group
+RUN groupadd -g 2000 appgroup && \
+    useradd -r -u 2000 -g appgroup appuser
+
+COPY --chown=appuser:appgroup --from=build /app/publish .
+
+USER appuser
+
 ENTRYPOINT ["dotnet", "OurLittleUniverse.dll"]

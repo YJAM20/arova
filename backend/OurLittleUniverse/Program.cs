@@ -103,7 +103,10 @@ builder.Services.AddScoped<IEmailSender>(sp =>
 });
 builder.Services.Configure<SmsOptions>(builder.Configuration.GetSection("Sms"));
 builder.Services.AddScoped<ConsoleSmsSender>();
-builder.Services.AddScoped<TwilioSmsSender>();
+builder.Services.AddHttpClient<TwilioSmsSender>(client =>
+{
+    client.Timeout = TimeSpan.FromSeconds(10);
+});
 builder.Services.AddScoped<ISmsSender>(sp =>
 {
     var options = sp.GetRequiredService<IOptions<SmsOptions>>().Value;
@@ -126,7 +129,12 @@ builder.Services.AddScoped<ISmsSender>(sp =>
 builder.Services.AddScoped<IAccountVerificationService, AccountVerificationService>();
 builder.Services.Configure<GoogleAuthOptions>(builder.Configuration.GetSection("Authentication"));
 builder.Services.Configure<StripeOptions>(builder.Configuration.GetSection("Stripe"));
-Stripe.StripeConfiguration.ApiKey = builder.Configuration["Stripe:ApiKey"];
+var stripeApiKey = builder.Configuration["Stripe:ApiKey"];
+if (string.IsNullOrWhiteSpace(stripeApiKey))
+{
+    throw new InvalidOperationException("Stripe ApiKey is null or empty. Ensure Stripe:ApiKey is configured in appsettings, environment variables, or secrets.");
+}
+Stripe.StripeConfiguration.ApiKey = stripeApiKey;
 builder.Services.AddScoped<IExternalAuthVerifier, GoogleExternalAuthVerifier>();
 builder.Services.AddScoped<IExternalAuthVerifier, AppleExternalAuthVerifier>();
 builder.Services.AddSignalR();

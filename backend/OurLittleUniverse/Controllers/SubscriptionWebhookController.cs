@@ -46,11 +46,13 @@ public sealed class SubscriptionWebhookController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> StripeWebhook()
     {
-        var signatureHeader = Request.Headers["Stripe-Signature"];
-        if (string.IsNullOrEmpty(signatureHeader))
+        var rawSignatureHeader = Request.Headers["Stripe-Signature"];
+        if (string.IsNullOrEmpty(rawSignatureHeader))
         {
             return BadRequest(new { message = "Stripe-Signature header is missing." });
         }
+
+        string signatureHeader = rawSignatureHeader.ToString();
 
         using var reader = new StreamReader(Request.Body);
         var json = await reader.ReadToEndAsync();

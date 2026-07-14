@@ -125,6 +125,98 @@
 }
 
 /* ─────────────────────────────────────────
+   E2EE Security Header
+───────────────────────────────────────── */
+.e2ee-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.2);
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.e2ee-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  .e2ee-icon {
+    font-size: 1.25rem;
+  }
+
+  .e2ee-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    strong {
+      font-size: 0.88rem;
+      color: var(--theme-text-primary, #ffffff);
+    }
+
+    span {
+      font-size: 0.76rem;
+      color: var(--theme-muted, #B8B8B8);
+    }
+  }
+}
+
+.e2ee-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  input[type='password'] {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    color: #ffffff;
+    outline: none;
+    width: 220px;
+  }
+
+  .e2ee-help-btn {
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    color: var(--theme-muted, #B8B8B8);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.78rem;
+  }
+}
+
+.e2ee-help-panel {
+  width: 100%;
+  margin-top: 8px;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--theme-muted, #B8B8B8);
+  background: rgba(0, 0, 0, 0.3);
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+}
+
+.e2ee-error-panel {
+  width: 100%;
+  margin-top: 8px;
+  color: #ff5a5a;
+  font-size: 0.78rem;
+}
+
+/* ─────────────────────────────────────────
    Status / Error Banners
 ───────────────────────────────────────── */
 .chat-status,
