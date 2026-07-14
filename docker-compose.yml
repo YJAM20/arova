@@ -22,7 +22,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "80:80"
+      - "80:8080"
     depends_on:
       - arova-api
     restart: unless-stopped

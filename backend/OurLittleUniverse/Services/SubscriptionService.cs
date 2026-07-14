@@ -262,7 +262,7 @@ public sealed class SubscriptionService : ISubscriptionService
 
             var requestOptions = new RequestOptions
             {
-                IdempotencyKey = $"checkout-{coupleId.Value}-{planType}"
+                IdempotencyKey = Guid.NewGuid().ToString()
             };
 
             var service = new SessionService();
